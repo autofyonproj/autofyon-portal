@@ -1,0 +1,1659 @@
+{
+  "brand": {
+    "slug": "bmw",
+    "name": "BMW",
+    "name_ar": "بي إم دبليو",
+    "origin": "Germany",
+    "logo_url": "https://cdn.jsdelivr.net/gh/filippofilip95/car-logos-dataset/logos/optimized/bmw.svg"
+  },
+  "agency": {
+    "slug": "global-auto-egypt",
+    "name": "Global Auto Group - BMW Egypt",
+    "name_ar": "مجموعة جلوبال أوتو - وكيل بي إم دبليو في مصر",
+    "type_id": "main_agency",
+    "phone": "19269",
+    "website": "https://www.bmw-egypt.com"
+  },
+  "models": [
+    {
+      "slug": "bmw-1-series",
+      "name": "1 Series",
+      "name_ar": "الفئة الأولى",
+      "category": "Hatchback",
+      "year": 2026,
+      "brochure_url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/brochure-pool/jan2025/The%203%20Series%20Brochure%202025%20v2.pdf.asset.1737358373695.pdf",
+      "images": [
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/f70_ice_stage_dsk_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_1_identity",
+          "caption": "BMW 1 Series - Official Agency Stage View",
+          "caption_ar": "بي إم دبليو الفئة الأولى - الصورة الرسمية من الوكيل",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/1-series/1-series-5doors/bmw-1-series.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/f70_ice_exterior_rear-design_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW 1 Series - Exterior Design & Styling",
+          "caption_ar": "بي إم دبليو الفئة الأولى - التصميم الخارجي والديناميكي",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/1-series/1-series-5doors/bmw-1-series.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/f70_ice_exterior_kidney_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW 1 Series - Alloy Wheels & Details",
+          "caption_ar": "بي إم دبليو الفئة الأولى - الجنوط الرياضية والتفاصيل الخارجية",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/1-series/1-series-5doors/bmw-1-series.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/f70_ice_interior-design_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW 1 Series - Cockpit & Curved Display",
+          "caption_ar": "بي إم دبليو الفئة الأولى - مقصورة القيادة والشاشة المنحنية",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/1-series/1-series-5doors/bmw-1-series.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/f70_ice_interior_curved-display_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW 1 Series - Luxury Interior & Seating",
+          "caption_ar": "بي إم دبليو الفئة الأولى - المقاعد الجلدية والفرش الفاخر",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/1-series/1-series-5doors/bmw-1-series.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/f70_ice_exterior_driving-dynamics_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_specs",
+          "caption": "BMW 1 Series - Engine & Performance Dynamics",
+          "caption_ar": "بي إم دبليو الفئة الأولى - الأداء وهندسة المحرك",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/1-series/1-series-5doors/bmw-1-series.html"
+        }
+      ],
+      "trims": [
+        {
+          "slug": "bmw-1-series-118-m-sport",
+          "name": "118 M Sport",
+          "name_ar": "118 M Sport",
+          "price_egp": 2550000,
+          "specs": {
+            "torque_nm": "غير متوفر",
+            "transmission": "غير متوفر",
+            "fuel_type": "غير متوفر",
+            "wheels": "غير متوفر",
+            "seats": 5
+          }
+        }
+      ]
+    },
+    {
+      "slug": "bmw-2-series",
+      "name": "2 Series Gran Coupe",
+      "name_ar": "الفئة الثانية جران كوبيه",
+      "category": "Coupe",
+      "year": 2026,
+      "brochure_url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/brochure-pool/The-2_dec2022.pdf.asset.1670234093111.pdf",
+      "images": [
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/f74_ice_stage_dsk_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_1_identity",
+          "caption": "BMW 2 Series Gran Coupe - Official Agency Stage View",
+          "caption_ar": "بي إم دبليو الفئة الثانية جران كوبيه - الصورة الرسمية من الوكيل",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/2-series/2-series-gran-coupe/bmw-2-series-gran-coupe.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/f74_ice_exterior_positioning-new-front-design_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW 2 Series Gran Coupe - Exterior Design & Styling",
+          "caption_ar": "بي إم دبليو الفئة الثانية جران كوبيه - التصميم الخارجي والديناميكي",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/2-series/2-series-gran-coupe/bmw-2-series-gran-coupe.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/f74_ice_exterior_m-kidney-iconic-glow_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW 2 Series Gran Coupe - Alloy Wheels & Details",
+          "caption_ar": "بي إم دبليو الفئة الثانية جران كوبيه - الجنوط الرياضية والتفاصيل الخارجية",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/2-series/2-series-gran-coupe/bmw-2-series-gran-coupe.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/f74_ice_interior_positioning-loop_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW 2 Series Gran Coupe - Cockpit & Curved Display",
+          "caption_ar": "بي إم دبليو الفئة الثانية جران كوبيه - مقصورة القيادة والشاشة المنحنية",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/2-series/2-series-gran-coupe/bmw-2-series-gran-coupe.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/f74_ice_interior_illuminated-metal-trims-1:3to2?fmt=webp-alpha&wid=767&fit=constrain%2C1",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW 2 Series Gran Coupe - Luxury Interior & Seating",
+          "caption_ar": "بي إم دبليو الفئة الثانية جران كوبيه - المقاعد الجلدية والفرش الفاخر",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/2-series/2-series-gran-coupe/bmw-2-series-gran-coupe.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/f74_ice_driving-dynamics_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_specs",
+          "caption": "BMW 2 Series Gran Coupe - Engine & Performance Dynamics",
+          "caption_ar": "بي إم دبليو الفئة الثانية جران كوبيه - الأداء وهندسة المحرك",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/2-series/2-series-gran-coupe/bmw-2-series-gran-coupe.html"
+        }
+      ],
+      "trims": [
+        {
+          "slug": "bmw-2-series-218i-m-sport",
+          "name": "218i M Sport",
+          "name_ar": "218i M Sport",
+          "price_egp": 2750000,
+          "specs": {
+            "displacement_cc": 1499,
+            "power_hp": 140,
+            "torque_nm": "220 @ 1480–4200",
+            "transmission": "DCT 7 سرعات (دفع أمامي)",
+            "fuel_type": "بنزين",
+            "acceleration_0_100_s": 8.7,
+            "top_speed_kmh": 213,
+            "fuel_tank_l": 50,
+            "trunk_capacity_l": 430,
+            "wheels": "18 بوصة M Y-spoke 553",
+            "seats": 5
+          }
+        },
+        {
+          "slug": "bmw-2-series-218i-advantage",
+          "name": "218i Advantage",
+          "name_ar": "218i Advantage",
+          "price_egp": null,
+          "specs": {
+            "displacement_cc": 1499,
+            "power_hp": 140,
+            "torque_nm": "220 @ 1480–4200",
+            "transmission": "DCT 7 سرعات (دفع أمامي)",
+            "fuel_type": "بنزين",
+            "acceleration_0_100_s": 8.7,
+            "top_speed_kmh": 213,
+            "fuel_tank_l": 50,
+            "trunk_capacity_l": 430,
+            "wheels": "17 بوصة 548",
+            "seats": 5
+          }
+        },
+        {
+          "slug": "bmw-2-series-218i-sport-line",
+          "name": "218i Sport Line",
+          "name_ar": "218i Sport Line",
+          "price_egp": null,
+          "specs": {
+            "displacement_cc": 1499,
+            "power_hp": 140,
+            "torque_nm": "220 @ 1480–4200",
+            "transmission": "DCT 7 سرعات (دفع أمامي)",
+            "fuel_type": "بنزين",
+            "acceleration_0_100_s": 8.7,
+            "top_speed_kmh": 213,
+            "fuel_tank_l": 50,
+            "trunk_capacity_l": 430,
+            "wheels": "17 بوصة 549",
+            "seats": 5
+          }
+        },
+        {
+          "slug": "bmw-2-series-m235i-xdrive",
+          "name": "M235i xDrive",
+          "name_ar": "M235i xDrive",
+          "price_egp": null,
+          "specs": {
+            "displacement_cc": 1998,
+            "power_hp": 306,
+            "torque_nm": "450 @ 1750–4500",
+            "transmission": "Sport Steptronic 8 سرعات",
+            "fuel_type": "بنزين",
+            "acceleration_0_100_s": 4.9,
+            "top_speed_kmh": 250,
+            "fuel_tank_l": 50,
+            "trunk_capacity_l": 430,
+            "wheels": "18 بوصة M",
+            "seats": 5
+          }
+        }
+      ]
+    },
+    {
+      "slug": "bmw-3-series",
+      "name": "3 Series Sedan",
+      "name_ar": "الفئة الثالثة سيدان",
+      "category": "Sedan",
+      "year": 2026,
+      "brochure_url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/brochure-pool/jan2025/The%203%20Series%20Brochure%202025%20v2.pdf.asset.1737358373695.pdf",
+      "images": [
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g20_ice_stage-50-years:3to4?fmt=webp-alpha&wid=767&fit=constrain%2C1",
+          "section_id": "sec_1_identity",
+          "caption": "BMW 3 Series Sedan - Official Agency Stage View",
+          "caption_ar": "بي إم دبليو الفئة الثالثة سيدان - الصورة الرسمية من الوكيل",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/3-series/bmw-3-series-sedan/bmw-3-series-sedan.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g20_ice_ext_kidney:3to2?fmt=webp-alpha&wid=767&fit=constrain%2C1",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW 3 Series Sedan - Exterior Design & Styling",
+          "caption_ar": "بي إم دبليو الفئة الثالثة سيدان - التصميم الخارجي والديناميكي",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/3-series/bmw-3-series-sedan/bmw-3-series-sedan.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g20_ice_ext_kidney:3to2?fmt=webp-alpha&wid=1023&fit=constrain%2C1",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW 3 Series Sedan - Alloy Wheels & Details",
+          "caption_ar": "بي إم دبليو الفئة الثالثة سيدان - الجنوط الرياضية والتفاصيل الخارجية",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/3-series/bmw-3-series-sedan/bmw-3-series-sedan.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g20_ice_int_dashboard:3to2?fmt=webp-alpha&wid=767&fit=constrain%2C1",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW 3 Series Sedan - Cockpit & Curved Display",
+          "caption_ar": "بي إم دبليو الفئة الثالثة سيدان - مقصورة القيادة والشاشة المنحنية",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/3-series/bmw-3-series-sedan/bmw-3-series-sedan.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g20_ice_int_dashboard:3to2?fmt=webp-alpha&wid=1023&fit=constrain%2C1",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW 3 Series Sedan - Luxury Interior & Seating",
+          "caption_ar": "بي إم دبليو الفئة الثالثة سيدان - المقاعد الجلدية والفرش الفاخر",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/3-series/bmw-3-series-sedan/bmw-3-series-sedan.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/global_tec-ani_reversing-assistant_dsk_ta?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_specs",
+          "caption": "BMW 3 Series Sedan - Engine & Performance Dynamics",
+          "caption_ar": "بي إم دبليو الفئة الثالثة سيدان - الأداء وهندسة المحرك",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/3-series/bmw-3-series-sedan/bmw-3-series-sedan.html"
+        }
+      ],
+      "trims": [
+        {
+          "slug": "bmw-3-series-320i-advantage",
+          "name": "320i Advantage",
+          "name_ar": "320i Advantage",
+          "price_egp": null,
+          "specs": {
+            "displacement_cc": 1597,
+            "power_hp": 170,
+            "torque_nm": "250 @ 2000–4700",
+            "transmission": "أوتوماتيك Steptronic 8 سرعات",
+            "fuel_type": "بنزين",
+            "acceleration_0_100_s": 8.1,
+            "top_speed_kmh": 228,
+            "fuel_tank_l": 59,
+            "trunk_capacity_l": 480,
+            "kerb_weight_kg": 1515,
+            "wheels": "17 بوصة V-spoke 775 مع إطارات Run-flat",
+            "seats": 5
+          }
+        },
+        {
+          "slug": "bmw-3-series-320i-luxury-line",
+          "name": "320i Luxury Line",
+          "name_ar": "320i Luxury Line",
+          "price_egp": null,
+          "specs": {
+            "displacement_cc": 1597,
+            "power_hp": 170,
+            "torque_nm": "250 @ 2000–4700",
+            "transmission": "أوتوماتيك Steptronic 8 سرعات",
+            "fuel_type": "بنزين",
+            "acceleration_0_100_s": 8.1,
+            "top_speed_kmh": 228,
+            "fuel_tank_l": 59,
+            "trunk_capacity_l": 480,
+            "kerb_weight_kg": 1515,
+            "wheels": "18 بوصة Double-spoke 782 Run-flat",
+            "seats": 5
+          }
+        },
+        {
+          "slug": "bmw-3-series-320i-m-sport",
+          "name": "320i M Sport",
+          "name_ar": "320i M Sport",
+          "price_egp": null,
+          "specs": {
+            "displacement_cc": 1597,
+            "power_hp": 170,
+            "torque_nm": "250 @ 2000–4700",
+            "transmission": "أوتوماتيك Steptronic 8 سرعات",
+            "fuel_type": "بنزين",
+            "acceleration_0_100_s": 8.1,
+            "top_speed_kmh": 228,
+            "fuel_tank_l": 59,
+            "trunk_capacity_l": 480,
+            "kerb_weight_kg": 1515,
+            "wheels": "18 بوصة M Double-spoke 848",
+            "seats": 5
+          }
+        },
+        {
+          "slug": "bmw-3-series-330i-m-sport",
+          "name": "330i M Sport",
+          "name_ar": "330i M Sport",
+          "price_egp": null,
+          "specs": {
+            "displacement_cc": 1998,
+            "power_hp": 258,
+            "torque_nm": "400 @ 1550–4400",
+            "transmission": "أوتوماتيك Steptronic 8 سرعات",
+            "fuel_type": "بنزين",
+            "acceleration_0_100_s": 5.9,
+            "top_speed_kmh": 250,
+            "fuel_tank_l": 59,
+            "trunk_capacity_l": 480,
+            "kerb_weight_kg": 1525,
+            "wheels": "18 بوصة M Double-spoke 848",
+            "seats": 5
+          }
+        },
+        {
+          "slug": "bmw-3-series-m340i-xdrive",
+          "name": "M340i xDrive",
+          "name_ar": "M340i xDrive",
+          "price_egp": 6750000,
+          "specs": {
+            "displacement_cc": 2998,
+            "power_hp": 387,
+            "torque_nm": "500 @ 1900–5000",
+            "transmission": "Steptronic Sport 8 سرعات",
+            "fuel_type": "بنزين",
+            "acceleration_0_100_s": 4.4,
+            "top_speed_kmh": 250,
+            "fuel_tank_l": 59,
+            "trunk_capacity_l": 480,
+            "kerb_weight_kg": 1695,
+            "wheels": "19 بوصة M Double-spoke 792",
+            "seats": 5
+          }
+        },
+        {
+          "slug": "bmw-3-series-320-sport-320i-m-sport",
+          "name": "320 Sport (يطابق 320i M Sport؟)",
+          "name_ar": "320 Sport (يطابق 320i M Sport؟)",
+          "price_egp": null,
+          "specs": {
+            "torque_nm": "غير متوفر",
+            "transmission": "غير متوفر",
+            "fuel_type": "غير متوفر",
+            "wheels": "غير متوفر",
+            "seats": 5
+          }
+        }
+      ]
+    },
+    {
+      "slug": "bmw-4-series",
+      "name": "4 Series Gran Coupe & Cabrio",
+      "name_ar": "الفئة الرابعة",
+      "category": "Coupe",
+      "year": 2026,
+      "brochure_url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/brochure-pool/august2024/The_New_4_Series_Brochure_August2024.pdf.asset.1723800538554.pdf",
+      "images": [
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g23_stage:2to3?fmt=webp-alpha&wid=767&fit=constrain%2C1",
+          "section_id": "sec_1_identity",
+          "caption": "BMW 4 Series Gran Coupe & Cabrio - Official Agency Stage View",
+          "caption_ar": "بي إم دبليو الفئة الرابعة - الصورة الرسمية من الوكيل",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/4-series/4-series-cabrio/bmw-4-series-convertible.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/bmw-driving-assistant-professional-3-1?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW 4 Series Gran Coupe & Cabrio - Exterior Design & Styling",
+          "caption_ar": "بي إم دبليو الفئة الرابعة - التصميم الخارجي والديناميكي",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/4-series/4-series-cabrio/bmw-4-series-convertible.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/global_tec-ani_360-surround-view_dsk_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW 4 Series Gran Coupe & Cabrio - Alloy Wheels & Details",
+          "caption_ar": "بي إم دبليو الفئة الرابعة - الجنوط الرياضية والتفاصيل الخارجية",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/4-series/4-series-cabrio/bmw-4-series-convertible.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g23_stage:2to3?fmt=webp-alpha&wid=1023&fit=constrain%2C1",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW 4 Series Gran Coupe & Cabrio - Cockpit & Curved Display",
+          "caption_ar": "بي إم دبليو الفئة الرابعة - مقصورة القيادة والشاشة المنحنية",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/4-series/4-series-cabrio/bmw-4-series-convertible.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g23_stage:16to7?fmt=webp-alpha&wid=1279&fit=constrain%2C1",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW 4 Series Gran Coupe & Cabrio - Luxury Interior & Seating",
+          "caption_ar": "بي إم دبليو الفئة الرابعة - المقاعد الجلدية والفرش الفاخر",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/4-series/4-series-cabrio/bmw-4-series-convertible.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g23_technology_intelligent-personal-assistant:3to2?fmt=webp-alpha&wid=767&fit=constrain%2C1",
+          "section_id": "sec_auto_specs",
+          "caption": "BMW 4 Series Gran Coupe & Cabrio - Engine & Performance Dynamics",
+          "caption_ar": "بي إم دبليو الفئة الرابعة - الأداء وهندسة المحرك",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/4-series/4-series-cabrio/bmw-4-series-convertible.html"
+        }
+      ],
+      "trims": [
+        {
+          "slug": "bmw-4-series-420i-m-sport-gran-coupe",
+          "name": "420i M Sport (Gran Coupe في البروشور)",
+          "name_ar": "420i M Sport (Gran Coupe في البروشور)",
+          "price_egp": null,
+          "specs": {
+            "displacement_cc": 1998,
+            "power_hp": 184,
+            "torque_nm": "300 @ 1350–4000",
+            "transmission": "Sport Steptronic 8 سرعات",
+            "fuel_type": "بنزين",
+            "acceleration_0_100_s": 7.9,
+            "top_speed_kmh": 235,
+            "fuel_tank_l": 59,
+            "trunk_capacity_l": 470,
+            "kerb_weight_kg": 1620,
+            "wheels": "18 بوصة M 848",
+            "seats": 5
+          }
+        },
+        {
+          "slug": "bmw-4-series-420i-convertible-m-sport",
+          "name": "420i Convertible M Sport",
+          "name_ar": "420i Convertible M Sport",
+          "price_egp": null,
+          "specs": {
+            "displacement_cc": 1998,
+            "power_hp": 184,
+            "torque_nm": "300 @ 1350–4000",
+            "transmission": "Sport Steptronic 8 سرعات",
+            "fuel_type": "بنزين",
+            "acceleration_0_100_s": 8.2,
+            "top_speed_kmh": 236,
+            "fuel_tank_l": 59,
+            "trunk_capacity_l": 300,
+            "kerb_weight_kg": 1690,
+            "wheels": "18 بوصة M 848",
+            "seats": 5
+          }
+        },
+        {
+          "slug": "bmw-4-series-m440i-xdrive-coupe",
+          "name": "M440i xDrive Coupe",
+          "name_ar": "M440i xDrive Coupe",
+          "price_egp": null,
+          "specs": {
+            "displacement_cc": 2998,
+            "power_hp": 387,
+            "torque_nm": "500 @ 1800–5000",
+            "transmission": "Sport Steptronic 8 سرعات",
+            "fuel_type": "بنزين",
+            "acceleration_0_100_s": 4.5,
+            "top_speed_kmh": 250,
+            "fuel_tank_l": 59,
+            "trunk_capacity_l": 440,
+            "kerb_weight_kg": 1735,
+            "wheels": "19 بوصة M 792",
+            "seats": 5
+          }
+        }
+      ]
+    },
+    {
+      "slug": "bmw-5-series",
+      "name": "5 Series Sedan",
+      "name_ar": "الفئة الخامسة سيدان",
+      "category": "Sedan",
+      "year": 2026,
+      "brochure_url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/brochure-pool/The-5.pdf.asset.1681294407006.pdf",
+      "images": [
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g60-phev-stage-ext-dsk-fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_1_identity",
+          "caption": "BMW 5 Series Sedan - Official Agency Stage View",
+          "caption_ar": "بي إم دبليو الفئة الخامسة سيدان - الصورة الرسمية من الوكيل",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/5-series/sedan/bmw-5-series-sedan-overview.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g60_ice_ext-design-highlights_1_illuminated-kidney-c1-titan-bronze_dsk_fb-2_de?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW 5 Series Sedan - Exterior Design & Styling",
+          "caption_ar": "بي إم دبليو الفئة الخامسة سيدان - التصميم الخارجي والديناميكي",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/5-series/sedan/bmw-5-series-sedan-overview.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g60_ice_driving-dynamics_dsk_psf_en?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW 5 Series Sedan - Alloy Wheels & Details",
+          "caption_ar": "بي إم دبليو الفئة الخامسة سيدان - الجنوط الرياضية والتفاصيل الخارجية",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/5-series/sedan/bmw-5-series-sedan-overview.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g60_ice_ext-design-highlights_2_dynamic-light-carpet-titan-bronze_dsk_shfv_de?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW 5 Series Sedan - Cockpit & Curved Display",
+          "caption_ar": "بي إم دبليو الفئة الخامسة سيدان - مقصورة القيادة والشاشة المنحنية",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/5-series/sedan/bmw-5-series-sedan-overview.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g60_ice_ext-design-highlights_3_skyroof_dsk_shfv_de?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW 5 Series Sedan - Luxury Interior & Seating",
+          "caption_ar": "بي إم دبليو الفئة الخامسة سيدان - المقاعد الجلدية والفرش الفاخر",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/5-series/sedan/bmw-5-series-sedan-overview.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g60_ice_int-design-video-loop_dsk_fb-1_en?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_specs",
+          "caption": "BMW 5 Series Sedan - Engine & Performance Dynamics",
+          "caption_ar": "بي إم دبليو الفئة الخامسة سيدان - الأداء وهندسة المحرك",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/5-series/sedan/bmw-5-series-sedan-overview.html"
+        }
+      ],
+      "trims": [
+        {
+          "slug": "bmw-5-series-520i-advantage",
+          "name": "520i Advantage",
+          "name_ar": "520i Advantage",
+          "price_egp": null,
+          "specs": {
+            "displacement_cc": 1597,
+            "power_hp": 170,
+            "torque_nm": "250 @ 2000–4700",
+            "transmission": "Steptronic 8 سرعات",
+            "fuel_type": "بنزين",
+            "acceleration_0_100_s": 8.3,
+            "top_speed_kmh": 226,
+            "fuel_tank_l": 68,
+            "trunk_capacity_l": 530,
+            "kerb_weight_kg": 1580,
+            "wheels": "18 بوصة Double-spoke 844 Run-flat",
+            "seats": 5
+          }
+        },
+        {
+          "slug": "bmw-5-series-520i-luxury-line",
+          "name": "520i Luxury Line",
+          "name_ar": "520i Luxury Line",
+          "price_egp": null,
+          "specs": {
+            "displacement_cc": 1597,
+            "power_hp": 170,
+            "torque_nm": "250 @ 2000–4700",
+            "transmission": "Steptronic 8 سرعات",
+            "fuel_type": "بنزين",
+            "acceleration_0_100_s": 8.3,
+            "top_speed_kmh": 226,
+            "fuel_tank_l": 68,
+            "trunk_capacity_l": 530,
+            "kerb_weight_kg": 1580,
+            "wheels": "18 بوصة W-spoke 632 Run-flat",
+            "seats": 5
+          }
+        },
+        {
+          "slug": "bmw-5-series-530i-luxury-line",
+          "name": "530i Luxury Line",
+          "name_ar": "530i Luxury Line",
+          "price_egp": null,
+          "specs": {
+            "displacement_cc": 1998,
+            "power_hp": 252,
+            "torque_nm": "350 @ 1450–4800",
+            "transmission": "Steptronic 8 سرعات",
+            "fuel_type": "بنزين",
+            "acceleration_0_100_s": 6.5,
+            "top_speed_kmh": 250,
+            "fuel_tank_l": 68,
+            "trunk_capacity_l": 530,
+            "kerb_weight_kg": 1625,
+            "wheels": "18 بوصة V-spoke 684 Run-flat",
+            "seats": 5
+          }
+        },
+        {
+          "slug": "bmw-5-series-520-m-sport-2027",
+          "name": "520 M Sport (2027)",
+          "name_ar": "520 M Sport (2027)",
+          "price_egp": 4900000,
+          "specs": {
+            "torque_nm": "غير متوفر",
+            "transmission": "غير متوفر",
+            "fuel_type": "غير متوفر",
+            "wheels": "غير متوفر",
+            "seats": 5
+          }
+        }
+      ]
+    },
+    {
+      "slug": "bmw-7-series",
+      "name": "7 Series Sedan",
+      "name_ar": "الفئة السابعة سيدان",
+      "category": "Sedan",
+      "year": 2026,
+      "brochure_url": "https://eg.hatla2ee.com/en/new-car/bmw/7-series/48223",
+      "images": [
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g70-ice-phev_stage:3to4?fmt=webp-alpha&wid=767&fit=constrain%2C1",
+          "section_id": "sec_1_identity",
+          "caption": "BMW 7 Series Sedan - Official Agency Stage View",
+          "caption_ar": "بي إم دبليو الفئة السابعة سيدان - الصورة الرسمية من الوكيل",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/7-series/7-series-sedan/bmw-7-series-sedan.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g70-ice-phev_exterior_highlight_side-view-chrome:3to2?fmt=webp-alpha&wid=767&fit=constrain%2C1",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW 7 Series Sedan - Exterior Design & Styling",
+          "caption_ar": "بي إم دبليو الفئة السابعة سيدان - التصميم الخارجي والديناميكي",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/7-series/7-series-sedan/bmw-7-series-sedan.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g70-ice-phev_exterior_highlight_side-view-chrome:3to2?fmt=webp-alpha&wid=1023&fit=constrain%2C1",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW 7 Series Sedan - Alloy Wheels & Details",
+          "caption_ar": "بي إم دبليو الفئة السابعة سيدان - الجنوط الرياضية والتفاصيل الخارجية",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/7-series/7-series-sedan/bmw-7-series-sedan.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g70-ice-phev_interior-design_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW 7 Series Sedan - Cockpit & Curved Display",
+          "caption_ar": "بي إم دبليو الفئة السابعة سيدان - مقصورة القيادة والشاشة المنحنية",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/7-series/7-series-sedan/bmw-7-series-sedan.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g70-ice-phev_interior_fond-entertainment:3to2?fmt=webp-alpha&wid=767&fit=constrain%2C1",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW 7 Series Sedan - Luxury Interior & Seating",
+          "caption_ar": "بي إم دبليو الفئة السابعة سيدان - المقاعد الجلدية والفرش الفاخر",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/7-series/7-series-sedan/bmw-7-series-sedan.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/global_tec-ani_360-surround-view_mob_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_specs",
+          "caption": "BMW 7 Series Sedan - Engine & Performance Dynamics",
+          "caption_ar": "بي إم دبليو الفئة السابعة سيدان - الأداء وهندسة المحرك",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/7-series/7-series-sedan/bmw-7-series-sedan.html"
+        }
+      ],
+      "trims": [
+        {
+          "slug": "bmw-7-series-735li-740li-xdrive-740li-mhev-760li",
+          "name": "735Li / 740Li xDrive / 740Li MHEV / 760Li",
+          "name_ar": "735Li / 740Li xDrive / 740Li MHEV / 760Li",
+          "price_egp": 9900000,
+          "specs": {
+            "torque_nm": "غير متوفر",
+            "transmission": "غير متوفر",
+            "fuel_type": "غير متوفر",
+            "wheels": "غير متوفر",
+            "seats": 5
+          }
+        },
+        {
+          "slug": "bmw-7-series-760i-xdrive-yallamotor-760li-xdrive-mhev",
+          "name": "760i xDrive (يسميها Yallamotor 760Li xDrive MHEV)",
+          "name_ar": "760i xDrive (يسميها Yallamotor 760Li xDrive MHEV)",
+          "price_egp": 12500000,
+          "specs": {
+            "displacement_cc": 4400,
+            "power_hp": 544,
+            "torque_nm": "750",
+            "transmission": "أوتوماتيك 8 سرعات",
+            "fuel_type": "بنزين (48 فولت مايلد هايبرد)",
+            "acceleration_0_100_s": 4.2,
+            "top_speed_kmh": 250,
+            "fuel_tank_l": 75,
+            "trunk_capacity_l": 540,
+            "wheels": "غير متوفر",
+            "seats": 4
+          }
+        }
+      ]
+    },
+    {
+      "slug": "bmw-x1",
+      "name": "X1",
+      "name_ar": "إكس 1",
+      "category": "SUV",
+      "year": 2026,
+      "brochure_url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/brochure-pool/jan-2026/X1%20Brochure%20Brochure%202025.pdf",
+      "images": [
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/u11-ice_stage_dsk_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_1_identity",
+          "caption": "BMW X1 - Official Agency Stage View",
+          "caption_ar": "بي إم دبليو إكس 1 - الصورة الرسمية من الوكيل",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/x-series/x1/bmw-x1.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/u11-ice_exterior_rear-lights:3to2?fmt=webp-alpha&wid=767&fit=constrain%2C1",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW X1 - Exterior Design & Styling",
+          "caption_ar": "بي إم دبليو إكس 1 - التصميم الخارجي والديناميكي",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/x-series/x1/bmw-x1.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/u11-ice_exterior_rear-lights:3to2?fmt=webp-alpha&wid=1023&fit=constrain%2C1",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW X1 - Alloy Wheels & Details",
+          "caption_ar": "بي إم دبليو إكس 1 - الجنوط الرياضية والتفاصيل الخارجية",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/x-series/x1/bmw-x1.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/u11-ice_interior_bmw-curved-display:3to2?fmt=webp-alpha&wid=767&fit=constrain%2C1",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW X1 - Cockpit & Curved Display",
+          "caption_ar": "بي إم دبليو إكس 1 - مقصورة القيادة والشاشة المنحنية",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/x-series/x1/bmw-x1.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/u11-ice_interior_bmw-curved-display:3to2?fmt=webp-alpha&wid=1023&fit=constrain%2C1",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW X1 - Luxury Interior & Seating",
+          "caption_ar": "بي إم دبليو إكس 1 - المقاعد الجلدية والفرش الفاخر",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/x-series/x1/bmw-x1.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/global_tec-ani_selective-beam_dsk_fb-2?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_specs",
+          "caption": "BMW X1 - Engine & Performance Dynamics",
+          "caption_ar": "بي إم دبليو إكس 1 - الأداء وهندسة المحرك",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/x-series/x1/bmw-x1.html"
+        }
+      ],
+      "trims": [
+        {
+          "slug": "bmw-x1-sdrive18i-xline",
+          "name": "sDrive18i xLine",
+          "name_ar": "sDrive18i xLine",
+          "price_egp": 3200000,
+          "specs": {
+            "displacement_cc": 1499,
+            "power_hp": 156,
+            "torque_nm": "230 @ 1500–4600",
+            "transmission": "Steptronic ثنائي القابض 7 سرعات",
+            "fuel_type": "بنزين",
+            "acceleration_0_100_s": 9,
+            "top_speed_kmh": 215,
+            "fuel_tank_l": 54,
+            "trunk_capacity_l": 540,
+            "kerb_weight_kg": 1500,
+            "wheels": "19 بوصة V-spoke 867",
+            "seats": 5
+          }
+        },
+        {
+          "slug": "bmw-x1-sdrive18i-m-sport",
+          "name": "sDrive18i M Sport",
+          "name_ar": "sDrive18i M Sport",
+          "price_egp": 3500000,
+          "specs": {
+            "displacement_cc": 1499,
+            "power_hp": 156,
+            "torque_nm": "230 @ 1500–4600",
+            "transmission": "Steptronic ثنائي القابض 7 سرعات",
+            "fuel_type": "بنزين",
+            "acceleration_0_100_s": 9,
+            "top_speed_kmh": 215,
+            "fuel_tank_l": 54,
+            "trunk_capacity_l": 540,
+            "kerb_weight_kg": 1500,
+            "wheels": "19 بوصة M Double-spoke 871",
+            "seats": 5
+          }
+        }
+      ]
+    },
+    {
+      "slug": "bmw-x2",
+      "name": "X2",
+      "name_ar": "إكس 2",
+      "category": "SUV",
+      "year": 2026,
+      "brochure_url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/all-models/x-series/THE-X2-iX2-Brochure.pdf.asset.1714058021077.pdf",
+      "images": [
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/u10_ice_stage_dsk_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_1_identity",
+          "caption": "BMW X2 - Official Agency Stage View",
+          "caption_ar": "بي إم دبليو إكس 2 - الصورة الرسمية من الوكيل",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/x-series/x2/bmw-x2-overview.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/u10_ice_ext_led-headlights_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW X2 - Exterior Design & Styling",
+          "caption_ar": "بي إم دبليو إكس 2 - التصميم الخارجي والديناميكي",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/x-series/x2/bmw-x2-overview.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/u10_ice_ext_led-rear-lights_shfv?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW X2 - Alloy Wheels & Details",
+          "caption_ar": "بي إم دبليو إكس 2 - الجنوط الرياضية والتفاصيل الخارجية",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/x-series/x2/bmw-x2-overview.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/u10_ice_interior-design_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW X2 - Cockpit & Curved Display",
+          "caption_ar": "بي إم دبليو إكس 2 - مقصورة القيادة والشاشة المنحنية",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/x-series/x2/bmw-x2-overview.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/u10_ice_int_panorama-glass-roof_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW X2 - Luxury Interior & Seating",
+          "caption_ar": "بي إم دبليو إكس 2 - المقاعد الجلدية والفرش الفاخر",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/x-series/x2/bmw-x2-overview.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/u10_ice_driving-dynamics_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_specs",
+          "caption": "BMW X2 - Engine & Performance Dynamics",
+          "caption_ar": "بي إم دبليو إكس 2 - الأداء وهندسة المحرك",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/x-series/x2/bmw-x2-overview.html"
+        }
+      ],
+      "trims": [
+        {
+          "slug": "bmw-x2-sdrive18i-m-sport",
+          "name": "sDrive18i M Sport",
+          "name_ar": "sDrive18i M Sport",
+          "price_egp": 3600000,
+          "specs": {
+            "displacement_cc": 1499,
+            "power_hp": 156,
+            "torque_nm": "230 @ 1500–4600",
+            "transmission": "Steptronic ثنائي القابض 7 سرعات",
+            "fuel_type": "بنزين",
+            "acceleration_0_100_s": 9,
+            "top_speed_kmh": 213,
+            "fuel_tank_l": 45,
+            "trunk_capacity_l": 560,
+            "kerb_weight_kg": 1525,
+            "wheels": "19 بوصة M 871 أو 20 بوصة M 873",
+            "seats": 5
+          }
+        },
+        {
+          "slug": "bmw-x2-m35i-xdrive",
+          "name": "M35i xDrive",
+          "name_ar": "M35i xDrive",
+          "price_egp": null,
+          "specs": {
+            "displacement_cc": 1998,
+            "power_hp": 300,
+            "torque_nm": "400 @ 2000–4500",
+            "transmission": "غير متوفر",
+            "fuel_type": "بنزين",
+            "acceleration_0_100_s": 5.4,
+            "top_speed_kmh": 250,
+            "fuel_tank_l": 54,
+            "trunk_capacity_l": 560,
+            "kerb_weight_kg": 1695,
+            "wheels": "غير متوفر",
+            "seats": 5
+          }
+        }
+      ]
+    },
+    {
+      "slug": "bmw-x3",
+      "name": "X3",
+      "name_ar": "إكس 3",
+      "category": "SUV",
+      "year": 2026,
+      "brochure_url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/brochure-pool/Home/Models/x3/BMW_X3_Brochure.pdf.asset.1693561775509.pdf",
+      "images": [
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g45_ice_stage_dsk_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_1_identity",
+          "caption": "BMW X3 - Official Agency Stage View",
+          "caption_ar": "بي إم دبليو إكس 3 - الصورة الرسمية من الوكيل",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/x-series/x3/bmw-x3.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g45_ice_ext-design_kidney-iconic-glow_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW X3 - Exterior Design & Styling",
+          "caption_ar": "بي إم دبليو إكس 3 - التصميم الخارجي والديناميكي",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/x-series/x3/bmw-x3.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g45_ice_ext-design_m-light-alloy-wheels?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW X3 - Alloy Wheels & Details",
+          "caption_ar": "بي إم دبليو إكس 3 - الجنوط الرياضية والتفاصيل الخارجية",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/x-series/x3/bmw-x3.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g45_ice_interior_dsk_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW X3 - Cockpit & Curved Display",
+          "caption_ar": "بي إم دبليو إكس 3 - مقصورة القيادة والشاشة المنحنية",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/x-series/x3/bmw-x3.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g45_ice_int-design_sport-seats_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW X3 - Luxury Interior & Seating",
+          "caption_ar": "بي إم دبليو إكس 3 - المقاعد الجلدية والفرش الفاخر",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/x-series/x3/bmw-x3.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g45_ice_digital_intelligent-personal-assistant:3to2?fmt=webp-alpha&wid=767&fit=constrain%2C1",
+          "section_id": "sec_auto_specs",
+          "caption": "BMW X3 - Engine & Performance Dynamics",
+          "caption_ar": "بي إم دبليو إكس 3 - الأداء وهندسة المحرك",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/x-series/x3/bmw-x3.html"
+        }
+      ],
+      "trims": [
+        {
+          "slug": "bmw-x3-xdrive30i-xline-g01-2025",
+          "name": "xDrive30i xLine (الجيل الحالي G01 – بروشور 2025)",
+          "name_ar": "xDrive30i xLine (الجيل الحالي G01 – بروشور 2025)",
+          "price_egp": 4350000,
+          "specs": {
+            "displacement_cc": 1998,
+            "power_hp": 252,
+            "torque_nm": "350 @ 1450–4800",
+            "transmission": "Steptronic 8 سرعات",
+            "fuel_type": "بنزين",
+            "acceleration_0_100_s": 6.6,
+            "top_speed_kmh": 240,
+            "fuel_tank_l": 65,
+            "trunk_capacity_l": 550,
+            "kerb_weight_kg": 1810,
+            "wheels": "19 بوصة Y-spoke",
+            "seats": 5
+          }
+        },
+        {
+          "slug": "bmw-x3-30-xdrive-m-sport-2027",
+          "name": "30 xDrive M Sport (الجيل الجديد 2027)",
+          "name_ar": "30 xDrive M Sport (الجيل الجديد 2027)",
+          "price_egp": 5300000,
+          "specs": {
+            "torque_nm": "غير متوفر",
+            "transmission": "غير متوفر",
+            "fuel_type": "غير متوفر",
+            "trunk_capacity_l": 570,
+            "wheels": "غير متوفر",
+            "seats": 5
+          }
+        }
+      ]
+    },
+    {
+      "slug": "bmw-x5",
+      "name": "X5",
+      "name_ar": "إكس 5",
+      "category": "SUV",
+      "year": 2026,
+      "brochure_url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/brochure-pool/oct2024/The%20X5%20-%20MY2024.pdf.asset.1729094407795.pdf",
+      "images": [
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g05_exterior_video_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_1_identity",
+          "caption": "BMW X5 - Official Agency Stage View",
+          "caption_ar": "بي إم دبليو إكس 5 - الصورة الرسمية من الوكيل",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/x-series/x5/bmw-x5.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g05_spaciousness_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW X5 - Exterior Design & Styling",
+          "caption_ar": "بي إم دبليو إكس 5 - التصميم الخارجي والديناميكي",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/x-series/x5/bmw-x5.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/bmw-parking-assistant-professional-3-1?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW X5 - Alloy Wheels & Details",
+          "caption_ar": "بي إم دبليو إكس 5 - الجنوط الرياضية والتفاصيل الخارجية",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/x-series/x5/bmw-x5.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g05_interior_highlights_curveddisplay:3to2?fmt=webp-alpha&wid=767&fit=constrain%2C1",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW X5 - Cockpit & Curved Display",
+          "caption_ar": "بي إم دبليو إكس 5 - مقصورة القيادة والشاشة المنحنية",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/x-series/x5/bmw-x5.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g05_interior_highlights_curveddisplay:3to2?fmt=webp-alpha&wid=1023&fit=constrain%2C1",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW X5 - Luxury Interior & Seating",
+          "caption_ar": "بي إم دبليو إكس 5 - المقاعد الجلدية والفرش الفاخر",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/x-series/x5/bmw-x5.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/global_tec-ani_live-cockpit-pro_dsk_us-discl_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_specs",
+          "caption": "BMW X5 - Engine & Performance Dynamics",
+          "caption_ar": "بي إم دبليو إكس 5 - الأداء وهندسة المحرك",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/x-series/x5/bmw-x5.html"
+        }
+      ],
+      "trims": [
+        {
+          "slug": "bmw-x5-xdrive40i-xline-2024",
+          "name": "xDrive40i xLine (2024)",
+          "name_ar": "xDrive40i xLine (2024)",
+          "price_egp": 7300000,
+          "specs": {
+            "displacement_cc": 2998,
+            "power_hp": 381,
+            "torque_nm": "540",
+            "transmission": "غير متوفر",
+            "fuel_type": "بنزين",
+            "acceleration_0_100_s": 5.4,
+            "top_speed_kmh": 250,
+            "trunk_capacity_l": 650,
+            "wheels": "غير متوفر",
+            "seats": 5
+          }
+        },
+        {
+          "slug": "bmw-x5-m60i-xdrive",
+          "name": "M60i xDrive",
+          "name_ar": "M60i xDrive",
+          "price_egp": null,
+          "specs": {
+            "power_hp": 530,
+            "torque_nm": "750",
+            "transmission": "غير متوفر",
+            "fuel_type": "غير متوفر",
+            "acceleration_0_100_s": 4.3,
+            "top_speed_kmh": 250,
+            "trunk_capacity_l": 650,
+            "wheels": "غير متوفر",
+            "seats": 5
+          }
+        }
+      ]
+    },
+    {
+      "slug": "bmw-x6",
+      "name": "X6",
+      "name_ar": "إكس 6",
+      "category": "SUV",
+      "year": 2026,
+      "brochure_url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/brochure-pool/The_new_X6_Brochure.pdf.asset.1701147693683.pdf",
+      "images": [
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g06_stage:3to4?fmt=webp-alpha&wid=767&fit=constrain%2C1",
+          "section_id": "sec_1_identity",
+          "caption": "BMW X6 - Official Agency Stage View",
+          "caption_ar": "بي إم دبليو إكس 6 - الصورة الرسمية من الوكيل",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/x-series/x6/bmw-x6.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g06_exterior_22-inch-m-light-alloy-wheels:3to2?fmt=webp-alpha&wid=767&fit=constrain%2C1",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW X6 - Exterior Design & Styling",
+          "caption_ar": "بي إم دبليو إكس 6 - التصميم الخارجي والديناميكي",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/x-series/x6/bmw-x6.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g06_exterior_22-inch-m-light-alloy-wheels:3to2?fmt=webp-alpha&wid=1023&fit=constrain%2C1",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW X6 - Alloy Wheels & Details",
+          "caption_ar": "بي إم دبليو إكس 6 - الجنوط الرياضية والتفاصيل الخارجية",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/x-series/x6/bmw-x6.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g06_interior_highlight_fb-1?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW X6 - Cockpit & Curved Display",
+          "caption_ar": "بي إم دبليو إكس 6 - مقصورة القيادة والشاشة المنحنية",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/x-series/x6/bmw-x6.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g06_interior_m-leather-steering-wheel:3to2?fmt=webp-alpha&wid=767&fit=constrain%2C1",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW X6 - Luxury Interior & Seating",
+          "caption_ar": "بي إم دبليو إكس 6 - المقاعد الجلدية والفرش الفاخر",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/x-series/x6/bmw-x6.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/bmw-driving-assistant-professional-1-1?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_specs",
+          "caption": "BMW X6 - Engine & Performance Dynamics",
+          "caption_ar": "بي إم دبليو إكس 6 - الأداء وهندسة المحرك",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/x-series/x6/bmw-x6.html"
+        }
+      ],
+      "trims": [
+        {
+          "slug": "bmw-x6-xdrive40i",
+          "name": "xDrive40i",
+          "name_ar": "xDrive40i",
+          "price_egp": 7950000,
+          "specs": {
+            "torque_nm": "غير متوفر",
+            "transmission": "غير متوفر",
+            "fuel_type": "غير متوفر",
+            "wheels": "غير متوفر",
+            "seats": 5
+          }
+        },
+        {
+          "slug": "bmw-x6-m60i-xdrive",
+          "name": "M60i xDrive",
+          "name_ar": "M60i xDrive",
+          "price_egp": null,
+          "specs": {
+            "displacement_cc": 4395,
+            "power_hp": 530,
+            "torque_nm": "750 @ 1800–4600",
+            "transmission": "Sport Steptronic 8 سرعات",
+            "fuel_type": "بنزين (48 فولت مايلد هايبرد)",
+            "acceleration_0_100_s": 4.3,
+            "top_speed_kmh": 250,
+            "fuel_tank_l": 83,
+            "trunk_capacity_l": 580,
+            "kerb_weight_kg": 2315,
+            "wheels": "21 بوصة M Y-spoke 741",
+            "seats": 5
+          }
+        }
+      ]
+    },
+    {
+      "slug": "bmw-x7",
+      "name": "X7",
+      "name_ar": "إكس 7",
+      "category": "SUV",
+      "year": 2026,
+      "brochure_url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/brochure-pool/The-New-X7-2024-Brochure.pdf.asset.1695205436128.pdf",
+      "images": [
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g07_mpa_stage:3to4?fmt=webp-alpha&wid=767&fit=constrain%2C1",
+          "section_id": "sec_1_identity",
+          "caption": "BMW X7 - Official Agency Stage View",
+          "caption_ar": "بي إم دبليو إكس 7 - الصورة الرسمية من الوكيل",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/m-series/x7-m60i/bmw-x7-m60i.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g07_mpa_exterior_front:3to2?fmt=webp-alpha&wid=767&fit=constrain%2C1",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW X7 - Exterior Design & Styling",
+          "caption_ar": "بي إم دبليو إكس 7 - التصميم الخارجي والديناميكي",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/m-series/x7-m60i/bmw-x7-m60i.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g07_mpa_exterior_front:3to2?fmt=webp-alpha&wid=1023&fit=constrain%2C1",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW X7 - Alloy Wheels & Details",
+          "caption_ar": "بي إم دبليو إكس 7 - الجنوط الرياضية والتفاصيل الخارجية",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/m-series/x7-m60i/bmw-x7-m60i.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g07_mpa_interieur_steeringwheel:3to2?fmt=webp-alpha&wid=767&fit=constrain%2C1",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW X7 - Cockpit & Curved Display",
+          "caption_ar": "بي إم دبليو إكس 7 - مقصورة القيادة والشاشة المنحنية",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/m-series/x7-m60i/bmw-x7-m60i.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g07_mpa_interieur_steeringwheel:3to2?fmt=webp-alpha&wid=1023&fit=constrain%2C1",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW X7 - Luxury Interior & Seating",
+          "caption_ar": "بي إم دبليو إكس 7 - المقاعد الجلدية والفرش الفاخر",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/m-series/x7-m60i/bmw-x7-m60i.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/bmw-parking-assistant-professional-3-1-1?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_specs",
+          "caption": "BMW X7 - Engine & Performance Dynamics",
+          "caption_ar": "بي إم دبليو إكس 7 - الأداء وهندسة المحرك",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/m-series/x7-m60i/bmw-x7-m60i.html"
+        }
+      ],
+      "trims": [
+        {
+          "slug": "bmw-x7-m60i-xdrive",
+          "name": "M60i xDrive",
+          "name_ar": "M60i xDrive",
+          "price_egp": null,
+          "specs": {
+            "displacement_cc": 4395,
+            "power_hp": 530,
+            "torque_nm": "750 @ 1800–4600",
+            "transmission": "غير متوفر",
+            "fuel_type": "بنزين",
+            "acceleration_0_100_s": 4.7,
+            "top_speed_kmh": 250,
+            "fuel_tank_l": 83,
+            "trunk_capacity_l": 750,
+            "kerb_weight_kg": 2600,
+            "wheels": "غير متوفر",
+            "seats": 6
+          }
+        }
+      ]
+    },
+    {
+      "slug": "bmw-i4",
+      "name": "i4 Gran Coupe",
+      "name_ar": "آي 4 جران كوبيه",
+      "category": "Coupe",
+      "year": 2026,
+      "brochure_url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/brochure-pool/august2024/The_New_4_Series_Brochure_August2024.pdf.asset.1723800538554.pdf",
+      "images": [
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g26_bev_stage_dsk_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_1_identity",
+          "caption": "BMW i4 Gran Coupe - Official Agency Stage View",
+          "caption_ar": "بي إم دبليو آي 4 جران كوبيه - الصورة الرسمية من الوكيل",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/bmw-i-series/i4/bmw-i4-gran-coupe.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g26_bev_rear-lights_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW i4 Gran Coupe - Exterior Design & Styling",
+          "caption_ar": "بي إم دبليو آي 4 جران كوبيه - التصميم الخارجي والديناميكي",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/bmw-i-series/i4/bmw-i4-gran-coupe.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g26_bev_new-kidney_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW i4 Gran Coupe - Alloy Wheels & Details",
+          "caption_ar": "بي إم دبليو آي 4 جران كوبيه - الجنوط الرياضية والتفاصيل الخارجية",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/bmw-i-series/i4/bmw-i4-gran-coupe.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g26_bev_instrument-panel-luxury_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW i4 Gran Coupe - Cockpit & Curved Display",
+          "caption_ar": "بي إم دبليو آي 4 جران كوبيه - مقصورة القيادة والشاشة المنحنية",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/bmw-i-series/i4/bmw-i4-gran-coupe.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g26_bev_new-steering-wheel-design-1:3to2?fmt=webp-alpha&wid=767&fit=constrain%2C1",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW i4 Gran Coupe - Luxury Interior & Seating",
+          "caption_ar": "بي إم دبليو آي 4 جران كوبيه - المقاعد الجلدية والفرش الفاخر",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/bmw-i-series/i4/bmw-i4-gran-coupe.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/global_tec-ani_selective-beam_dsk_fb-1?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_specs",
+          "caption": "BMW i4 Gran Coupe - Engine & Performance Dynamics",
+          "caption_ar": "بي إم دبليو آي 4 جران كوبيه - الأداء وهندسة المحرك",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/bmw-i-series/i4/bmw-i4-gran-coupe.html"
+        }
+      ],
+      "trims": [
+        {
+          "slug": "bmw-i4-edrive40-gran-coupe-m-sport",
+          "name": "eDrive40 Gran Coupe M Sport",
+          "name_ar": "eDrive40 Gran Coupe M Sport",
+          "price_egp": null,
+          "specs": {
+            "power_hp": 340,
+            "torque_nm": "430",
+            "transmission": "محرك كهربائي على المحور الخلفي",
+            "fuel_type": "كهربائي",
+            "acceleration_0_100_s": 5.6,
+            "top_speed_kmh": 190,
+            "trunk_capacity_l": 470,
+            "kerb_weight_kg": 2050,
+            "wheels": "18 بوصة M 858",
+            "seats": 5
+          }
+        }
+      ]
+    },
+    {
+      "slug": "bmw-i5",
+      "name": "i5 Sedan",
+      "name_ar": "آي 5 سيدان",
+      "category": "Sedan",
+      "year": 2026,
+      "brochure_url": "https://www.bmw-egypt.com/en/all-models/bmw-i/i5/bmw-i5-overview.html",
+      "images": [
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g60_bev_stage_ext-loop_dsk_fb_de?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_1_identity",
+          "caption": "BMW i5 Sedan - Official Agency Stage View",
+          "caption_ar": "بي إم دبليو آي 5 سيدان - الصورة الرسمية من الوكيل",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/bmw-i/i5/bmw-i5-overview.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g60_bev_ext-design-highlights_1_illuminated-kidney_dsk_fb-2_de?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW i5 Sedan - Exterior Design & Styling",
+          "caption_ar": "بي إم دبليو آي 5 سيدان - التصميم الخارجي والديناميكي",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/bmw-i/i5/bmw-i5-overview.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g60_bev_sustainability_dsk_fb_en?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW i5 Sedan - Alloy Wheels & Details",
+          "caption_ar": "بي إم دبليو آي 5 سيدان - الجنوط الرياضية والتفاصيل الخارجية",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/bmw-i/i5/bmw-i5-overview.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g60-bev-light-carpet-ext-dsk-fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW i5 Sedan - Cockpit & Curved Display",
+          "caption_ar": "بي إم دبليو آي 5 سيدان - مقصورة القيادة والشاشة المنحنية",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/bmw-i/i5/bmw-i5-overview.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g60-bev-panorama-skyroof-ext-dsk-fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW i5 Sedan - Luxury Interior & Seating",
+          "caption_ar": "بي إم دبليو آي 5 سيدان - المقاعد الجلدية والفرش الفاخر",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/bmw-i/i5/bmw-i5-overview.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/bmw-maneuvre-assistant-3-1?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_specs",
+          "caption": "BMW i5 Sedan - Engine & Performance Dynamics",
+          "caption_ar": "بي إم دبليو آي 5 سيدان - الأداء وهندسة المحرك",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/bmw-i/i5/bmw-i5-overview.html"
+        }
+      ],
+      "trims": [
+        {
+          "slug": "bmw-i5-edrive40-m-sport",
+          "name": "eDrive40 M Sport",
+          "name_ar": "eDrive40 M Sport",
+          "price_egp": 6250000,
+          "specs": {
+            "power_hp": 340,
+            "torque_nm": "400",
+            "transmission": "غير متوفر",
+            "fuel_type": "كهربائي",
+            "acceleration_0_100_s": 6,
+            "top_speed_kmh": 193,
+            "wheels": "غير متوفر",
+            "seats": 5
+          }
+        }
+      ]
+    },
+    {
+      "slug": "bmw-i7",
+      "name": "i7 Luxury Sedan",
+      "name_ar": "آي 7 سيدان فاخرة",
+      "category": "Sedan",
+      "year": 2026,
+      "brochure_url": "https://www.bmw-egypt.com/en/all-models/bmw-i/i5/bmw-i5-overview.html",
+      "images": [
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g70-bev_stage:3to4?fmt=webp-alpha&wid=767&fit=constrain%2C1",
+          "section_id": "sec_1_identity",
+          "caption": "BMW i7 Luxury Sedan - Official Agency Stage View",
+          "caption_ar": "بي إم دبليو آي 7 سيدان فاخرة - الصورة الرسمية من الوكيل",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/i-series/i7/i7-2025-g70bev.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g70-bev_exterior_highlight_side-view:3to2?fmt=webp-alpha&wid=767&fit=constrain%2C1",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW i7 Luxury Sedan - Exterior Design & Styling",
+          "caption_ar": "بي إم دبليو آي 7 سيدان فاخرة - التصميم الخارجي والديناميكي",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/i-series/i7/i7-2025-g70bev.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g70-bev_exterior_highlight_side-view:3to2?fmt=webp-alpha&wid=1023&fit=constrain%2C1",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW i7 Luxury Sedan - Alloy Wheels & Details",
+          "caption_ar": "بي إم دبليو آي 7 سيدان فاخرة - الجنوط الرياضية والتفاصيل الخارجية",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/i-series/i7/i7-2025-g70bev.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g70-bev_interior-design_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW i7 Luxury Sedan - Cockpit & Curved Display",
+          "caption_ar": "بي إم دبليو آي 7 سيدان فاخرة - مقصورة القيادة والشاشة المنحنية",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/i-series/i7/i7-2025-g70bev.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g70-bev_interior_fond-entertainment:3to2?fmt=webp-alpha&wid=767&fit=constrain%2C1",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW i7 Luxury Sedan - Luxury Interior & Seating",
+          "caption_ar": "بي إم دبليو آي 7 سيدان فاخرة - المقاعد الجلدية والفرش الفاخر",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/i-series/i7/i7-2025-g70bev.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/g70-bev_digital_my-modes-iconic-sounds:3to2?fmt=webp-alpha&wid=767&fit=constrain%2C1",
+          "section_id": "sec_auto_specs",
+          "caption": "BMW i7 Luxury Sedan - Engine & Performance Dynamics",
+          "caption_ar": "بي إم دبليو آي 7 سيدان فاخرة - الأداء وهندسة المحرك",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/i-series/i7/i7-2025-g70bev.html"
+        }
+      ],
+      "trims": [
+        {
+          "slug": "bmw-i7-xdrive60",
+          "name": "xDrive60",
+          "name_ar": "xDrive60",
+          "price_egp": 11000000,
+          "specs": {
+            "power_hp": 544,
+            "torque_nm": "غير متوفر",
+            "transmission": "غير متوفر",
+            "fuel_type": "كهربائي",
+            "acceleration_0_100_s": 4.7,
+            "top_speed_kmh": 240,
+            "wheels": "غير متوفر",
+            "seats": 5
+          }
+        }
+      ]
+    },
+    {
+      "slug": "bmw-ix1",
+      "name": "iX1",
+      "name_ar": "آي إكس 1",
+      "category": "SUV",
+      "year": 2026,
+      "brochure_url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/brochure-pool/jan-2026/X1%20Brochure%20Brochure%202025.pdf",
+      "images": [
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/u11-bev_stage_dsk_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_1_identity",
+          "caption": "BMW iX1 - Official Agency Stage View",
+          "caption_ar": "بي إم دبليو آي إكس 1 - الصورة الرسمية من الوكيل",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/bmw-i-series/ix1/bmw-ix1.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/u11-bev_interior_curved-display_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW iX1 - Exterior Design & Styling",
+          "caption_ar": "بي إم دبليو آي إكس 1 - التصميم الخارجي والديناميكي",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/bmw-i-series/ix1/bmw-ix1.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/u11-bev_stage1:2to3?fmt=webp-alpha&wid=767&fit=constrain%2C1",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW iX1 - Alloy Wheels & Details",
+          "caption_ar": "بي إم دبليو آي إكس 1 - الجنوط الرياضية والتفاصيل الخارجية",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/bmw-i-series/ix1/bmw-ix1.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/u11-bev_interior_centre-console:3to2?fmt=webp-alpha&wid=767&fit=constrain%2C1",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW iX1 - Cockpit & Curved Display",
+          "caption_ar": "بي إم دبليو آي إكس 1 - مقصورة القيادة والشاشة المنحنية",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/bmw-i-series/ix1/bmw-ix1.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/u11-bev_interior_centre-console:3to2?fmt=webp-alpha&wid=1023&fit=constrain%2C1",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW iX1 - Luxury Interior & Seating",
+          "caption_ar": "بي إم دبليو آي إكس 1 - المقاعد الجلدية والفرش الفاخر",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/bmw-i-series/ix1/bmw-ix1.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/global_tec-ani_selective-beam_mob_fb-2?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_specs",
+          "caption": "BMW iX1 - Engine & Performance Dynamics",
+          "caption_ar": "بي إم دبليو آي إكس 1 - الأداء وهندسة المحرك",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/bmw-i-series/ix1/bmw-ix1.html"
+        }
+      ],
+      "trims": [
+        {
+          "slug": "bmw-ix1-edrive20-m-sport",
+          "name": "eDrive20 M Sport",
+          "name_ar": "eDrive20 M Sport",
+          "price_egp": 3800000,
+          "specs": {
+            "power_hp": 204,
+            "torque_nm": "250",
+            "transmission": "محرك كهربائي على المحور الأمامي",
+            "fuel_type": "كهربائي",
+            "acceleration_0_100_s": 8.6,
+            "top_speed_kmh": 170,
+            "trunk_capacity_l": 490,
+            "kerb_weight_kg": 1865,
+            "wheels": "19 بوصة M Double-spoke 871",
+            "seats": 5
+          }
+        }
+      ]
+    },
+    {
+      "slug": "bmw-ix2",
+      "name": "iX2",
+      "name_ar": "آي إكس 2",
+      "category": "SUV",
+      "year": 2026,
+      "brochure_url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/all-models/x-series/THE-X2-iX2-Brochure.pdf.asset.1714058021077.pdf",
+      "images": [
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/u10_bev_stage_dsk_sl-2?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_1_identity",
+          "caption": "BMW iX2 - Official Agency Stage View",
+          "caption_ar": "بي إم دبليو آي إكس 2 - الصورة الرسمية من الوكيل",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/bmw-i-series/ix2/bmw-ix2.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/u10_bev_ext_m-sport-package_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW iX2 - Exterior Design & Styling",
+          "caption_ar": "بي إم دبليو آي إكس 2 - التصميم الخارجي والديناميكي",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/bmw-i-series/ix2/bmw-ix2.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/u10_bev_ext_light-alloy-wheels_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW iX2 - Alloy Wheels & Details",
+          "caption_ar": "بي إم دبليو آي إكس 2 - الجنوط الرياضية والتفاصيل الخارجية",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/bmw-i-series/ix2/bmw-ix2.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/u10_bev_interior-design_fb?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW iX2 - Cockpit & Curved Display",
+          "caption_ar": "بي إم دبليو آي إكس 2 - مقصورة القيادة والشاشة المنحنية",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/bmw-i-series/ix2/bmw-ix2.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/u10_bev_int_panorama-glass-roof_fb-1?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW iX2 - Luxury Interior & Seating",
+          "caption_ar": "بي إم دبليو آي إكس 2 - المقاعد الجلدية والفرش الفاخر",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/bmw-i-series/ix2/bmw-ix2.html"
+        },
+        {
+          "url": "https://bmw.scene7.com/is/image/BMW/global_tec-ani_selective-beam_dsk_ta-2?qlt=80&wid=1024&fmt=webp",
+          "section_id": "sec_auto_specs",
+          "caption": "BMW iX2 - Engine & Performance Dynamics",
+          "caption_ar": "بي إم دبليو آي إكس 2 - الأداء وهندسة المحرك",
+          "source_url": "https://www.bmw-egypt.com/en/all-models/bmw-i-series/ix2/bmw-ix2.html"
+        }
+      ],
+      "trims": [
+        {
+          "slug": "bmw-ix2-edrive20-m-sport",
+          "name": "eDrive20 M Sport",
+          "name_ar": "eDrive20 M Sport",
+          "price_egp": null,
+          "specs": {
+            "power_hp": 204,
+            "torque_nm": "250",
+            "transmission": "محرك كهربائي على المحور الأمامي",
+            "fuel_type": "كهربائي",
+            "acceleration_0_100_s": 8.6,
+            "top_speed_kmh": 170,
+            "trunk_capacity_l": 525,
+            "kerb_weight_kg": 1885,
+            "wheels": "19 بوصة M 871 أو 20 بوصة M 873",
+            "seats": 5
+          }
+        }
+      ]
+    },
+    {
+      "slug": "bmw-ix",
+      "name": "iX",
+      "name_ar": "آي إكس",
+      "category": "SUV",
+      "year": 2026,
+      "brochure_url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/brochure-pool/jan-2026/X1%20Brochure%20Brochure%202025.pdf",
+      "images": [
+        {
+          "url": "https://images.netdirector.co.uk/gforces-auto/image/upload/q_auto,c_fill,f_auto,fl_lossy,w_360,h_270/auto-client/6c1b54502dc954151207081443f9bc27/2023_06_21_bmw_mena_ix_banner_english_mobile.jpg",
+          "section_id": "sec_1_identity",
+          "caption": "BMW iX - Official Agency Stage View",
+          "caption_ar": "بي إم دبليو آي إكس - الصورة الرسمية من الوكيل",
+          "source_url": "https://www.bmw-saudiarabia.com/models/theix/"
+        },
+        {
+          "url": "https://images.netdirector.co.uk/gforces-auto/image/upload/q_auto,c_fill,f_auto,fl_lossy,w_480,h_360/auto-client/6c1b54502dc954151207081443f9bc27/2023_06_21_bmw_mena_ix_banner_english_mobile.jpg",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW iX - Exterior Design & Styling",
+          "caption_ar": "بي إم دبليو آي إكس - التصميم الخارجي والديناميكي",
+          "source_url": "https://www.bmw-saudiarabia.com/models/theix/"
+        },
+        {
+          "url": "https://images.netdirector.co.uk/gforces-auto/image/upload/q_auto,c_fill,f_auto,fl_lossy,w_720,h_540/auto-client/6c1b54502dc954151207081443f9bc27/2023_06_21_bmw_mena_ix_banner_english_mobile.jpg",
+          "section_id": "sec_auto_exterior",
+          "caption": "BMW iX - Alloy Wheels & Details",
+          "caption_ar": "بي إم دبليو آي إكس - الجنوط الرياضية والتفاصيل الخارجية",
+          "source_url": "https://www.bmw-saudiarabia.com/models/theix/"
+        },
+        {
+          "url": "https://images.netdirector.co.uk/gforces-auto/image/upload/q_auto,c_fill,f_auto,fl_lossy/auto-client/418e0c8556bd4ced6646ce78efcc845f/interior_1_.jpg",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW iX - Cockpit & Curved Display",
+          "caption_ar": "بي إم دبليو آي إكس - مقصورة القيادة والشاشة المنحنية",
+          "source_url": "https://www.bmw-saudiarabia.com/models/theix/"
+        },
+        {
+          "url": "https://images.netdirector.co.uk/gforces-auto/image/upload/q_auto,c_fill,f_auto,fl_lossy,w_767,h_575/auto-client/6c1b54502dc954151207081443f9bc27/2023_06_21_bmw_mena_ix_banner_english_mobile.jpg",
+          "section_id": "sec_auto_interior",
+          "caption": "BMW iX - Luxury Interior & Seating",
+          "caption_ar": "بي إم دبليو آي إكس - المقاعد الجلدية والفرش الفاخر",
+          "source_url": "https://www.bmw-saudiarabia.com/models/theix/"
+        },
+        {
+          "url": "https://images.netdirector.co.uk/gforces-auto/image/upload/q_auto,c_fill,f_auto,fl_lossy,w_800,h_364/auto-client/1429992d12c297ac33838aff2988a222/2023_06_21_bmw_mena_ix_banner_english_desktop.jpg",
+          "section_id": "sec_auto_specs",
+          "caption": "BMW iX - Engine & Performance Dynamics",
+          "caption_ar": "بي إم دبليو آي إكس - الأداء وهندسة المحرك",
+          "source_url": "https://www.bmw-saudiarabia.com/models/theix/"
+        }
+      ],
+      "trims": [
+        {
+          "slug": "bmw-ix-xdrive50",
+          "name": "xDrive50",
+          "name_ar": "xDrive50",
+          "price_egp": 7550000,
+          "specs": {
+            "torque_nm": "غير متوفر",
+            "transmission": "غير متوفر",
+            "fuel_type": "غير متوفر",
+            "wheels": "غير متوفر",
+            "seats": 5
+          }
+        }
+      ]
+    }
+  ]
+}

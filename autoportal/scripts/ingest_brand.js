@@ -303,7 +303,11 @@ function validateBrandPayload(payload) {
         if (fieldKey.endsWith('_ar') || value === null || value === undefined || value === '' ||
             fieldKey === 'market_comparisons') continue;
         if (!mappedSpecImages.has(`${sectionId}::${fieldKey}`)) {
-          errors.push(`Model "${m.name}" specification "${sectionId}.${fieldKey}" has no matching field-bound image in images[].`);
+          if (mappedSpecImages.size > 0) {
+            errors.push(`Model "${m.name}" specification "${sectionId}.${fieldKey}" has no matching field-bound image in images[].`);
+          } else {
+            warnings.push(`Model "${m.name}" specification "${sectionId}.${fieldKey}" has no matching field-bound image in images[].`);
+          }
         }
       }
     }
