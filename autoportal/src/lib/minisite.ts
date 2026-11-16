@@ -59,6 +59,8 @@ export interface CarouselDefaults {
   contentAlign?: 'start' | 'center' | 'end';
   titleSize?: number;
   subtitleSize?: number;
+  /** Multiple visual carousel styles configurable by admin */
+  carouselType?: 'cinematic' | 'modern_split' | 'card_stage' | 'filmstrip' | 'fade_minimal';
 }
 export interface RelationshipSpec {
   relation: string;      // 'children' (tree) or a RELATION_TYPES key (graph)
@@ -176,6 +178,10 @@ export type SlideMedia = {
   targetSectionId?: string | null;
   /** Seconds a video pane plays before it stops; the source's teaser gate. */
   maxDuration?: number;
+  /** Start time in seconds (e.g. 15s) to clip highlight. */
+  startTime?: number;
+  /** End time in seconds (e.g. 45s) to clip highlight. */
+  endTime?: number;
   /** Hide the slide's caption without hiding its headline or approved blocks. */
   showCaption?: boolean;
   watermark?: string | null;
@@ -654,6 +660,8 @@ function readStage(raw: string | null): SlideStage {
   if (overlay !== undefined && Number.isFinite(overlay)) stage.overlayOpacity = Math.min(1, Math.max(0, overlay));
   const transition = positive(o.transition); if (transition) stage.transition = transition;
   const maxDuration = positive(o.maxDuration); if (maxDuration) stage.maxDuration = maxDuration;
+  const startTime = positive(o.startTime ?? o.start ?? o.start_seconds); if (startTime !== undefined) stage.startTime = startTime;
+  const endTime = positive(o.endTime ?? o.end ?? o.end_seconds); if (endTime !== undefined) stage.endTime = endTime;
   const titleSize = positive(o.titleSize); if (titleSize) stage.titleSize = titleSize;
   const subtitleSize = positive(o.subtitleSize); if (subtitleSize) stage.subtitleSize = subtitleSize;
   const color = phrase(o.titleColor); if (color && /^(#[0-9a-f]{3,8}|[a-z]+)$/i.test(color)) stage.titleColor = color;

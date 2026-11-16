@@ -21,7 +21,6 @@ import {
   type CustomSiteProfile, type SiteProfile,
 } from '@/lib/site-builder';
 import { loadSocialLinks } from '@/lib/social-links';
-import type { SocialLink } from '@/lib/social-link-types';
 import {
   sanitizeSlideBlocks, extractClaimedFieldKeys, humanizeStoredKey, stringifyFieldValue,
   isPrintable, STORED_KEY_SKIP, maybeFormatPriceField,
@@ -61,13 +60,8 @@ export interface CarouselDefaults {
   contentAlign?: 'start' | 'center' | 'end';
   titleSize?: number;
   subtitleSize?: number;
-  titleColor?: string;
-  subtitleColor?: string;
-  fontFamily?: string;
-  bgColor?: string;
-  overlayOpacity?: number;
-  imageFit?: 'cover' | 'contain';
-  imagePosition?: 'center' | 'top' | 'bottom';
+  /** Multiple visual carousel styles configurable by admin */
+  carouselType?: 'cinematic' | 'modern_split' | 'card_stage' | 'filmstrip' | 'fade_minimal';
 }
 export interface RelationshipSpec {
   relation: string;      // 'children' (tree) or a RELATION_TYPES key (graph)
@@ -97,6 +91,42 @@ export interface FieldGroupView {
   label: string;
   label_ar: string | null;
   fields: FieldView[];
+}
+export interface VehicleMarketComparison {
+  id: string;
+  attribute: string;
+  attributeAr: string | null;
+  egyptTrim: string | null;
+  egyptValue: string;
+  egyptUnit: string | null;
+  egyptSourceId: string | null;
+  egyptSourceUrl: string | null;
+  gccCountry: string;
+  gccModelName: string | null;
+  gccTrim: string | null;
+  gccModelYear: string | null;
+  gccGenerationOrPowertrain: string | null;
+  gccValue: string;
+  gccUnit: string | null;
+  gccSourceId: string | null;
+  gccSourceUrl: string | null;
+  comparability: string | null;
+  differenceSummary: string | null;
+  confidence: string | null;
+}
+export interface ModelServiceProvider {
+  id: string;
+  slug: string;
+  name: string;
+  name_ar: string | null;
+  type_id: string;
+}
+export interface ModelServiceCategory {
+  id: 'showrooms' | 'finance' | 'insurance' | 'maintenance' | 'spare_parts' | 'accessories';
+  sectionId: string;
+  label: string;
+  label_ar: string;
+  providers: ModelServiceProvider[];
 }
 export interface GalleryItem {
   id: string;
@@ -149,17 +179,19 @@ export type SlideMedia = {
   targetSectionId?: string | null;
   /** Seconds a video pane plays before it stops; the source's teaser gate. */
   maxDuration?: number;
+  /** Start time in seconds (e.g. 15s) to clip highlight. */
+  startTime?: number;
+  /** End time in seconds (e.g. 45s) to clip highlight. */
+  endTime?: number;
   /** Hide the slide's caption without hiding its headline or approved blocks. */
   showCaption?: boolean;
   watermark?: string | null;
   titleColor?: string;
   titleSize?: number;
-  subtitleSize?: number;
   subtitleColor?: string;
+  subtitleSize?: number;
   textAlign?: 'start' | 'center' | 'end';
   fontFamily?: string;
-  /** Per-slide defaults, authored on the hero row for the whole carousel. */
-  carouselDefaults?: CarouselDefaults;
   /** Placed content layer, admin-approved before it prints. */
   blocks?: SlideBlock[];
   /** Interactive trivia / quiz question on the slide */
@@ -203,6 +235,7 @@ export interface BlogEntry { id: string; title: string; content: string; }
 export interface ActiveSectionView {
   section: Section;
   groups: FieldGroupView[];
+  marketComparisons: VehicleMarketComparison[];
   gallery: GalleryItem[];
   slides: Slide[];
   shelves: GraphShelf[];
@@ -224,11 +257,15 @@ export interface MinisiteView {
     id: string; slug: string; name: string; name_ar: string | null;
     type_id: string; typeName: string; typeName_ar: string | null;
     identity: Record<string, unknown>;
+    brandLogoUrl: string | null;
     /** Authored `sec_auto_showroom` answers: address, phone, hours. */
     contact: Record<string, unknown>;
-    socialLinks: SocialLink[];
+    /** Social platform links configured by the vendor. */
+    socialLinks: import('@/lib/social-link-types').SocialLink[];
   };
   sections: Section[];
+  /** Verified provider links attached to this model by typed graph relationships. */
+  modelServices: ModelServiceCategory[];
   /** Every authored section's current values, used by full model-page layouts. */
   specifications: Array<{ section: Section; groups: FieldGroupView[] }>;
   active: ActiveSectionView | null;
@@ -270,6 +307,64 @@ function displayValue(raw: unknown, type: string, locale: SiteLocale, arKeyHint?
   if (locale === 'ar' && /[A-Za-z]/.test(text) && !/[\u0600-\u06FF]/.test(text)) return null;
   if (locale === 'en' && /[\u0600-\u06FF]/.test(text)) return null;
   return text;
+}
+
+function comparisonText(value: unknown): string | null {
+  if (typeof value === 'string') return value.trim() ? value.trim().slice(0, 500) : null;
+  if (typeof value === 'number' && Number.isFinite(value)) return String(value);
+  if (typeof value === 'boolean') return value ? 'true' : 'false';
+  return null;
+}
+
+function comparisonUrl(value: unknown): string | null {
+  if (typeof value !== 'string') return null;
+  try {
+    const url = new URL(value);
+    return url.protocol === 'https:' || url.protocol === 'http:' ? url.toString() : null;
+  } catch {
+    return null;
+  }
+}
+
+function readApprovedMarketComparisons(raw: unknown): VehicleMarketComparison[] {
+  if (!Array.isArray(raw)) return [];
+  return raw.flatMap((item, index) => {
+    if (!item || typeof item !== 'object' || Array.isArray(item)) return [];
+    const row = item as Record<string, unknown>;
+    if (typeof row.review_status !== 'string' || row.review_status.toUpperCase() !== 'APPROVED') return [];
+    const egyptValue = comparisonText(row.egypt_value);
+    const gccValue = comparisonText(row.gcc_value);
+    const gccCountry = comparisonText(row.gcc_country);
+    const attribute = comparisonText(row.attribute_en ?? row.attribute_or_field_key ?? row.attribute);
+    const egyptSourceId = comparisonText(row.egypt_source_id);
+    const egyptSourceUrl = comparisonUrl(row.egypt_source_url);
+    const gccSourceId = comparisonText(row.gcc_source_id);
+    const gccSourceUrl = comparisonUrl(row.gcc_source_url);
+    if (!egyptValue || !gccValue || !gccCountry || !attribute ||
+        !egyptSourceId || !egyptSourceUrl || !gccSourceId || !gccSourceUrl) return [];
+    return [{
+      id: `market-comparison-${index}`,
+      attribute,
+      attributeAr: comparisonText(row.attribute_ar),
+      egyptTrim: comparisonText(row.egypt_trim_name),
+      egyptValue,
+      egyptUnit: comparisonText(row.egypt_unit),
+      egyptSourceId,
+      egyptSourceUrl,
+      gccCountry,
+      gccModelName: comparisonText(row.gcc_model_name),
+      gccTrim: comparisonText(row.gcc_trim_name),
+      gccModelYear: comparisonText(row.gcc_model_year),
+      gccGenerationOrPowertrain: comparisonText(row.gcc_generation_or_powertrain),
+      gccValue,
+      gccUnit: comparisonText(row.gcc_unit),
+      gccSourceId,
+      gccSourceUrl,
+      comparability: comparisonText(row.comparability),
+      differenceSummary: comparisonText(row.difference_summary),
+      confidence: comparisonText(row.confidence),
+    }];
+  });
 }
 
 // ── section resolution down the kind chain ───────────────────────────────────
@@ -569,16 +664,13 @@ function readStage(raw: string | null): SlideStage {
   if (overlay !== undefined && Number.isFinite(overlay)) stage.overlayOpacity = Math.min(1, Math.max(0, overlay));
   const transition = positive(o.transition); if (transition) stage.transition = transition;
   const maxDuration = positive(o.maxDuration); if (maxDuration) stage.maxDuration = maxDuration;
-  const titleSize = positive(o.titleSize); if (titleSize) stage.titleSize = Math.min(96, Math.max(16, titleSize));
-  const subtitleSize = positive(o.subtitleSize); if (subtitleSize) stage.subtitleSize = Math.min(48, Math.max(12, subtitleSize));
-  const color = phrase(o.titleColor); if (color && /^#[0-9a-f]{3,8}$/i.test(color)) stage.titleColor = color;
-  const bg = phrase(o.bgColor); if (bg && /^#[0-9a-f]{3,8}$/i.test(bg)) stage.bgColor = bg;
-  const font = pickIn(o.fontFamily, HERO_FONTS); if (font) stage.fontFamily = font;
-  const subtitleColor = phrase(o.subtitleColor);
-  if (subtitleColor && /^#[0-9a-f]{3,8}$/i.test(subtitleColor)) stage.subtitleColor = subtitleColor;
-  const titleAlign = pickIn(o.textAlign, ALIGNS); if (titleAlign) stage.textAlign = titleAlign;
-  const carousel = parseCarouselDefaults(o.carouselDefaults);
-  if (carousel) stage.carouselDefaults = carousel;
+  const startTime = positive(o.startTime ?? o.start ?? o.start_seconds); if (startTime !== undefined) stage.startTime = startTime;
+  const endTime = positive(o.endTime ?? o.end ?? o.end_seconds); if (endTime !== undefined) stage.endTime = endTime;
+  const titleSize = positive(o.titleSize); if (titleSize) stage.titleSize = titleSize;
+  const subtitleSize = positive(o.subtitleSize); if (subtitleSize) stage.subtitleSize = subtitleSize;
+  const color = phrase(o.titleColor); if (color && /^(#[0-9a-f]{3,8}|[a-z]+)$/i.test(color)) stage.titleColor = color;
+  const bg = phrase(o.bgColor); if (bg && /^(#[0-9a-f]{3,8}|[a-z]+)$/i.test(bg)) stage.bgColor = bg;
+  const font = phrase(o.fontFamily); if (font) stage.fontFamily = font;
   const watermark = phrase(o.watermark); if (watermark) stage.watermark = watermark;
   const ctaText = phrase(o.ctaText); if (ctaText) stage.ctaText = ctaText;
   if (o.showCaption === false) stage.showCaption = false;
@@ -596,44 +688,6 @@ function readStage(raw: string | null): SlideStage {
   const blocks = sanitizeSlideBlocks(o.blocks, { trusted: true });
   if (blocks.length) stage.blocks = blocks;
   return stage;
-}
-
-const HERO_ASPECTS = ['21 / 9', '16 / 9', '4 / 3', '4 / 5', '1 / 1'] as const;
-const HERO_FONTS = ['Arial', 'Georgia', 'Tahoma', 'Trebuchet MS', 'Verdana', 'system-ui', 'serif', 'sans-serif'] as const;
-
-function parseCarouselDefaults(value: unknown): CarouselDefaults | undefined {
-  if (typeof value !== 'object' || value === null || Array.isArray(value)) return undefined;
-  const raw = value as Record<string, unknown>;
-  const settings: CarouselDefaults = {};
-  const bounded = (key: string, min: number, max: number): number | undefined =>
-    typeof raw[key] === 'number' && Number.isFinite(raw[key])
-      ? Math.min(max, Math.max(min, raw[key] as number))
-      : undefined;
-  const color = (key: string): string | undefined =>
-    typeof raw[key] === 'string' && /^#[0-9a-f]{3,8}$/i.test(raw[key] as string)
-      ? raw[key] as string
-      : undefined;
-
-  if (typeof raw.autoPlay === 'boolean') settings.autoPlay = raw.autoPlay;
-  if (typeof raw.showArrows === 'boolean') settings.showArrows = raw.showArrows;
-  if (typeof raw.showIndicators === 'boolean') settings.showIndicators = raw.showIndicators;
-  if (typeof raw.showProgress === 'boolean') settings.showProgress = raw.showProgress;
-  const interval = bounded('interval', 2000, 30000); if (interval) settings.interval = interval;
-  const transition = bounded('transition', 100, 3000); if (transition) settings.transition = transition;
-  const titleSize = bounded('titleSize', 16, 96); if (titleSize) settings.titleSize = titleSize;
-  const subtitleSize = bounded('subtitleSize', 12, 48); if (subtitleSize) settings.subtitleSize = subtitleSize;
-  const overlay = bounded('overlayOpacity', 0, 1); if (overlay !== undefined) settings.overlayOpacity = overlay;
-  const aspect = pickIn(raw.aspect, HERO_ASPECTS); if (aspect) settings.aspect = aspect;
-  const align = pickIn(raw.contentAlign, ALIGNS); if (align) settings.contentAlign = align;
-  const fit = pickIn(raw.imageFit, FITS); if (fit) settings.imageFit = fit;
-  const position = pickIn(raw.imagePosition, POSITIONS); if (position) settings.imagePosition = position;
-  const font = pickIn(raw.fontFamily, HERO_FONTS); if (font) settings.fontFamily = font;
-  const accent = color('accent'); if (accent) settings.accent = accent;
-  const titleColor = color('titleColor'); if (titleColor) settings.titleColor = titleColor;
-  const subtitleColor = color('subtitleColor'); if (subtitleColor) settings.subtitleColor = subtitleColor;
-  const bgColor = color('bgColor'); if (bgColor) settings.bgColor = bgColor;
-  const watermark = phrase(raw.watermark); if (watermark) settings.watermark = watermark;
-  return Object.keys(settings).length ? settings : undefined;
 }
 
 /** A YouTube link pasted straight into the media field is still a video. */
@@ -745,18 +799,10 @@ function makeSlide(
   // A price is written as a price, in one form shared with the slide blocks.
   const value = answer ? maybeFormatPriceField(key, answer, locale === 'ar') : null;
   const notes = [overlay.title, overlay.subtitle].filter((v): v is string => !!v);
-  const stage = readStage(r.media_data);
-  const rawData = r.media_data ? parseJson<Record<string, unknown> | null>(r.media_data, null) : null;
-  const titleOverride = rawData
-    ? loc(phrase(rawData.heroTitle), phrase(rawData.heroTitle_ar), locale)
-    : null;
-  const subtitleOverride = rawData
-    ? loc(phrase(rawData.heroSubtitle), phrase(rawData.heroSubtitle_ar), locale)
-    : null;
   return {
     // Staging first, so the identity and the value below can never be overwritten
     // by a stray `title` inside the media blob.
-    ...stage,
+    ...readStage(r.media_data),
     ...mediaOf(r),
     id: r.id,
     fieldKey: key,
@@ -764,34 +810,9 @@ function makeSlide(
     eyebrow: f ? (loc(f.label, f.label_ar, locale) ?? (locale === 'ar' ? '' : key)) : (locale === 'ar' ? '' : key),
     // The value is the headline -- the photo exists to prove it. The row's own
     // caption demotes to a note, and an explicit overlay wins over it.
-    title: titleOverride ?? value ?? caption1 ?? key,
-    note: subtitleOverride ?? (notes.length ? notes.join(' · ') : (value ? caption1 : null)),
+    title: value ?? caption1 ?? key,
+    note: notes.length ? notes.join(' · ') : (value ? caption1 : null),
     url: r.url,
-    isHero: r.is_hero,
-    placeholder: false,
-  };
-}
-
-function makeStandaloneSlide(r: GalleryRow, sectionId: string, locale: SiteLocale): Slide {
-  const rawData = r.media_data ? parseJson<Record<string, unknown> | null>(r.media_data, null) : null;
-  const caption = loc(r.caption, r.caption_ar, locale);
-  const overlay = readOverlay(r.media_data, locale);
-  const title = rawData
-    ? loc(phrase(rawData.heroTitle), phrase(rawData.heroTitle_ar), locale)
-    : null;
-  const subtitle = rawData
-    ? loc(phrase(rawData.heroSubtitle), phrase(rawData.heroSubtitle_ar), locale)
-    : null;
-  return {
-    ...readStage(r.media_data),
-    ...mediaOf(r),
-    id: r.id,
-    fieldKey: '',
-    fieldSectionId: sectionId,
-    eyebrow: locale === 'ar' ? 'شريحة مميزة' : 'Featured',
-    title: title ?? caption ?? (locale === 'ar' ? 'محتوى مميز' : 'Featured content'),
-    note: subtitle ?? overlay.subtitle,
-    url: r.url || null,
     isHero: r.is_hero,
     placeholder: false,
   };
@@ -899,46 +920,153 @@ function buildSlides(
   sectionId: string, rows: GalleryRow[],
   fieldsBySection: Map<string, FieldDef[]>,
   customData: Record<string, Record<string, unknown>>, locale: SiteLocale,
+  includeAllPopulated = false,
 ): Slide[] {
-  const eligible = (fieldsBySection.get(sectionId) ?? []).filter(carouselEligible);
+  const fields = fieldsBySection.get(sectionId) ?? [];
+  const eligible = fields.filter((f) => includeAllPopulated
+    ? f.destination !== 'hidden' && f.destination !== 'body'
+    : carouselEligible(f));
   const bound = rows.filter((r) => r.field_key);
-  const standalone = rows.filter((r) => !r.field_key && (r.placement === 'carousel' || r.placement === 'both'));
+  const values = customData[sectionId] ?? {};
+  const visibility =
+    (customData as Record<string, Record<string, Record<string, string>>>).field_visibility?.[sectionId] ?? {};
   const slides: Slide[] = [];
   const emitted = new Set<string>();
 
   for (const f of eligible) {
+    if (visibility[f.name] === 'hide_field' || visibility[f.name] === 'hide_value') continue;
     const target = `${sectionId}::${f.name}`;
     const shots = bound.filter((r) => targetOf(sectionId, r) === target);
+    const raw = values[f.name];
+    if (includeAllPopulated && !isPrintable(raw) && !shots.length) continue;
     if (shots.length) {
       for (const r of shots) {
         slides.push(makeSlide(r, target, fieldsBySection, customData, locale));
         emitted.add(r.id);
       }
     } else {
-      // No media yet: the slide still carries its value, staged as a typographic
-      // pane rather than a photo the visitor can only imagine.
+      const answer = boundValue(f, target, customData, locale);
+      const value = answer ?? stringifyFieldValue(
+        locale === 'ar' ? values[`${f.name}_ar`] ?? raw : raw,
+      );
+      if (!value) continue;
       slides.push({
         id: `placeholder-${target}`,
         fieldKey: f.name,
         fieldSectionId: sectionId,
         eyebrow: loc(f.label, f.label_ar, locale) ?? (locale === 'ar' ? '' : f.name),
-        title: boundValue(f, target, customData, locale) ?? '',
+        title: maybeFormatPriceField(f.name, value, locale === 'ar'),
         note: null, url: null, isHero: 0, placeholder: true,
         mediaType: 'branded', videoId: null,
       });
     }
   }
 
-  for (const r of standalone) {
-    slides.push(makeStandaloneSlide(r, sectionId, locale));
-    emitted.add(r.id);
+  if (includeAllPopulated) {
+    const defined = new Set(fields.map((f) => f.name));
+    for (const [name, raw] of Object.entries(values)) {
+      if (!name || name.startsWith('_') || name.endsWith('_ar')
+        || defined.has(name) || STORED_KEY_SKIP.has(name)
+        || visibility[name] === 'hide_field' || visibility[name] === 'hide_value'
+        || !isPrintable(raw)) continue;
+      const value = stringifyFieldValue(locale === 'ar' ? values[`${name}_ar`] ?? raw : raw);
+      if (!value) continue;
+      slides.push({
+        id: `placeholder-${sectionId}-${name}`,
+        fieldKey: name,
+        fieldSectionId: sectionId,
+        eyebrow: humanizeStoredKey(name),
+        title: maybeFormatPriceField(name, value, locale === 'ar'),
+        note: null, url: null, isHero: 0, placeholder: true,
+        mediaType: 'branded', videoId: null,
+      });
+    }
   }
 
   for (const r of bound) {
     if (emitted.has(r.id)) continue;
-    slides.push(makeSlide(r, targetOf(sectionId, r), fieldsBySection, customData, locale));
+    const target = targetOf(sectionId, r);
+    const field = findField(fieldsBySection, target);
+    const [fieldSection, fieldName] = splitTarget(target);
+    const fieldVisibility =
+      (customData as Record<string, Record<string, Record<string, string>>>)
+        .field_visibility?.[fieldSection]?.[fieldName];
+    if (field?.destination === 'hidden' || field?.destination === 'body'
+      || fieldVisibility === 'hide_field' || fieldVisibility === 'hide_value') continue;
+    slides.push(makeSlide(r, target, fieldsBySection, customData, locale));
   }
   return slides;
+}
+
+interface VariantRow {
+  id: string;
+  slug: string;
+  name: string;
+  name_ar: string | null;
+  custom_data: string | null;
+}
+
+async function buildVariantSlides(
+  businessId: string,
+  locale: SiteLocale,
+): Promise<Slide[]> {
+  const trims = await query<VariantRow>(
+    `SELECT id, slug, name, name_ar, custom_data
+       FROM businesses
+      WHERE parent_business_id = ? AND type_id = 'vehicle_trim'
+        AND published = 1 AND status = 'active'
+      ORDER BY name`,
+    [businessId],
+  );
+  if (!trims.length) return [];
+
+  const photos = await query<GalleryRow & { business_id: string }>(
+    `SELECT id, business_id, url, caption, caption_ar, media_data, group_key,
+            display_order, is_hero, placement, field_key, field_section_id,
+            media_type, video_id
+       FROM vendor_gallery
+      WHERE business_id IN (${trims.map(() => '?').join(',')})
+        AND show_on_minisite = 1 AND approval_status = 'approved'
+      ORDER BY is_hero DESC, display_order`,
+    trims.map((trim) => trim.id),
+  );
+  const photoByTrim = new Map<string, GalleryRow>();
+  for (const photo of photos) {
+    if (!photoByTrim.has(photo.business_id)) photoByTrim.set(photo.business_id, photo);
+  }
+
+  return trims.map((trim) => {
+    const customData = parseJson<Record<string, Record<string, unknown>>>(trim.custom_data, {});
+    const identity = customData.sec_1_identity ?? {};
+    const name = loc(trim.name, trim.name_ar, locale)
+      ?? loc(
+        typeof identity.trim_name === 'string' ? identity.trim_name : null,
+        typeof identity.trim_name_ar === 'string' ? identity.trim_name_ar : null,
+        locale,
+      )
+      ?? trim.slug;
+    const rawPrice = customData.sec_listing_price?.official_price_egp;
+    const note = typeof rawPrice === 'number' && rawPrice > 0
+      ? maybeFormatPriceField('price_egp', String(rawPrice), locale === 'ar')
+      : null;
+    const photo = photoByTrim.get(trim.id);
+    const media = photo ? mediaOf(photo) : { mediaType: 'branded' as const, videoId: null };
+    return {
+      ...(photo ? readStage(photo.media_data) : {}),
+      ...media,
+      id: `variant-${trim.id}`,
+      fieldKey: '',
+      fieldSectionId: 'sec_auto_variants',
+      eyebrow: locale === 'ar' ? 'الفئة' : 'Trim',
+      title: name,
+      note,
+      url: photo?.url ?? null,
+      isHero: photo?.is_hero ?? 0,
+      placeholder: !photo,
+      ctaLink: localePath(locale, [trim.slug]),
+      ctaText: locale === 'ar' ? 'عرض تفاصيل الفئة ←' : 'View trim details →',
+    };
+  });
 }
 
 /** How many frames one car is allowed to take in a showroom showreel. */
@@ -1267,6 +1395,70 @@ async function buildShelf(spec: RelationshipSpec, businessId: string, section: S
   };
 }
 
+async function loadModelServiceLinks(modelId: string, locale: SiteLocale): Promise<ModelServiceCategory[]> {
+  const rows = await query<{
+    relation_type: string;
+    id: string;
+    slug: string;
+    name: string;
+    name_ar: string | null;
+    type_id: string;
+  }>(
+    `SELECT DISTINCT r.relation_type, provider.id, provider.slug, provider.name, provider.name_ar, provider.type_id
+       FROM business_relationships r
+       JOIN businesses provider
+         ON provider.id = CASE
+           WHEN r.relation_type = 'parts_for' THEN r.from_business_id
+           WHEN r.relation_type = 'compatible_with' AND r.from_business_id = ? THEN r.to_business_id
+           WHEN r.relation_type = 'compatible_with' AND r.to_business_id = ? THEN r.from_business_id
+           ELSE r.to_business_id
+         END
+      WHERE (
+          (r.from_business_id = ? AND r.relation_type IN ('sold_by', 'financed_by', 'insured_by', 'serviced_by'))
+          OR (r.to_business_id = ? AND r.relation_type = 'parts_for')
+          OR (r.relation_type = 'compatible_with' AND (r.from_business_id = ? OR r.to_business_id = ?))
+        )
+        AND provider.published = 1 AND provider.status = 'active'
+      ORDER BY provider.name`,
+    [modelId, modelId, modelId, modelId, modelId, modelId],
+  );
+  const categories: ModelServiceCategory[] = [
+    { id: 'showrooms', sectionId: 'sec_auto_inventory', label: 'Showrooms & sellers', label_ar: 'المعارض والبائعون', providers: [] },
+    { id: 'finance', sectionId: 'sec_auto_protection', label: 'Auto finance', label_ar: 'تمويل السيارات', providers: [] },
+    { id: 'insurance', sectionId: 'sec_auto_protection', label: 'Insurance', label_ar: 'التأمين', providers: [] },
+    { id: 'maintenance', sectionId: 'sec_auto_network', label: 'Maintenance & service', label_ar: 'الصيانة والخدمة', providers: [] },
+    { id: 'spare_parts', sectionId: 'sec_auto_parts', label: 'Spare parts', label_ar: 'قطع الغيار', providers: [] },
+    { id: 'accessories', sectionId: 'sec_auto_parts', label: 'Accessories', label_ar: 'الإكسسوارات', providers: [] },
+  ];
+  const byCategory = new Map(categories.map((category) => [category.id, category]));
+  for (const row of rows) {
+    let categoryId: ModelServiceCategory['id'] | null = null;
+    if (row.relation_type === 'sold_by') categoryId = 'showrooms';
+    else if (row.relation_type === 'financed_by') categoryId = 'finance';
+    else if (row.relation_type === 'insured_by') categoryId = 'insurance';
+    else if (row.relation_type === 'serviced_by') categoryId = 'maintenance';
+    else if (row.type_id === 'spare_parts') categoryId = 'spare_parts';
+    else if (row.type_id === 'accessories_detailing') categoryId = 'accessories';
+    if (!categoryId) continue;
+    const category = byCategory.get(categoryId);
+    if (!category || category.providers.some((provider) => provider.id === row.id)) continue;
+    category.providers.push({
+      id: row.id,
+      slug: row.slug,
+      name: row.name,
+      name_ar: row.name_ar,
+      type_id: row.type_id,
+    });
+  }
+  return categories.map((category) => ({
+    ...category,
+    providers: category.providers.map((provider) => ({
+      ...provider,
+      name: loc(provider.name, provider.name_ar, locale) ?? provider.name,
+    })),
+  }));
+}
+
 // ── public entrypoint ────────────────────────────────────────────────────────
 export interface FeaturedItem {
   id: string; slug: string; name: string; name_ar: string | null;
@@ -1330,6 +1522,18 @@ export async function loadMinisite(
     (sectionId && sections.find((s) => s.id === sectionId)) || sections[0] || null;
 
   const customData = parseJson<Record<string, Record<string, unknown>>>(business.custom_data, {});
+  const brandRow = business.type_id === 'vehicle_brand'
+    ? { custom_data: business.custom_data }
+    : business.parent_business_id
+      ? await queryOne<{ custom_data: string | null }>(
+          'SELECT custom_data FROM businesses WHERE id = ? AND type_id = ?',
+          [business.parent_business_id, 'vehicle_brand'],
+        )
+      : null;
+  const brandData = parseJson<Record<string, Record<string, unknown>>>(brandRow?.custom_data, {});
+  const brandLogoUrl = typeof brandData.sec_1_identity?.logo_url === 'string'
+    ? brandData.sec_1_identity.logo_url
+    : null;
 
   // Definitions are resolved once for the whole tree, then indexed by section:
   // a slide may point at a field owned by another section, so per-section
@@ -1346,6 +1550,9 @@ export async function loadMinisite(
       groupsBySection.get(activeSection.id) ?? [],
       values, locale,
     );
+    const marketComparisons = business.type_id === 'vehicle_model' && activeSection.id === 'sec_auto_specs'
+      ? readApprovedMarketComparisons(values.market_comparisons)
+      : [];
     // One round trip for both surfaces: the grid tiles and the value slides are
     // two readings of the same rows, and splitting them in SQL would mean a
     // second query for every section view.
@@ -1353,18 +1560,22 @@ export async function loadMinisite(
       ? await loadGalleryRows(business.id, activeSection.id)
       : [];
     const gallery = toGalleryItems(rows, groups, locale);
+    const showAllVehicleData = business.type_id === 'vehicle_model'
+      && activeSection.id.startsWith('sec_auto_');
     const ownSlides = activeSection.enable_gallery
-      ? buildSlides(activeSection.id, rows, fieldsBySection, customData, locale)
+      ? buildSlides(activeSection.id, rows, fieldsBySection, customData, locale, showAllVehicleData)
       : [];
     // An empty shelf on a business that contains other businesses is not an
     // empty showroom: read the network instead of printing nothing. And a leaf
     // whose open shelf holds no media is not a page with nothing to show: read
     // its own other shelves. Both borrow real authoring; neither invents a frame.
-    let slides = ownSlides;
-    if (activeSection.enable_gallery && !slides.length) {
+    let slides = business.type_id === 'vehicle_model' && activeSection.id === 'sec_auto_variants'
+      ? [...ownSlides, ...await buildVariantSlides(business.id, locale)]
+      : ownSlides;
+    if (!slides.length && !showAllVehicleData) {
       slides = await buildNetworkShowreel(business.id, locale);
     }
-    if (activeSection.enable_gallery && !slides.length) {
+    if (!slides.length && !showAllVehicleData) {
       slides = await buildOwnHighlightReel(business, fieldsBySection, customData, locale);
     }
 
@@ -1376,7 +1587,7 @@ export async function loadMinisite(
       const shelf = await buildShelf(spec, business.id, activeSection, locale);
       if (shelf) shelves.push(shelf);
     }
-    active = { section: activeSection, groups, gallery, slides, shelves, blogs };
+    active = { section: activeSection, groups, marketComparisons, gallery, slides, shelves, blogs };
   }
 
   const ancestry = await getAncestry(business.id);
@@ -1420,6 +1631,10 @@ export async function loadMinisite(
       locale,
     ),
   }));
+  const modelServices = business.type_id === 'vehicle_model'
+    ? await loadModelServiceLinks(business.id, locale)
+    : [];
+  const socialLinks = await loadSocialLinks(business.id, null, true);
 
   return {
     locale,
@@ -1432,10 +1647,11 @@ export async function loadMinisite(
       typeName: typeRow?.name ?? business.type_id,
       typeName_ar: typeRow?.name_ar ?? null,
       identity: customData['sec_1_identity'] ?? {},
+      brandLogoUrl,
       contact,
-      socialLinks: await loadSocialLinks(business.id, null, true),
-    },
-    sections,
+      socialLinks,
+    },    sections,
+    modelServices,
     specifications,
     active,
     activeSectionId: activeSection?.id ?? null,
@@ -1576,7 +1792,14 @@ export async function loadAuthoredShelves(opts: {
       section,
       groups,
       slides: section.enable_gallery
-        ? buildSlides(section.id, shelfRows, fieldsBySection, opts.values, opts.locale)
+        ? buildSlides(
+            section.id,
+            shelfRows,
+            fieldsBySection,
+            opts.values,
+            opts.locale,
+            opts.hostTypeId === 'vehicle_model' && section.id.startsWith('sec_auto_'),
+          )
         : [],
       gallery: section.enable_gallery ? toGalleryItems(shelfRows, groups, opts.locale) : [],
     });

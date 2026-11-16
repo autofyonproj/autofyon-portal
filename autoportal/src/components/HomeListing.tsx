@@ -1,10 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { localePath, localeDir, type SiteLocale } from '@/lib/site-locale';
-import type { FeaturedItem } from '@/lib/minisite';
+import type { FeaturedItem, Slide } from '@/lib/minisite';
 import type { PortalPageContent } from '@/lib/portal-site';
+import { extractYouTubeVideoId } from '@/lib/youtube';
+import GalleryCarousel from '@/components/GalleryCarousel';
 
 export default function HomeListing({
   locale,
@@ -23,6 +25,34 @@ export default function HomeListing({
   const brands = items.filter((item) => item.type_id === 'vehicle_brand');
   const showrooms = items.filter((item) => item.type_id !== 'vehicle_brand');
   const copy = content[locale];
+
+  const carouselSlides: Slide[] = useMemo(() => {
+    return (content.carouselSlides || []).map((s, idx) => {
+      const isYoutube = s.media_type === 'youtube';
+      const videoId = isYoutube ? extractYouTubeVideoId(s.url) : null;
+      return {
+        id: s.id || `slide-${idx}`,
+        mediaType: s.media_type,
+        videoId,
+        url: s.url,
+        fieldKey: `portal_slide_${idx}`,
+        fieldSectionId: 'portal_hero',
+        eyebrow: isAr ? 'سيارة معتمدة' : 'Featured Selection',
+        title: isAr ? s.title_ar : (s.title_en || s.title_ar),
+        note: (isAr ? s.caption_ar : (s.caption_en || s.caption_ar)) ?? null,
+        caption: (isAr ? s.caption_ar : (s.caption_en || s.caption_ar)) ?? null,
+        isHero: idx === 0 ? 1 : 0,
+        placeholder: false,
+        startTime: s.startTime,
+        endTime: s.endTime,
+        ctaText: (isAr ? s.cta_text_ar : (s.cta_text_en || s.cta_text_ar)) ?? null,
+        ctaLink: s.cta_link ?? null,
+        animation: 'kenburns',
+        imageFit: 'cover',
+        imagePosition: 'center',
+      };
+    });
+  }, [content.carouselSlides, isAr]);
 
   return (
     <main dir={localeDir(locale)} lang={locale} style={{ backgroundColor: content.backgroundColor, '--portal-accent': content.accentColor } as React.CSSProperties} className="min-h-screen bg-[#07090c] text-[#f0f4f8] selection:bg-[#c4a265] selection:text-black font-['Cairo',sans-serif]">
@@ -99,6 +129,52 @@ export default function HomeListing({
           </div>
         </div>
       </section>
+
+      {/* ════════════════════════════════════════════════════════════
+          CINEMATIC SHOWCASE CAROUSEL
+      ════════════════════════════════════════════════════════════ */}
+      {content.enabledSections.includes('carousel') && carouselSlides.length > 0 && (
+        <section className="py-12 border-b border-white/5 bg-[#080c12]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6">
+            <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <span className="text-xs uppercase tracking-widest text-[#dfbe7e] font-bold">
+                  {isAr ? 'جولة حية ومعرض تفاعلي' : 'LIVE EXPERIENCE & CINEMATIC SHOWCASE'}
+                </span>
+                <h3 className="text-xl md:text-2xl font-black text-white mt-1">
+                  {isAr ? 'أحدث موديلات وأساطيل المعارض الفاخرة' : 'Flagship Models & Exclusive Showroom Fleets'}
+                </h3>
+              </div>
+              <Link
+                href="/cars"
+                className="text-xs text-[#dfbe7e] hover:underline font-bold flex items-center gap-1"
+              >
+                <span>{isAr ? 'عرض كافة السيارات' : 'View All Vehicles'}</span>
+                <span>←</span>
+              </Link>
+            </div>
+
+            <div className="rounded-3xl overflow-hidden border border-white/10 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8)] bg-black">
+              <GalleryCarousel
+                slides={carouselSlides}
+                locale={locale}
+                label={isAr ? 'معرض البوابة السينمائي' : 'Portal Cinematic Showcase'}
+                defaults={{
+                  carouselType: content.carouselType,
+                  aspect: '21 / 9',
+                  interval: 7000,
+                  transition: 700,
+                  autoPlay: true,
+                  showArrows: true,
+                  showIndicators: true,
+                  showProgress: true,
+                }}
+                brand="AutoFyon"
+              />
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ════════════════════════════════════════════════════════════
           2. THE 4 CORE VENDOR PRODUCTS SECTION

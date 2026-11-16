@@ -262,6 +262,12 @@ export default async function PlatformAdminDashboard({
       </div>
       <div className="flex flex-wrap gap-2">
         <Link
+          href="/admin/platform/carousel"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-amber-600/30 bg-amber-500/10 px-4 py-2 text-sm font-bold text-amber-800 dark:text-amber-300 hover:bg-amber-500/20"
+        >
+          🎬 Universal Carousel &amp; Media Studio ↗
+        </Link>
+        <Link
           href="/admin/platform/clients"
           className="inline-flex rounded-lg border border-green-700/25 bg-green-700/5 px-4 py-2 text-sm font-bold text-green-900 hover:bg-green-700/10"
         >

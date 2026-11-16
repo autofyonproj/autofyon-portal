@@ -146,6 +146,8 @@ export interface GalleryCarouselProps {
   fieldsIndex?: SlideFieldsIndex | null;
   /** Watermark fallback when a slide does not set its own. */
   brand?: string;
+  /** The vehicle-brand emblem, shown on the carousel as a distinct overlay. */
+  logoUrl?: string | null;
   /**
    * The business slug, so a slide aimed at a shelf that is not on this page can
    * still lead the visitor there. A slug and not a callback because a Server
@@ -162,6 +164,7 @@ export default function GalleryCarousel({
   defaults = {},
   fieldsIndex,
   brand,
+  logoUrl,
   slug,
 }: GalleryCarouselProps) {
   const isAr = locale === 'ar';
@@ -175,6 +178,7 @@ export default function GalleryCarousel({
   const [index, setIndex] = useState(heroStart);
   const [userPaused, setUserPaused] = useState(false);
   const [mediaPlaybackEnabled, setMediaPlaybackEnabled] = useState(false);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [hovered, setHovered] = useState(false);
   const [focused, setFocused] = useState(false);
   const [tabVisible, setTabVisible] = useState(true);
@@ -187,8 +191,6 @@ export default function GalleryCarousel({
   const last = count - 1;
   const safeIndex = Math.min(Math.max(index, 0), last);
   const slide = slides[safeIndex];
-  const heroDefaults = slides.find((item) => item.isHero === 1)?.carouselDefaults;
-  const carouselSettings = { ...defaults, ...heroDefaults };
   const isMediaSlide = slide?.mediaType === 'youtube'
     || slide?.mediaType === 'video'
     || slide?.mediaType === 'embed';
@@ -208,30 +210,37 @@ export default function GalleryCarousel({
 
   const go = useCallback(
     (delta: number) => {
+      setIsVideoPlaying(false);
       setMediaPlaybackEnabled(false);
       setIndex((i) => (count ? (i + delta + count) % count : 0));
     },
     [count],
   );
   const goTo = useCallback((i: number) => {
+    setIsVideoPlaying(false);
     setMediaPlaybackEnabled(false);
     setIndex(Math.min(Math.max(i, 0), last));
   }, [last]);
 
+  const handleVideoEnded = useCallback(() => {
+    setIsVideoPlaying(false);
+    go(1);
+  }, [go]);
+
   // ── the clock ──────────────────────────────────────────────────────────────
   const hold = useMemo(() => {
-    const base = carouselSettings.interval ?? DEFAULT_INTERVAL;
+    const base = defaults.interval ?? DEFAULT_INTERVAL;
     const moving = slide && (slide.mediaType === 'youtube' || slide.mediaType === 'video' || slide.mediaType === 'embed');
     if (!moving) return base;
     const cap = (slide.maxDuration && slide.maxDuration > 0 ? slide.maxDuration * 1000 : 0);
     return Math.max(base, cap || FILM_HOLD);
-  }, [carouselSettings.interval, slide]);
+  }, [defaults.interval, slide]);
 
-  const autoplay = count > 1 && carouselSettings.autoPlay !== false && !reduced
-    && !userPaused && (!isMediaSlide || mediaPlaybackEnabled)
+  const autoplay = count > 1 && defaults.autoPlay !== false && !reduced
+    && !userPaused && !isVideoPlaying && (!isMediaSlide || mediaPlaybackEnabled)
     && !hovered && !focused && tabVisible;
-  const paused = userPaused || (isMediaSlide && !mediaPlaybackEnabled);
-  const transition = carouselSettings.transition ?? DEFAULT_TRANSITION;
+  const paused = userPaused || isVideoPlaying || (isMediaSlide && !mediaPlaybackEnabled);
+  const transition = defaults.transition ?? DEFAULT_TRANSITION;
 
   const toggleFullscreen = useCallback(() => {
     const node = rootRef.current;
@@ -279,20 +288,31 @@ export default function GalleryCarousel({
   if (!count || !slide) return null;
 
   const window_ = lazyWindow(count, safeIndex);
-  const accent = carouselSettings.accent;
-  const aspect = carouselSettings.aspect ?? DEFAULT_ASPECT;
+  const accent = defaults.accent;
+  const aspect = defaults.aspect ?? DEFAULT_ASPECT;
   const aspectNarrow = narrowShapeFor(aspect);
-  const scrim = slide.overlayOpacity ?? carouselSettings.overlayOpacity ?? (slide.mediaType === 'branded' ? 0 : 0.58);
+  const scrim = slide.overlayOpacity ?? (slide.mediaType === 'branded' ? 0 : 0.58);
   const isVideoPane = slide.mediaType === 'youtube' || slide.mediaType === 'video';
   const headline = slide.title || slide.eyebrow;
-  const watermark = slide.watermark ?? carouselSettings.watermark ?? (brand ? `${brand} · autofyon.com` : 'autofyon.com');
+  const watermark = slide.watermark ?? defaults.watermark ?? (brand ? `${brand} · autofyon.com` : 'autofyon.com');
   const textOnly = slide.displayMode === 'text_only';
+  const carouselType = defaults.carouselType ?? 'cinematic';
 
   return (
     <div
       ref={rootRef}
       dir={isAr ? 'rtl' : 'ltr'}
-      className="rail"
+      className={`rail rail--${carouselType} ${
+        carouselType === 'card_stage'
+          ? 'carousel-card-stage p-2 md:p-5 rounded-3xl bg-black/40 backdrop-blur-xl border border-white/10 shadow-[0_25px_60px_rgba(0,0,0,0.9)]'
+          : carouselType === 'modern_split'
+            ? 'carousel-modern-split'
+            : carouselType === 'fade_minimal'
+              ? 'carousel-fade-minimal border-0 shadow-none'
+              : carouselType === 'filmstrip'
+                ? 'carousel-filmstrip'
+                : 'carousel-cinematic'
+      }`}
       role="region"
       aria-roledescription="carousel"
       aria-label={label}
@@ -331,8 +351,10 @@ export default function GalleryCarousel({
                 animation={anim}
                 reduced={reduced}
                 locale={locale}
-                defaults={carouselSettings}
+                defaults={defaults}
                 brand={brand}
+                onVideoPlayStateChange={setIsVideoPlaying}
+                onVideoEnded={handleVideoEnded}
               />
             </div>
           );
@@ -353,6 +375,10 @@ export default function GalleryCarousel({
         {watermark && !textOnly ? (
           <span className="watermark" aria-hidden>{watermark}</span>
         ) : null}
+        {logoUrl && !textOnly ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img className="carousel-brand-logo" src={logoUrl} alt="" />
+        ) : null}
 
         {/* ── the value, and the approved blocks around it ─────────────────── */}
         <div className={`content${textOnly ? ' content--solo' : ''}`}>
@@ -364,7 +390,7 @@ export default function GalleryCarousel({
                   ? 'bg-[#121518]/95 border border-[#262b32] rounded-2xl p-5 shadow-2xl'
                   : ''
             }`}
-            style={{ textAlign: slide.textAlign ?? carouselSettings.contentAlign ?? 'start' }}
+            style={{ textAlign: slide.textAlign ?? defaults.contentAlign ?? 'start' }}
           >
             <p className="eyebrow">
               {slide.eyebrow}
@@ -378,9 +404,9 @@ export default function GalleryCarousel({
             <h3
               className="headline"
               style={{
-                color: slide.titleColor ?? carouselSettings.titleColor,
-                fontSize: (slide.titleSize ?? carouselSettings.titleSize) ? `${slide.titleSize ?? carouselSettings.titleSize}px` : undefined,
-                fontFamily: slide.fontFamily ?? carouselSettings.fontFamily,
+                color: slide.titleColor,
+                fontSize: slide.titleSize ? `${slide.titleSize}px` : undefined,
+                fontFamily: slide.fontFamily,
               }}
             >
               {slide.ctaLink ? (
@@ -394,13 +420,7 @@ export default function GalleryCarousel({
             {slide.note && slide.showCaption !== false ? (
               <p
                 className="note"
-                style={{
-                  color: slide.subtitleColor ?? carouselSettings.subtitleColor,
-                  fontSize: (slide.subtitleSize ?? carouselSettings.subtitleSize)
-                    ? `${slide.subtitleSize ?? carouselSettings.subtitleSize}px`
-                    : undefined,
-                  fontFamily: slide.fontFamily ?? carouselSettings.fontFamily,
-                }}
+                style={{ fontSize: slide.subtitleSize ? `${slide.subtitleSize}px` : undefined }}
               >
                 {slide.note}
               </p>
@@ -429,7 +449,7 @@ export default function GalleryCarousel({
         </div>
 
         {/* ── arrows ───────────────────────────────────────────────────────── */}
-        {count > 1 && carouselSettings.showArrows !== false ? (
+        {count > 1 && defaults.showArrows !== false ? (
           <>
             <button
               type="button"
@@ -451,7 +471,7 @@ export default function GalleryCarousel({
         ) : null}
 
         {/* ── the clock, made visible ─────────────────────────────────────── */}
-        {carouselSettings.showProgress !== false && count > 1 ? (
+        {defaults.showProgress !== false && count > 1 ? (
           <div className="track" aria-hidden>
             {autoplay || count > 1 ? (
               <span
@@ -471,7 +491,7 @@ export default function GalleryCarousel({
       {/* ── the control deck ───────────────────────────────────────────────── */}
       <div className="deck">
         <div className="deck-mullion">
-          {count > 1 && carouselSettings.showIndicators !== false ? (
+          {count > 1 && defaults.showIndicators !== false ? (
             <div className="dots" role="tablist" aria-label={label}>
               {slides.map((s, i) => (
                 <button
@@ -593,6 +613,8 @@ function PaneBody({
   locale,
   defaults,
   brand,
+  onVideoPlayStateChange,
+  onVideoEnded,
 }: {
   slide: Slide;
   isActive: boolean;
@@ -602,14 +624,16 @@ function PaneBody({
   locale: SiteLocale;
   defaults: CarouselDefaults;
   brand?: string;
+  onVideoPlayStateChange?: (isPlaying: boolean) => void;
+  onVideoEnded?: () => void;
 }) {
   const isAr = locale === 'ar';
-  const fit = slide.imageFit ?? defaults.imageFit ?? 'cover';
-  const position = slide.imagePosition ?? defaults.imagePosition ?? 'center';
+  const fit = slide.imageFit ?? 'cover';
+  const position = slide.imagePosition ?? 'center';
   const cls = `media anim-${animation}${reduced ? ' anim-off' : ''}`;
 
   if (slide.displayMode === 'text_only') {
-    return <div className="ground" style={{ background: slide.bgColor ?? defaults.bgColor }} />;
+    return <div className="ground" style={slide.bgColor ? { background: slide.bgColor } : undefined} />;
   }
 
   // A pane with nothing behind it has two honest readings, and they are not the
@@ -620,7 +644,7 @@ function PaneBody({
   if (slide.mediaType === 'branded') {
     if (!slide.title.trim()) return <PendingPane isAr={isAr} hasValue={false} />;
     return (
-      <div className="branded" style={{ background: slide.bgColor ?? defaults.bgColor }}>
+      <div className="branded" style={slide.bgColor ? { background: slide.bgColor } : undefined}>
         <span className="branded-rule" aria-hidden />
         <span className="branded-rule branded-rule--2" aria-hidden />
         {(slide.watermark ?? defaults.watermark ?? brand)?.trim() ? (
@@ -644,6 +668,10 @@ function PaneBody({
           ar={isAr}
           posterUrl={slide.url}
           maxDuration={slide.maxDuration}
+          startTime={slide.startTime}
+          endTime={slide.endTime}
+          onPlayStateChange={isActive ? onVideoPlayStateChange : undefined}
+          onVideoEnded={isActive ? onVideoEnded : undefined}
         />
       ) : (
         // Outside the lazy window, or the row never carried an ID: the film's

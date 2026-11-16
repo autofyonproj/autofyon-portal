@@ -128,6 +128,14 @@ export interface YouTubePaneProps {
   posterUrl?: string | null;
   /** Seconds of free preview the owner chose. Stops there, with a real link on. */
   maxDuration?: number;
+  /** Start time in seconds (e.g., 15) to jump straight to the highlight/walkaround */
+  startTime?: number;
+  /** End time in seconds (e.g., 45) to clip the period */
+  endTime?: number;
+  /** Callback fired when playback state changes (playing vs paused) */
+  onPlayStateChange?: (isPlaying: boolean) => void;
+  /** Callback fired when the video reaches its end or the specified endTime */
+  onVideoEnded?: () => void;
 }
 
 export default function YouTubePane({
@@ -137,6 +145,10 @@ export default function YouTubePane({
   ar = false,
   posterUrl,
   maxDuration,
+  startTime,
+  endTime,
+  onPlayStateChange,
+  onVideoEnded,
 }: YouTubePaneProps) {
   const [ready, setReady] = useState(false);
   const [playing, setPlaying] = useState(false);
@@ -204,29 +216,39 @@ export default function YouTubePane({
             playsinline: 1,
             enablejsapi: 1,
             origin,
+            ...(typeof startTime === 'number' && startTime > 0 ? { start: Math.floor(startTime) } : {}),
+            ...(typeof endTime === 'number' && endTime > 0 ? { end: Math.floor(endTime) } : {}),
           },
           events: {
             onReady: (e) => {
               if (cancelled) return;
               setReady(true);
               e.target.mute();
+              if (typeof startTime === 'number' && startTime > 0) {
+                try { e.target.seekTo(startTime, true); } catch { /* noop */ }
+              }
               e.target.pauseVideo();
             },
             onError: (e) => setErrorCode(Number(e?.data) || 5),
             onStateChange: (e) => {
               const state = window.YT?.PlayerState;
               if (!state) return;
-              if (e.data === state.PLAYING) setPlaying(true);
+              if (e.data === state.PLAYING) {
+                setPlaying(true);
+                onPlayStateChange?.(true);
+              }
               // Every path that pauses also mutes, so the sound control returns to
               // "off" with the film — the button never promises less than the player.
               if (e.data === state.PAUSED) {
                 setPlaying(false);
                 setSound(false);
+                onPlayStateChange?.(false);
               }
-              // A cinematic pane holds its own loop: the slide changes on the
-              // carousel clock, not when the film happens to end.
-              if (e.data === state.ENDED && !maxDuration) {
-                try { e.target.seekTo(0, true); e.target.playVideo(); } catch { /* player gone */ }
+              // When the video ends, notify the carousel so it can smoothly advance
+              if (e.data === state.ENDED) {
+                setPlaying(false);
+                onPlayStateChange?.(false);
+                onVideoEnded?.();
               }
             },
           },
@@ -240,7 +262,7 @@ export default function YouTubePane({
       playerRef.current = null;
       try { p?.destroy(); } catch { /* already torn down */ }
     };
-  }, [videoId, uid, maxDuration]);
+  }, [videoId, uid, maxDuration, startTime, endTime, onPlayStateChange, onVideoEnded]);
 
   // ── the carousel clock decides whether this pane is moving ─────────────────
   // Commands only. The pane's own state (paused, muted) arrives back through the
@@ -249,29 +271,45 @@ export default function YouTubePane({
     const p = playerRef.current;
     if (!p || errorCode) return;
     try {
-      if (isActive && playRequested) p.playVideo();
-      else {
+      if (isActive && playRequested) {
+        p.playVideo();
+        onPlayStateChange?.(true);
+      } else {
         p.pauseVideo();
         p.mute();
+        if (!isActive) {
+          setPlaying(false);
+          setSound(false);
+          onPlayStateChange?.(false);
+        }
       }
     } catch { /* player may be tearing down */ }
-  }, [isActive, errorCode, ready, playRequested]);
+  }, [isActive, errorCode, ready, playRequested, onPlayStateChange]);
 
-  // ── honest preview limit ───────────────────────────────────────────────────
+  // ── monitor playback boundary (endTime or maxDuration) ─────────────────────
   useEffect(() => {
-    if (!playing || !maxDuration || maxDuration <= 0) return;
+    if (!playing) return;
     const tick = setInterval(() => {
       const p = playerRef.current;
       if (!p?.getCurrentTime) return;
-      if (p.getCurrentTime() >= maxDuration) {
-        // Stop where the owner set the line, and stop talking too: what follows
-        // the gate is the visitor's choice, made with a click.
+      const current = p.getCurrentTime();
+      if (typeof endTime === 'number' && endTime > 0 && current >= endTime) {
+        try { p.pauseVideo(); p.mute(); } catch { /* noop */ }
+        setPlaying(false);
+        onPlayStateChange?.(false);
+        onVideoEnded?.();
+        return;
+      }
+      if (typeof maxDuration === 'number' && maxDuration > 0 && current >= (startTime || 0) + maxDuration) {
         try { p.pauseVideo(); p.mute(); } catch { /* noop */ }
         setPreviewEnd(true);
+        setPlaying(false);
+        onPlayStateChange?.(false);
+        onVideoEnded?.();
       }
-    }, 1000);
+    }, 500);
     return () => clearInterval(tick);
-  }, [playing, maxDuration]);
+  }, [playing, startTime, endTime, maxDuration, onPlayStateChange, onVideoEnded]);
 
   // ── stop waiting on a script that may never arrive ─────────────────────────
   // Two endings are honest: the player answered, or YouTube reported a code. A
@@ -305,11 +343,15 @@ export default function YouTubePane({
   const startManually = useCallback(() => {
     const p = playerRef.current;
     if (!p) return;
-    if (previewEnd) { try { p.seekTo(0, true); } catch { /* noop */ } setPreviewEnd(false); }
+    if (previewEnd) {
+      try { p.seekTo(startTime || 0, true); } catch { /* noop */ }
+      setPreviewEnd(false);
+    }
     p.playVideo();
     setPlayRequested(true);
     setPlaying(true);
-  }, [previewEnd]);
+    onPlayStateChange?.(true);
+  }, [previewEnd, startTime, onPlayStateChange]);
   const togglePlayback = useCallback(() => {
     const p = playerRef.current;
     if (!p) return;
@@ -317,10 +359,11 @@ export default function YouTubePane({
       p.pauseVideo();
       setPlayRequested(false);
       setPlaying(false);
+      onPlayStateChange?.(false);
       return;
     }
     startManually();
-  }, [playing, startManually]);
+  }, [playing, startManually, onPlayStateChange]);
 
   const failed = errorCode !== null || (gaveUp && !ready);
   // YouTube's numeric code becomes the sentence the visitor can act on; a timeout

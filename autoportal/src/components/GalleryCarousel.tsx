@@ -178,6 +178,7 @@ export default function GalleryCarousel({
   const [index, setIndex] = useState(heroStart);
   const [userPaused, setUserPaused] = useState(false);
   const [mediaPlaybackEnabled, setMediaPlaybackEnabled] = useState(false);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [hovered, setHovered] = useState(false);
   const [focused, setFocused] = useState(false);
   const [tabVisible, setTabVisible] = useState(true);
@@ -209,15 +210,22 @@ export default function GalleryCarousel({
 
   const go = useCallback(
     (delta: number) => {
+      setIsVideoPlaying(false);
       setMediaPlaybackEnabled(false);
       setIndex((i) => (count ? (i + delta + count) % count : 0));
     },
     [count],
   );
   const goTo = useCallback((i: number) => {
+    setIsVideoPlaying(false);
     setMediaPlaybackEnabled(false);
     setIndex(Math.min(Math.max(i, 0), last));
   }, [last]);
+
+  const handleVideoEnded = useCallback(() => {
+    setIsVideoPlaying(false);
+    go(1);
+  }, [go]);
 
   // ── the clock ──────────────────────────────────────────────────────────────
   const hold = useMemo(() => {
@@ -229,9 +237,9 @@ export default function GalleryCarousel({
   }, [defaults.interval, slide]);
 
   const autoplay = count > 1 && defaults.autoPlay !== false && !reduced
-    && !userPaused && (!isMediaSlide || mediaPlaybackEnabled)
+    && !userPaused && !isVideoPlaying && (!isMediaSlide || mediaPlaybackEnabled)
     && !hovered && !focused && tabVisible;
-  const paused = userPaused || (isMediaSlide && !mediaPlaybackEnabled);
+  const paused = userPaused || isVideoPlaying || (isMediaSlide && !mediaPlaybackEnabled);
   const transition = defaults.transition ?? DEFAULT_TRANSITION;
 
   const toggleFullscreen = useCallback(() => {
@@ -288,12 +296,23 @@ export default function GalleryCarousel({
   const headline = slide.title || slide.eyebrow;
   const watermark = slide.watermark ?? defaults.watermark ?? (brand ? `${brand} · autofyon.com` : 'autofyon.com');
   const textOnly = slide.displayMode === 'text_only';
+  const carouselType = defaults.carouselType ?? 'cinematic';
 
   return (
     <div
       ref={rootRef}
       dir={isAr ? 'rtl' : 'ltr'}
-      className="rail"
+      className={`rail rail--${carouselType} ${
+        carouselType === 'card_stage'
+          ? 'carousel-card-stage p-2 md:p-5 rounded-3xl bg-black/40 backdrop-blur-xl border border-white/10 shadow-[0_25px_60px_rgba(0,0,0,0.9)]'
+          : carouselType === 'modern_split'
+            ? 'carousel-modern-split'
+            : carouselType === 'fade_minimal'
+              ? 'carousel-fade-minimal border-0 shadow-none'
+              : carouselType === 'filmstrip'
+                ? 'carousel-filmstrip'
+                : 'carousel-cinematic'
+      }`}
       role="region"
       aria-roledescription="carousel"
       aria-label={label}
@@ -334,6 +353,8 @@ export default function GalleryCarousel({
                 locale={locale}
                 defaults={defaults}
                 brand={brand}
+                onVideoPlayStateChange={setIsVideoPlaying}
+                onVideoEnded={handleVideoEnded}
               />
             </div>
           );
@@ -592,6 +613,8 @@ function PaneBody({
   locale,
   defaults,
   brand,
+  onVideoPlayStateChange,
+  onVideoEnded,
 }: {
   slide: Slide;
   isActive: boolean;
@@ -601,6 +624,8 @@ function PaneBody({
   locale: SiteLocale;
   defaults: CarouselDefaults;
   brand?: string;
+  onVideoPlayStateChange?: (isPlaying: boolean) => void;
+  onVideoEnded?: () => void;
 }) {
   const isAr = locale === 'ar';
   const fit = slide.imageFit ?? 'cover';
@@ -643,6 +668,10 @@ function PaneBody({
           ar={isAr}
           posterUrl={slide.url}
           maxDuration={slide.maxDuration}
+          startTime={slide.startTime}
+          endTime={slide.endTime}
+          onPlayStateChange={isActive ? onVideoPlayStateChange : undefined}
+          onVideoEnded={isActive ? onVideoEnded : undefined}
         />
       ) : (
         // Outside the lazy window, or the row never carried an ID: the film's
