@@ -1,0 +1,5 @@
+{
+  "name": "automotive-domain",
+  "author": "AutoNEgypt Team",
+  "description": "Automotive portal domain logic: typology contracts, hierarchy operations, minisite sections, vendor onboarding, and data validation."
+}

@@ -1,0 +1,22 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "main": ".open-next/worker.js",
+  "name": "autofyon",
+  "compatibility_date": "2025-06-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "autoportal-d1",
+      "database_id": "85d85249-e0bb-41c6-99f3-a328fd8c3213"
+    }
+  ],
+  "routes": [
+    { "pattern": "autofyon.com/*",      "zone_name": "autofyon.com" },
+    { "pattern": "www.autofyon.com/*",  "zone_name": "autofyon.com" }
+  ]
+}

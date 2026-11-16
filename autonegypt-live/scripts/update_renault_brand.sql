@@ -1,0 +1,1 @@
+UPDATE businesses SET custom_data = '{"sec_1_identity":{"business_name":"Renault","business_name_ar":"رينو","brand_origin":"فرنسا","founded":1899,"tagline_ar":"شغف الحياة والابتكار الفرنسي في صناعة السيارات","official_agent_ar":"المصرية العالمية للسيارات EIM","hotline":"16202"}}' WHERE id = 'biz_brand_renault';

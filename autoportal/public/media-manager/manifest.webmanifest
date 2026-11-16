@@ -1,0 +1,18 @@
+{
+  "id": "/media-manager/index.html",
+  "name": "Almostashar Media Manager",
+  "short_name": "Almostashar Media",
+  "description": "مدير التسويق الرقمي للمعارض من Almostashar Integrated Solutions على AUTOFYON.com.",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "/media-manager/index.html?source=installed-app",
+  "scope": "/media-manager/",
+  "display": "standalone",
+  "background_color": "#f4f6f2",
+  "theme_color": "#0b2744",
+  "icons": [
+    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "./icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

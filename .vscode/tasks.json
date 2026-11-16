@@ -1,0 +1,33 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Commit staged changes and push",
+			"type": "process",
+			"command": "powershell.exe",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"${workspaceFolder}\\ANitgravity\\siwatoday\\siwa-oasis\\scripts\\commit-push.ps1",
+				"-Message",
+				"${input:commitMessage}"
+			],
+			"detail": "Commits only staged changes, then pushes the current branch.",
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated"
+			}
+		}
+	],
+	"inputs": [
+		{
+			"id": "commitMessage",
+			"type": "promptString",
+			"description": "Commit message",
+			"password": false
+		}
+	]
+}

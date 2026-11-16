@@ -1,0 +1,72 @@
+/**
+ * Admin layout — English, LTR, gated by Cloudflare Access.
+ *
+ * Cloudflare Access is enforced at the edge and passes
+ * `Cf-Access-Authenticated-User-Email` on every authenticated request.
+ * This layout double-checks that the email exists in admin_users; if not,
+ * it renders an access-denied page rather than the dashboard.
+ *
+ * All admin pages are English-only (operator-facing).
+ */
+import type { ReactNode } from 'react';
+import { headers } from 'next/headers';
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
+import { getAdminUser, AUTOFYON_MASTER_EMAIL, SUPER_ADMIN_EMAIL } from '@/lib/admin-auth';
+import HtmlShell from '@/components/HtmlShell';
+
+export const metadata = { title: 'AutoPortal Admin' };
+
+export default async function AdminLayout({ children }: { children: ReactNode }) {
+  // Build a minimal Request-like object from Next.js headers for getAdminUser.
+  const hdrs = await headers();
+  const fakeReq = new Request('http://localhost/admin', {
+    headers: Object.fromEntries(hdrs.entries()),
+  });
+
+  const user = await getAdminUser(fakeReq);
+
+  // If user is not logged in, redirect directly to the administrative login page
+  if (!user) {
+    redirect('/login');
+  }
+
+  return (
+    <HtmlShell locale="en">
+      <div className="admin-shell min-h-screen flex flex-col">
+        {/* Top nav bar */}
+        <header className="px-6 py-3 flex items-center gap-4">
+          <Link href="/admin" className="font-bold text-lg">AutoPortal</Link>
+          <span className="opacity-40 text-sm">|</span>
+          <Link href="/admin/site-builder" className="text-sm opacity-70 hover:opacity-100 hover:underline">Site Builder</Link>
+          {user.role === 'platform_admin' ? (
+            <>
+              <Link href="/admin/platform/clients" className="text-sm opacity-70 hover:opacity-100 hover:underline">
+                Clients
+              </Link>
+              <Link href="/admin/platform/activity" className="text-sm opacity-70 hover:opacity-100 hover:underline">
+                Activity
+              </Link>
+              <Link href="/admin/vehicle-exchange" className="text-sm opacity-70 hover:opacity-100 hover:underline">
+                Vehicle Exchange
+              </Link>
+            </>
+          ) : null}
+          {(user.email.toLowerCase() === AUTOFYON_MASTER_EMAIL ||
+            process.env.NODE_ENV !== 'production' && user.email.toLowerCase() === SUPER_ADMIN_EMAIL) && (
+            <Link href="/admin/master-copies" className="text-sm opacity-70 hover:opacity-100 hover:underline">
+              Master Licenses
+            </Link>
+          )}
+          <span className="text-sm opacity-70">{user.role === 'platform_admin' ? '⚙️ Platform Admin' : '🏢 Vendor'}</span>
+          <span className="ms-auto text-xs opacity-50">{user.email}</span>
+        </header>
+
+        {/* Page content */}
+        <main className="flex-1 p-6 max-w-5xl mx-auto w-full">
+          {children}
+        </main>
+      </div>
+    </HtmlShell>
+  );
+}

@@ -1,0 +1,16 @@
+{
+  "entries": [
+    {
+      "path": "plugins/design-toolkit/skills"
+    },
+    {
+      "path": "plugins/automotive-domain/skills"
+    },
+    {
+      "path": "skills"
+    },
+    {
+      "path": "../.qoder/skills"
+    }
+  ]
+}
