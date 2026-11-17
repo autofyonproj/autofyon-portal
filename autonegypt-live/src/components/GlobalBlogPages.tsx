@@ -16,15 +16,14 @@ const dateLabel = (value: string | null, locale: SiteLocale) => value
 async function enabledWidgets(): Promise<BlogWidget[]> {
   const row = await queryOne<{ widgets: string }>('SELECT widgets FROM global_blog_settings WHERE id = 1');
   try {
-    const stored = JSON.parse(row?.widgets ?? '["carousel","search","recent","categories","tags"]') as unknown;
-    const raw = Array.isArray(stored)
-      ? stored
-      : typeof stored === 'object' && stored !== null && !Array.isArray(stored)
-        ? (stored as { widgets?: unknown }).widgets
-        : null;
-    return Array.isArray(raw)
-      ? raw.filter((v): v is BlogWidget => typeof v === 'string' && BLOG_WIDGETS.includes(v as BlogWidget))
-      : [...BLOG_WIDGETS];
+    const raw = JSON.parse(row?.widgets ?? '["carousel","search","recent","categories","tags"]') as unknown;
+    if (Array.isArray(raw)) {
+      return raw.filter((v): v is BlogWidget => typeof v === 'string' && BLOG_WIDGETS.includes(v as BlogWidget));
+    }
+    if (raw && typeof raw === 'object' && 'widgets' in raw && Array.isArray((raw as { widgets: unknown }).widgets)) {
+      return (raw as { widgets: unknown[] }).widgets.filter((v): v is BlogWidget => typeof v === 'string' && BLOG_WIDGETS.includes(v as BlogWidget));
+    }
+    return [...BLOG_WIDGETS];
   } catch {
     return [...BLOG_WIDGETS];
   }

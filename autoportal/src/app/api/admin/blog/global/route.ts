@@ -68,8 +68,16 @@ export async function GET(req: NextRequest) {
     tagsByPost.set(tag.post_id, values);
   }
   const parsedWidgets = (() => {
-    try { return JSON.parse(settings?.widgets ?? '["carousel","search","recent","categories","tags"]') as string[]; }
-    catch { return ['carousel', 'search', 'recent', 'categories', 'tags']; }
+    try {
+      const raw = JSON.parse(settings?.widgets ?? '["carousel","search","recent","categories","tags"]');
+      if (Array.isArray(raw)) return raw as string[];
+      if (raw && typeof raw === 'object' && Array.isArray((raw as { widgets?: unknown }).widgets)) {
+        return (raw as { widgets: string[] }).widgets;
+      }
+      return ['carousel', 'search', 'recent', 'categories', 'tags'];
+    } catch {
+      return ['carousel', 'search', 'recent', 'categories', 'tags'];
+    }
   })();
   return NextResponse.json({
     posts: posts.map((post) => ({ ...post, tags: tagsByPost.get(post.id) ?? [] })),

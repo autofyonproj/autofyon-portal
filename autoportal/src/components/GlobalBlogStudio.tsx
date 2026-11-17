@@ -62,8 +62,8 @@ export default function GlobalBlogStudio() {
       const res = await fetch('/api/admin/blog/global', { cache: 'no-store' });
       const data = await res.json() as { posts?: Post[]; widgets?: string[]; error?: string };
       if (!res.ok) throw new Error(data.error || 'Could not load blog data.');
-      setPosts(data.posts ?? []);
-      setWidgets(data.widgets ?? []);
+      setPosts(Array.isArray(data.posts) ? data.posts : []);
+      setWidgets(Array.isArray(data.widgets) ? data.widgets : ['carousel', 'search', 'recent', 'categories', 'tags']);
       setError('');
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Could not load blog data.');
@@ -80,8 +80,8 @@ export default function GlobalBlogStudio() {
         const data = await res.json() as { posts?: Post[]; widgets?: string[]; error?: string };
         if (!res.ok) throw new Error(data.error || 'Could not load blog data.');
         if (active) {
-          setPosts(data.posts ?? []);
-          setWidgets(data.widgets ?? []);
+          setPosts(Array.isArray(data.posts) ? data.posts : []);
+          setWidgets(Array.isArray(data.widgets) ? data.widgets : ['carousel', 'search', 'recent', 'categories', 'tags']);
         }
       } catch (e) {
         if (active) setError(e instanceof Error ? e.message : 'Could not load blog data.');
@@ -186,10 +186,11 @@ export default function GlobalBlogStudio() {
   };
 
   const moveWidget = (id: string, delta: number) => {
-    const from = widgets.indexOf(id);
+    const list = Array.isArray(widgets) ? widgets : [];
+    const from = list.indexOf(id);
     const to = from + delta;
-    if (from < 0 || to < 0 || to >= widgets.length) return;
-    const next = [...widgets];
+    if (from < 0 || to < 0 || to >= list.length) return;
+    const next = [...list];
     [next[from], next[to]] = [next[to], next[from]];
     void saveWidgets(next);
   };
@@ -224,26 +225,30 @@ export default function GlobalBlogStudio() {
       <section className="rounded-xl border p-4">
         <h2 className="mb-3 font-bold">Sidebar widgets</h2>
         <div className="flex flex-wrap gap-4">
-          {WIDGETS.map(([id, label]) => (
-            <div key={id} className="flex items-center gap-2 text-sm">
-              <label className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={widgets.includes(id)}
-                  onChange={(e) => void saveWidgets(e.target.checked
-                    ? [...widgets, id]
-                    : widgets.filter((widget) => widget !== id))}
-                />
-                {label}
-              </label>
-              {widgets.includes(id) && id !== 'carousel' ? (
-                <span className="flex gap-1">
-                  <button type="button" aria-label={`Move ${label} up`} className="rounded border px-1" onClick={() => moveWidget(id, -1)}>↑</button>
-                  <button type="button" aria-label={`Move ${label} down`} className="rounded border px-1" onClick={() => moveWidget(id, 1)}>↓</button>
-                </span>
-              ) : null}
-            </div>
-          ))}
+          {WIDGETS.map(([id, label]) => {
+            const list = Array.isArray(widgets) ? widgets : [];
+            const isIncluded = list.includes(id);
+            return (
+              <div key={id} className="flex items-center gap-2 text-sm">
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={isIncluded}
+                    onChange={(e) => void saveWidgets(e.target.checked
+                      ? [...list, id]
+                      : list.filter((widget) => widget !== id))}
+                  />
+                  {label}
+                </label>
+                {isIncluded && id !== 'carousel' ? (
+                  <span className="flex gap-1">
+                    <button type="button" aria-label={`Move ${label} up`} className="rounded border px-1" onClick={() => moveWidget(id, -1)}>↑</button>
+                    <button type="button" aria-label={`Move ${label} down`} className="rounded border px-1" onClick={() => moveWidget(id, 1)}>↓</button>
+                  </span>
+                ) : null}
+              </div>
+            );
+          })}
         </div>
         <p className="mt-2 text-xs opacity-60">Use the arrows to change sidebar widget order. The featured carousel appears above the posts.</p>
       </section>

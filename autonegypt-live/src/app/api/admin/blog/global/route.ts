@@ -69,15 +69,15 @@ export async function GET(req: NextRequest) {
   }
   const parsedWidgets = (() => {
     try {
-      const stored = JSON.parse(settings?.widgets ?? '["carousel","search","recent","categories","tags"]') as unknown;
-      if (Array.isArray(stored)) return stored;
-      if (typeof stored === 'object' && stored !== null && !Array.isArray(stored)) {
-        const widgets = (stored as { widgets?: unknown }).widgets;
-        if (Array.isArray(widgets)) return widgets;
+      const raw = JSON.parse(settings?.widgets ?? '["carousel","search","recent","categories","tags"]');
+      if (Array.isArray(raw)) return raw as string[];
+      if (raw && typeof raw === 'object' && Array.isArray((raw as { widgets?: unknown }).widgets)) {
+        return (raw as { widgets: string[] }).widgets;
       }
       return ['carousel', 'search', 'recent', 'categories', 'tags'];
+    } catch {
+      return ['carousel', 'search', 'recent', 'categories', 'tags'];
     }
-    catch { return ['carousel', 'search', 'recent', 'categories', 'tags']; }
   })();
   return NextResponse.json({
     posts: posts.map((post) => ({ ...post, tags: tagsByPost.get(post.id) ?? [] })),

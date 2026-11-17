@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requirePlatformAdmin } from '@/lib/admin-auth';
-import { execute } from '@/lib/db';
+import { execute, queryOne } from '@/lib/db';
 import { BLOG_WIDGETS, type BlogWidget } from '@/lib/global-blog';
 
 
@@ -17,10 +17,23 @@ export async function PATCH(req: NextRequest) {
   const widgets = [...new Set(body.widgets.filter(
     (value): value is BlogWidget => typeof value === 'string' && BLOG_WIDGETS.includes(value as BlogWidget),
   ))];
+
+  const row = await queryOne<{ widgets: string }>('SELECT widgets FROM global_blog_settings WHERE id = 1');
+  let envelope: Record<string, unknown> = {};
+  try {
+    const parsed = JSON.parse(row?.widgets ?? '{}');
+    if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+      envelope = parsed as Record<string, unknown>;
+    }
+  } catch {
+    envelope = {};
+  }
+  envelope.widgets = widgets;
+
   await execute(
     `INSERT INTO global_blog_settings (id, widgets, updated_at) VALUES (1, ?, CURRENT_TIMESTAMP)
      ON CONFLICT(id) DO UPDATE SET widgets = excluded.widgets, updated_at = CURRENT_TIMESTAMP`,
-    [JSON.stringify(widgets)],
+    [JSON.stringify(envelope)],
   );
   return NextResponse.json({ ok: true, widgets });
 }
