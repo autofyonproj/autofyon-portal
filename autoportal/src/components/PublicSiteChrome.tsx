@@ -7,70 +7,31 @@ import { localePath, type SiteLocale } from '@/lib/site-locale';
 import PublicLanguageSwitch from '@/components/PublicLanguageSwitch';
 
 /* ─── Brand Logo ───────────────────────────────────────────────────────────
-   AUTOFY [charcoal/white] + ON [red] + .com [muted] — matches the uploaded
-   logo's split-color identity. The emblem is a charcoal square with a red
-   right-half that echoes the speedometer arc from the logomark.
+   Authentic AutoFyon brand logo:
+   Sports car silhouette + tachometer gauge + stylized 'A' + split-color
+   AUTOFY[charcoal/white] ON[crimson red] .com + tagline DRIVE • EXPLORE • CONNECT.
+   Seamless CSS dark/light mode switching with zero flicker.
 ─────────────────────────────────────────────────────────────────────────── */
-function AutoFyonWordmark({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
-  const fontSize = size === 'sm' ? 14 : size === 'lg' ? 22 : 16;
+function AutoFyonBrandLogo({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
+  const hClass = size === 'sm' ? 'h-7' : size === 'lg' ? 'h-12' : 'h-9 md:h-10';
   return (
-    <span style={{
-      display: 'inline-flex',
-      alignItems: 'baseline',
-      gap: 0,
-      fontStyle: 'italic',
-      fontWeight: 900,
-      letterSpacing: '-0.025em',
-      lineHeight: 1,
-      fontFamily: 'var(--font-inter), "Arial Black", system-ui, sans-serif',
-    }}>
-      <span style={{ color: 'var(--af-charcoal, #2d3140)', fontSize }}>AUTOFY</span>
-      <span style={{ color: 'var(--af-red, #e01f26)', fontSize }}>ON</span>
-      {size !== 'sm' && (
-        <span style={{
-          fontSize: 9,
-          fontWeight: 500,
-          fontStyle: 'normal',
-          color: 'var(--ink-soft, #454a60)',
-          letterSpacing: '0.03em',
-          marginLeft: 1,
-          alignSelf: 'flex-end',
-          paddingBottom: 1,
-        }}>.com</span>
-      )}
-    </span>
-  );
-}
-
-/* Emblem icon — charcoal square, red right corner */
-function AutoFyonEmblem() {
-  return (
-    <span
-      aria-hidden="true"
-      style={{
-        width: 36,
-        height: 36,
-        borderRadius: 7,
-        background: 'var(--af-charcoal, #2d3140)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexShrink: 0,
-        overflow: 'hidden',
-        position: 'relative',
-      }}
-    >
-      {/* Red right quarter — speedometer arc echo */}
-      <span style={{
-        position: 'absolute', right: 0, top: 0, bottom: 0, width: '42%',
-        background: 'var(--af-red, #e01f26)',
-      }} />
-      {/* "A" letter centered */}
-      <span style={{
-        position: 'relative', zIndex: 1, color: 'white',
-        fontWeight: 900, fontStyle: 'italic', fontSize: 20, lineHeight: 1,
-        fontFamily: 'var(--font-inter), "Arial Black", sans-serif',
-      }}>A</span>
+    <span className={`inline-flex items-center relative ${hClass} max-w-[210px] md:max-w-[260px]`}>
+      {/* Light mode */}
+      <img
+        src="/brand/autofyon-logo-light.png"
+        alt="AutoFyon.com — Drive • Explore • Connect"
+        className={`${hClass} w-auto object-contain dark:hidden select-none`}
+        width={340}
+        height={95}
+      />
+      {/* Dark mode */}
+      <img
+        src="/brand/autofyon-logo-dark.png"
+        alt="AutoFyon.com — Drive • Explore • Connect"
+        className={`${hClass} w-auto object-contain hidden dark:block select-none`}
+        width={340}
+        height={95}
+      />
     </span>
   );
 }
