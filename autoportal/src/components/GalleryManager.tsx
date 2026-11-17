@@ -335,15 +335,18 @@ export default function GalleryManager({
       .filter((i) => i.placement === 'carousel' || i.placement === 'both' || i.is_hero === 1)
       .map((item) => ({
         id: item.id,
-        mediaType: item.media_type as any,
+        mediaType: (item.media_type as 'image' | 'youtube' | 'video' | 'embed') || 'image',
         url: item.url,
         videoId: item.video_id,
-        title: item.caption,
-        titleAr: item.caption_ar || item.caption || (item.media_type === 'youtube' ? 'فيديو معاينة يوتيوب' : 'صورة سيارة'),
-        eyebrow: item.is_hero === 1 ? '🌟 Cover Slide' : undefined,
-        eyebrowAr: item.is_hero === 1 ? '🌟 الشريحة الرئيسية' : undefined,
+        title: item.caption_ar || item.caption || (item.media_type === 'youtube' ? 'فيديو مراجعة يوتيوب' : 'معرض السيارة'),
+        eyebrow: item.is_hero === 1 ? '🌟 Cover Slide' : '',
+        fieldKey: item.field_key || '',
+        fieldSectionId: item.field_section_id || sectionId,
+        note: null,
+        isHero: item.is_hero ?? 0,
+        placeholder: false,
       }));
-  }, [items]);
+  }, [items, sectionId]);
 
   return (
     <div dir="rtl" className="space-y-6">

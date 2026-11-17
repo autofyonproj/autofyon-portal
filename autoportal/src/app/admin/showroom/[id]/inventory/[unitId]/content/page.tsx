@@ -36,9 +36,9 @@ export default async function VehicleContentPage({
   attachPermissions(content, user);
   const gallerySections = content.sections.filter((section) => section.enable_gallery === 1);
   const effectiveSections: typeof content.sections = gallerySections.length > 0 ? gallerySections : [
-    { id: 'sec_overview', name: 'Car Gallery', name_ar: 'معرض وسلايدر السيارة العام', icon: '🚗', enable_gallery: 1, enable_blog: 0, sort_order: 1, options: null },
-    { id: 'sec_exterior', name: 'Exterior', name_ar: 'الهيكل الخارجي', icon: '🚙', enable_gallery: 1, enable_blog: 0, sort_order: 2, options: null },
-    { id: 'sec_interior', name: 'Interior', name_ar: 'المقصورة والفرش الداخلي', icon: '💺', enable_gallery: 1, enable_blog: 0, sort_order: 3, options: null },
+    { id: 'sec_overview', name: 'Car Gallery', name_ar: 'معرض وسلايدر السيارة العام', icon: '🚗', enable_gallery: 1, enable_blog: 0, sort_order: 1, options: {} },
+    { id: 'sec_exterior', name: 'Exterior', name_ar: 'الهيكل الخارجي', icon: '🚙', enable_gallery: 1, enable_blog: 0, sort_order: 2, options: {} },
+    { id: 'sec_interior', name: 'Interior', name_ar: 'المقصورة والفرش الداخلي', icon: '💺', enable_gallery: 1, enable_blog: 0, sort_order: 3, options: {} },
   ];
   const galleryRows = await query<Omit<StudioGalleryItem, 'media_data'> & { section_id: string; media_data: string | null }>(
     `SELECT id, section_id, url, caption, caption_ar, media_data, group_key,
