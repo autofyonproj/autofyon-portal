@@ -30,6 +30,8 @@ export default function HomeListing({
     return (content.carouselSlides || []).map((s, idx) => {
       const isYoutube = s.media_type === 'youtube';
       const videoId = isYoutube ? extractYouTubeVideoId(s.url) : null;
+      const defaultEyebrow = isAr ? 'عرض حصري ومميز' : 'Featured Selection';
+      const eyebrow = (isAr ? s.badge_ar : s.badge_en) || s.badge_ar || defaultEyebrow;
       return {
         id: s.id || `slide-${idx}`,
         mediaType: s.media_type,
@@ -37,7 +39,7 @@ export default function HomeListing({
         url: s.url,
         fieldKey: `portal_slide_${idx}`,
         fieldSectionId: 'portal_hero',
-        eyebrow: isAr ? 'سيارة معتمدة' : 'Featured Selection',
+        eyebrow,
         title: isAr ? s.title_ar : (s.title_en || s.title_ar),
         note: (isAr ? s.caption_ar : (s.caption_en || s.caption_ar)) ?? null,
         caption: (isAr ? s.caption_ar : (s.caption_en || s.caption_ar)) ?? null,
@@ -45,7 +47,7 @@ export default function HomeListing({
         placeholder: false,
         startTime: s.startTime,
         endTime: s.endTime,
-        ctaText: (isAr ? s.cta_text_ar : (s.cta_text_en || s.cta_text_ar)) ?? null,
+        ctaText: (isAr ? s.cta_text_ar : (s.cta_text_en || s.cta_text_ar)) ?? (isAr ? 'عرض التفاصيل ←' : 'View Details →'),
         ctaLink: s.cta_link ?? null,
         animation: 'kenburns',
         imageFit: 'cover',
@@ -81,8 +83,32 @@ export default function HomeListing({
             {copy.description}
           </p>
 
+          {/* ════════════════════════════════════════════════════════════
+              HERO CINEMATIC PROMO CAROUSEL
+          ════════════════════════════════════════════════════════════ */}
+          {content.enabledSections.includes('carousel') && carouselSlides.length > 0 && (
+            <div className="mt-10 mb-10 rounded-3xl overflow-hidden border border-[#c4a265]/30 shadow-[0_25px_80px_-15px_rgba(0,0,0,0.9)] bg-black text-right">
+              <GalleryCarousel
+                slides={carouselSlides}
+                locale={locale}
+                label={isAr ? 'عروض وسلايدر البوابة السينمائي' : 'Portal Hero Cinematic Promos'}
+                defaults={{
+                  carouselType: content.carouselType,
+                  aspect: '21 / 9',
+                  interval: 7000,
+                  transition: 700,
+                  autoPlay: true,
+                  showArrows: true,
+                  showIndicators: true,
+                  showProgress: true,
+                }}
+                brand="AutoFyon"
+              />
+            </div>
+          )}
+
           {/* Unified Search Bar */}
-          <div className="mt-10 max-w-2xl mx-auto">
+          <div className="max-w-2xl mx-auto">
             <form action={localePath(locale, ['cars'])} method="get" className="flex items-center bg-white/[0.04] border border-[#c4a265]/30 rounded-2xl p-2 shadow-2xl backdrop-blur-xl focus-within:border-[#dfbe7e] transition-all">
               <input
                 type="search"
@@ -121,60 +147,14 @@ export default function HomeListing({
               🚗 {isAr ? 'معرض المستشار أوتو' : 'Almostashar Auto'}
             </Link>
             <Link
-              href="/admin/platform"
+              href="/admin/platform/carousel"
               className="px-4 py-2 rounded-xl bg-[#c4a265]/10 border border-[#c4a265]/30 text-[#dfbe7e] hover:bg-[#c4a265]/20 transition-all font-semibold"
             >
-              🔐 {isAr ? 'لوحة تحكم المنصة المركزية' : 'Platform Central Admin'}
+              🎬 {isAr ? 'استوديو عروض السلايدر' : 'Hero Promos Studio'}
             </Link>
           </div>
         </div>
       </section>
-
-      {/* ════════════════════════════════════════════════════════════
-          CINEMATIC SHOWCASE CAROUSEL
-      ════════════════════════════════════════════════════════════ */}
-      {content.enabledSections.includes('carousel') && carouselSlides.length > 0 && (
-        <section className="py-12 border-b border-white/5 bg-[#080c12]">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6">
-            <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-              <div>
-                <span className="text-xs uppercase tracking-widest text-[#dfbe7e] font-bold">
-                  {isAr ? 'جولة حية ومعرض تفاعلي' : 'LIVE EXPERIENCE & CINEMATIC SHOWCASE'}
-                </span>
-                <h3 className="text-xl md:text-2xl font-black text-white mt-1">
-                  {isAr ? 'أحدث موديلات وأساطيل المعارض الفاخرة' : 'Flagship Models & Exclusive Showroom Fleets'}
-                </h3>
-              </div>
-              <Link
-                href="/cars"
-                className="text-xs text-[#dfbe7e] hover:underline font-bold flex items-center gap-1"
-              >
-                <span>{isAr ? 'عرض كافة السيارات' : 'View All Vehicles'}</span>
-                <span>←</span>
-              </Link>
-            </div>
-
-            <div className="rounded-3xl overflow-hidden border border-white/10 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8)] bg-black">
-              <GalleryCarousel
-                slides={carouselSlides}
-                locale={locale}
-                label={isAr ? 'معرض البوابة السينمائي' : 'Portal Cinematic Showcase'}
-                defaults={{
-                  carouselType: content.carouselType,
-                  aspect: '21 / 9',
-                  interval: 7000,
-                  transition: 700,
-                  autoPlay: true,
-                  showArrows: true,
-                  showIndicators: true,
-                  showProgress: true,
-                }}
-                brand="AutoFyon"
-              />
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* ════════════════════════════════════════════════════════════
           2. THE 4 CORE VENDOR PRODUCTS SECTION

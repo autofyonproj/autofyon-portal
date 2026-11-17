@@ -66,6 +66,8 @@ export default function PlatformCarouselAdminPage() {
   // New slide form state
   const [newMediaType, setNewMediaType] = useState<'image' | 'youtube'>('youtube');
   const [newUrl, setNewUrl] = useState('');
+  const [newBadgeAr, setNewBadgeAr] = useState('');
+  const [newBadgeEn, setNewBadgeEn] = useState('');
   const [newTitleAr, setNewTitleAr] = useState('');
   const [newTitleEn, setNewTitleEn] = useState('');
   const [newCaptionAr, setNewCaptionAr] = useState('');
@@ -144,6 +146,8 @@ export default function PlatformCarouselAdminPage() {
       id: `slide-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
       media_type: newMediaType,
       url: newUrl.trim(),
+      badge_ar: newBadgeAr.trim() || undefined,
+      badge_en: newBadgeEn.trim() || undefined,
       title_ar: newTitleAr.trim() || (newMediaType === 'youtube' ? 'فيديو مراجعة وتجربة حية' : 'سيارة مميزة'),
       title_en: newTitleEn.trim() || 'Featured Showcase',
       caption_ar: newCaptionAr.trim() || undefined,
@@ -156,6 +160,8 @@ export default function PlatformCarouselAdminPage() {
 
     setSlides((prev) => [...prev, newSlide]);
     setNewUrl('');
+    setNewBadgeAr('');
+    setNewBadgeEn('');
     setNewTitleAr('');
     setNewTitleEn('');
     setNewCaptionAr('');
@@ -196,7 +202,7 @@ export default function PlatformCarouselAdminPage() {
         url: s.url,
         fieldKey: `portal_slide_${idx}`,
         fieldSectionId: 'portal_hero',
-        eyebrow: 'سيارة معتمدة',
+        eyebrow: s.badge_ar || 'عرض ترويجي مميز',
         title: s.title_ar,
         note: s.caption_ar ?? null,
         caption: s.caption_ar ?? null,
@@ -204,7 +210,7 @@ export default function PlatformCarouselAdminPage() {
         placeholder: false,
         startTime: s.startTime,
         endTime: s.endTime,
-        ctaText: s.cta_text_ar ?? null,
+        ctaText: s.cta_text_ar ?? 'عرض التفاصيل ←',
         ctaLink: s.cta_link ?? null,
         animation: 'kenburns',
         imageFit: 'cover',
@@ -555,7 +561,30 @@ export default function PlatformCarouselAdminPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-neutral-400 mb-1 font-bold">العنوان (عربي):</label>
+                  <label className="block text-neutral-400 mb-1 font-bold">وسم العرض الترويجي (Badge عربي):</label>
+                  <input
+                    type="text"
+                    placeholder="مثال: 🔥 عرض حصري أو 👑 سيارة الأسبوع"
+                    value={newBadgeAr}
+                    onChange={(e) => setNewBadgeAr(e.target.value)}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl p-2.5 text-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-neutral-400 mb-1 font-bold">وسم العرض (Badge إنجليزي):</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. 🔥 Exclusive Offer or 👑 Spotlight"
+                    value={newBadgeEn}
+                    onChange={(e) => setNewBadgeEn(e.target.value)}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl p-2.5 text-white"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-neutral-400 mb-1 font-bold">العنوان الرئيسي (عربي):</label>
                   <input
                     type="text"
                     placeholder="مثال: بي إم دبليو الفئة السابعة"

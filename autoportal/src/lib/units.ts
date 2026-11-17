@@ -1430,7 +1430,7 @@ export async function searchCatalogBrands(opts: SearchOpts): Promise<{ brands: B
     slug: b.slug,
     name: b.name,
     nameAr: b.name_ar,
-    logoUrl: `https://cdn.jsdelivr.net/gh/filippofilip95/car-logos-dataset/logos/optimized/${b.slug}.svg`,
+    logoUrl: `https://cdn.jsdelivr.net/gh/filippofilip95/car-logos-dataset@master/logos/optimized/${b.slug}.png`,
     origin: null,
     models: modelsByBrand.get(b.id) || [],
     href: localePath(opts.locale, [b.slug]),

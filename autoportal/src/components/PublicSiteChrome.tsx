@@ -1,8 +1,123 @@
+'use client';
+
 import Link from 'next/link';
 import type { ReactNode } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { localePath, type SiteLocale } from '@/lib/site-locale';
 import PublicLanguageSwitch from '@/components/PublicLanguageSwitch';
 
+/* ─── Brand Logo ───────────────────────────────────────────────────────────
+   AUTOFY [charcoal/white] + ON [red] + .com [muted] — matches the uploaded
+   logo's split-color identity. The emblem is a charcoal square with a red
+   right-half that echoes the speedometer arc from the logomark.
+─────────────────────────────────────────────────────────────────────────── */
+function AutoFyonWordmark({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
+  const fontSize = size === 'sm' ? 14 : size === 'lg' ? 22 : 16;
+  return (
+    <span style={{
+      display: 'inline-flex',
+      alignItems: 'baseline',
+      gap: 0,
+      fontStyle: 'italic',
+      fontWeight: 900,
+      letterSpacing: '-0.025em',
+      lineHeight: 1,
+      fontFamily: 'var(--font-inter), "Arial Black", system-ui, sans-serif',
+    }}>
+      <span style={{ color: 'var(--af-charcoal, #2d3140)', fontSize }}>AUTOFY</span>
+      <span style={{ color: 'var(--af-red, #e01f26)', fontSize }}>ON</span>
+      {size !== 'sm' && (
+        <span style={{
+          fontSize: 9,
+          fontWeight: 500,
+          fontStyle: 'normal',
+          color: 'var(--ink-soft, #454a60)',
+          letterSpacing: '0.03em',
+          marginLeft: 1,
+          alignSelf: 'flex-end',
+          paddingBottom: 1,
+        }}>.com</span>
+      )}
+    </span>
+  );
+}
+
+/* Emblem icon — charcoal square, red right corner */
+function AutoFyonEmblem() {
+  return (
+    <span
+      aria-hidden="true"
+      style={{
+        width: 36,
+        height: 36,
+        borderRadius: 7,
+        background: 'var(--af-charcoal, #2d3140)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexShrink: 0,
+        overflow: 'hidden',
+        position: 'relative',
+      }}
+    >
+      {/* Red right quarter — speedometer arc echo */}
+      <span style={{
+        position: 'absolute', right: 0, top: 0, bottom: 0, width: '42%',
+        background: 'var(--af-red, #e01f26)',
+      }} />
+      {/* "A" letter centered */}
+      <span style={{
+        position: 'relative', zIndex: 1, color: 'white',
+        fontWeight: 900, fontStyle: 'italic', fontSize: 20, lineHeight: 1,
+        fontFamily: 'var(--font-inter), "Arial Black", sans-serif',
+      }}>A</span>
+    </span>
+  );
+}
+
+/* ─── SVG Icons ─────────────────────────────────────────────────────────── */
+function MoonIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+    </svg>
+  );
+}
+function SunIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="5"/>
+      <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+      <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+    </svg>
+  );
+}
+function MenuIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+      <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  );
+}
+function XIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  );
+}
+function ChevronIcon({ dir = 'right' }: { dir?: 'left' | 'right' }) {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"
+      style={{ transform: dir === 'left' ? 'rotate(180deg)' : undefined }}>
+      <polyline points="9 18 15 12 9 6"/>
+    </svg>
+  );
+}
+
+/* ─── Component ─────────────────────────────────────────────────────────── */
 export default function PublicSiteChrome({
   locale,
   children,
@@ -11,50 +126,221 @@ export default function PublicSiteChrome({
   children: ReactNode;
 }) {
   const isAr = locale === 'ar';
+  const [isDark, setIsDark] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  /* Persist dark mode preference */
+  useEffect(() => {
+    const stored = localStorage.getItem('af-dark');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const dark = stored !== null ? stored === '1' : prefersDark;
+    setIsDark(dark);
+    document.documentElement.classList.toggle('dark', dark);
+  }, []);
+
+  const toggleDark = useCallback(() => {
+    setIsDark((prev) => {
+      const next = !prev;
+      document.documentElement.classList.toggle('dark', next);
+      localStorage.setItem('af-dark', next ? '1' : '0');
+      return next;
+    });
+  }, []);
+
+  /* Scroll-aware shadow intensification */
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  /* Close mobile nav on resize to desktop */
+  useEffect(() => {
+    const onResize = () => { if (window.innerWidth > 767) setMenuOpen(false); };
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  const navLinks = [
+    { href: localePath(locale, ['cars']),    label: isAr ? 'السيارات'  : 'Vehicles' },
+    { href: localePath(locale, ['brands']),  label: isAr ? 'الماركات'  : 'Brands'   },
+    { href: localePath(locale, ['dealers']), label: isAr ? 'المعارض'   : 'Dealers'  },
+    { href: localePath(locale, ['blog']),    label: isAr ? 'المقالات'  : 'Journal'  },
+  ];
 
   return (
     <div className="public-shell">
-      <header className="public-header">
+
+      {/* ════════════════════════════════════════════════════════════
+          HEADER
+      ════════════════════════════════════════════════════════════ */}
+      <header
+        className="public-header"
+        style={scrolled ? { boxShadow: '0 1px 0 var(--af-red, #e01f26), 0 4px 32px rgba(0,0,0,0.12)' } : undefined}
+      >
         <div className="public-header-inner">
-          <Link className="public-brand" href={localePath(locale, [])} aria-label={isAr ? 'أوتو بورتال' : 'AutoPortal'}>
-            <span className="public-brand-mark" aria-hidden="true">{isAr ? 'أ' : 'A'}</span>
+
+          {/* ── Brand Wordmark ─────────────────────────────────────── */}
+          <Link
+            className="public-brand"
+            href={localePath(locale, [])}
+            aria-label={isAr ? 'أوتوفاي أون — قُدْ، اكتشف، تواصل' : 'AutoFyon — Drive, Explore, Connect'}
+          >
+            <AutoFyonEmblem />
             <span className="public-brand-copy">
-              <span className="public-brand-name">{isAr ? 'أوتو بورتال' : 'AutoPortal'}</span>
-              <span className="public-brand-caption">{isAr ? 'دليل السيارات في مصر' : 'THE EGYPT AUTOMOTIVE EDITION'}</span>
+              <AutoFyonWordmark size="md" />
+              <span className="public-brand-caption">
+                {isAr ? 'قُدْ • اكتشف • تواصل' : 'DRIVE  •  EXPLORE  •  CONNECT'}
+              </span>
             </span>
           </Link>
 
+          {/* ── Desktop Navigation ──────────────────────────────────── */}
           <nav className="public-nav" aria-label={isAr ? 'التنقل الرئيسي' : 'Main navigation'}>
-            <Link href={localePath(locale, ['cars'])}>{isAr ? 'المركبات' : 'Vehicles'}</Link>
-            <Link href={localePath(locale, ['brands'])}>{isAr ? 'العلامات التجارية' : 'Brands'}</Link>
-            <Link href={localePath(locale, ['blog'])}>{isAr ? 'المقالات' : 'Journal'}</Link>
-            <Link href="/media-manager/index.html">{isAr ? 'المستشار التسويقي لمعرضك' : 'Almostashar Media Manager'}</Link>
+            {navLinks.map((l) => (
+              <Link key={l.href} href={l.href}>{l.label}</Link>
+            ))}
           </nav>
 
+          {/* ── Header Actions ──────────────────────────────────────── */}
           <div className="public-header-actions">
-            <Link className="public-join-link" href="/join">
-              {isAr ? 'للمعارض' : 'For dealers'}
-            </Link>
+
+            {/* Dark / Light toggle */}
+            <button
+              className="theme-toggle"
+              onClick={toggleDark}
+              aria-label={isDark
+                ? (isAr ? 'الوضع الفاتح' : 'Switch to light mode')
+                : (isAr ? 'الوضع الداكن' : 'Switch to dark mode')}
+            >
+              {isDark ? <SunIcon /> : <MoonIcon />}
+            </button>
+
+            {/* Language switch */}
             <PublicLanguageSwitch locale={locale} />
+
+            {/* Primary CTA */}
+            <Link className="public-join-link" href="/join">
+              {isAr ? 'للمعارض' : 'For Dealers'}
+            </Link>
+
+            {/* Mobile hamburger */}
+            <button
+              className="public-menu-btn"
+              onClick={() => setMenuOpen((p) => !p)}
+              aria-label={isAr ? 'القائمة' : 'Open menu'}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-nav"
+            >
+              {menuOpen ? <XIcon /> : <MenuIcon />}
+            </button>
           </div>
         </div>
+
+        {/* ── Mobile Navigation Drawer ──────────────────────────────── */}
+        {menuOpen && (
+          <nav
+            id="mobile-nav"
+            aria-label={isAr ? 'التنقل الرئيسي' : 'Main navigation'}
+            style={{
+              borderTop: '1px solid var(--line)',
+              background: 'var(--page)',
+              padding: '0.5rem clamp(16px,4vw,48px) 1rem',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 0,
+            }}
+          >
+            {navLinks.map((l) => (
+              <Link
+                key={l.href}
+                href={l.href}
+                onClick={() => setMenuOpen(false)}
+                style={{
+                  padding: '0.85rem 0',
+                  fontWeight: 600,
+                  fontSize: 15,
+                  color: 'var(--ink)',
+                  textDecoration: 'none',
+                  borderBottom: '1px solid var(--line)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  transition: 'color 140ms ease',
+                }}
+              >
+                {l.label}
+                <ChevronIcon dir={isAr ? 'left' : 'right'} />
+              </Link>
+            ))}
+            <Link
+              href="/join"
+              onClick={() => setMenuOpen(false)}
+              style={{
+                marginTop: '1rem',
+                padding: '0.85rem',
+                borderRadius: 8,
+                background: 'var(--af-red, #e01f26)',
+                color: 'white',
+                fontWeight: 700,
+                fontSize: 13,
+                textAlign: 'center',
+                textDecoration: 'none',
+                letterSpacing: '0.06em',
+                textTransform: 'uppercase',
+                boxShadow: '0 4px 16px rgba(224,31,38,0.3)',
+              }}
+            >
+              {isAr ? 'سجّل معرضك مجاناً' : 'List Your Dealership Free'}
+            </Link>
+          </nav>
+        )}
       </header>
 
+      {/* ════════════════════════════════════════════════════════════
+          PAGE CONTENT
+      ════════════════════════════════════════════════════════════ */}
       <div className="public-content">{children}</div>
 
+      {/* ════════════════════════════════════════════════════════════
+          FOOTER — dark charcoal, red top border, DRIVE•EXPLORE•CONNECT
+      ════════════════════════════════════════════════════════════ */}
       <footer className="public-footer">
         <div className="public-footer-inner">
+
+          {/* Col 1 — Brand */}
           <div>
-            <span className="public-footer-brand">{isAr ? 'أوتو بورتال' : 'AutoPortal'}</span>
-            <p>{isAr ? 'مساحة واحدة لاكتشاف السيارات والمعارض في مصر.' : 'A considered way to discover cars and showrooms in Egypt.'}</p>
+            <span className="public-footer-brand" aria-label="AutoFyon">
+              AUTOFY<span style={{ color: 'var(--af-red, #e01f26)' }}>ON</span>
+              <span style={{ fontSize: 9, fontWeight: 500, fontStyle: 'normal', color: 'rgba(240,244,248,0.4)', marginLeft: 1, alignSelf: 'flex-end', paddingBottom: 2 }}>.com</span>
+            </span>
+            <p>{isAr
+              ? 'مساحة واحدة لاكتشاف السيارات والمعارض في مصر.'
+              : 'The automotive operating system for Egypt\'s car market.'}
+            </p>
           </div>
-          <nav aria-label={isAr ? 'روابط إضافية' : 'Additional links'}>
-            <Link href="/join">{isAr ? 'انضم كمعرض' : 'List your showroom'}</Link>
-            <Link href="/media-manager/index.html">Almostashar Media Manager · المستشار التسويقي لمعرضك</Link>
-            <Link href="/almostashar">{isAr ? 'المستشار' : 'Al-Mostashar'}</Link>
+
+          {/* Col 2 — Links */}
+          <nav aria-label={isAr ? 'روابط إضافية' : 'Footer links'}>
+            <Link href={localePath(locale, ['cars'])}>{isAr ? 'السيارات' : 'Vehicles'}</Link>
+            <Link href={localePath(locale, ['brands'])}>{isAr ? 'الماركات' : 'Brands'}</Link>
+            <Link href={localePath(locale, ['dealers'])}>{isAr ? 'المعارض' : 'Dealers'}</Link>
+            <Link href={localePath(locale, ['blog'])}>{isAr ? 'المقالات' : 'Journal'}</Link>
+            <Link href="/join">{isAr ? 'انضم كمعرض' : 'List Your Showroom'}</Link>
             <Link href="/admin" prefetch={false}>{isAr ? 'دخول الإدارة' : 'Admin'}</Link>
           </nav>
-          <span className="public-footer-note">© {new Date().getFullYear()} {isAr ? 'أوتو بورتال' : 'AutoPortal'}</span>
+
+          {/* Col 3 — Copyright */}
+          <div>
+            <span className="public-footer-note">
+              © {new Date().getFullYear()} AutoFyon.com<br />
+              {isAr ? 'جميع الحقوق محفوظة' : 'All rights reserved'}<br />
+              <span style={{ color: 'rgba(224,31,38,0.6)', letterSpacing: '0.15em', fontSize: 10 }}>
+                {isAr ? 'قُدْ • اكتشف • تواصل' : 'DRIVE • EXPLORE • CONNECT'}
+              </span>
+            </span>
+          </div>
         </div>
       </footer>
     </div>
