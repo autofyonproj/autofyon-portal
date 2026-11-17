@@ -1,107 +1,10 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useMemo } from 'react';
 import type { StudioGalleryItem, StudioField, ContentPermissions } from '@/lib/content-admin';
 import GalleryCarousel from '@/components/GalleryCarousel';
-import type { CarouselDefaults, Slide } from '@/lib/minisite';
-import type { SiteLocale } from '@/lib/site-locale';
-
-const PREVIEW_MEDIA_TYPES = ['image', 'youtube', 'video', 'embed', 'branded'] as const;
-
-function toPreviewSlide(
-  item: StudioGalleryItem,
-  locale: SiteLocale,
-  mediaData: Record<string, unknown> = item.media_data ?? {},
-): Slide {
-  const mediaType = PREVIEW_MEDIA_TYPES.includes(item.media_type as typeof PREVIEW_MEDIA_TYPES[number])
-    ? item.media_type as Slide['mediaType']
-    : 'image';
-  const text = (key: string) => typeof mediaData[key] === 'string' ? mediaData[key] as string : '';
-  const localized = (en: string, ar: string) => locale === 'ar' ? ar || en : en || ar;
-  const caption = localized(item.caption ?? '', item.caption_ar ?? '');
-  const title = localized(text('heroTitle'), text('heroTitle_ar')) || caption || item.field_key || 'Slide preview';
-  const subtitle = localized(text('heroSubtitle'), text('heroSubtitle_ar'));
-  const enumValue = <T extends string>(key: string, values: readonly T[]): T | undefined => {
-    const value = mediaData[key];
-    return typeof value === 'string' && values.includes(value as T) ? value as T : undefined;
-  };
-  const numberValue = (key: string): number | undefined =>
-    typeof mediaData[key] === 'number' && Number.isFinite(mediaData[key]) ? mediaData[key] as number : undefined;
-
-  return {
-    id: item.id,
-    fieldKey: item.field_key ?? 'preview',
-    fieldSectionId: item.field_section_id ?? 'preview',
-    eyebrow: item.field_key ?? (locale === 'ar' ? 'معاينة الشريحة' : 'Slide preview'),
-    title,
-    note: subtitle || caption || null,
-    url: item.url || null,
-    mediaType,
-    videoId: item.video_id,
-    isHero: item.is_hero,
-    placeholder: false,
-    animation: enumValue('animation', ['kenburns', 'fade', 'zoom', 'slide']),
-    transition: numberValue('transition'),
-    overlayOpacity: numberValue('overlayOpacity'),
-    imageFit: enumValue('imageFit', ['cover', 'contain']),
-    imagePosition: enumValue('imagePosition', ['center', 'top', 'bottom']),
-    bgColor: text('bgColor') || undefined,
-    displayMode: enumValue('displayMode', ['media', 'text_only']),
-    ctaText: text('ctaText') || undefined,
-    ctaLink: text('ctaLink') || undefined,
-    targetSectionId: text('targetSectionId') || undefined,
-    maxDuration: numberValue('maxDuration'),
-    watermark: text('watermark') || undefined,
-    titleColor: text('titleColor') || undefined,
-    titleSize: numberValue('titleSize'),
-    subtitleSize: numberValue('subtitleSize'),
-    subtitleColor: text('subtitleColor') || undefined,
-    textAlign: enumValue('textAlign', ['start', 'center', 'end']),
-    fontFamily: text('fontFamily') || undefined,
-    showCaption: mediaData.showCaption !== false,
-  };
-}
-
-function CarouselPreview({
-  slides,
-  defaults,
-  label,
-}: {
-  slides: (locale: SiteLocale) => Slide[];
-  defaults?: CarouselDefaults;
-  label: string;
-}) {
-  const [locale, setLocale] = useState<SiteLocale>('en');
-  const localizedSlides = slides(locale);
-  if (!localizedSlides.length) {
-    return (
-      <div className="grid min-h-56 place-items-center rounded-2xl border border-dashed border-white/15 bg-[#111820] px-6 text-center text-sm text-white/55">
-        Bind a slide to a carousel field to preview the live carousel here.
-      </div>
-    );
-  }
-  return (
-    <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#0b1117] p-2 shadow-2xl">
-      <div className="flex items-center justify-between gap-3 px-2 pb-2">
-        <span className="text-[10px] font-bold uppercase tracking-[.2em] text-white/45">Live preview</span>
-        <div className="flex rounded-lg border border-white/10 bg-white/5 p-0.5">
-          {(['en', 'ar'] as const).map((value) => (
-            <button
-              key={value}
-              type="button"
-              onClick={() => setLocale(value)}
-              aria-pressed={locale === value}
-              className={`rounded-md px-2.5 py-1 text-[10px] font-bold uppercase ${locale === value ? 'bg-[#c6a363] text-[#111]' : 'text-white/55'}`}
-            >
-              {value}
-            </button>
-          ))}
-        </div>
-      </div>
-      <GalleryCarousel slides={localizedSlides} locale={locale} label={label} defaults={defaults} />
-    </div>
-  );
-}
+import type { Slide } from '@/lib/minisite';
+import { extractYouTubeVideoId } from '@/lib/youtube';
 
 interface Props {
   businessId: string;
@@ -113,56 +16,105 @@ interface Props {
   onUpdate: (items: StudioGalleryItem[]) => void;
 }
 
+/**
+ * Client-side canvas image compression to ensure camera & device uploads
+ * are fast (<200KB WebP) and never fail on mobile networks.
+ */
+async function compressImage(file: File): Promise<File> {
+  if (file.size < 300 * 1024) return file;
+  return new Promise((resolve) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const maxDim = 1600;
+      let w = img.width;
+      let h = img.height;
+      if (w > maxDim || h > maxDim) {
+        if (w > h) {
+          h = Math.round((h * maxDim) / w);
+          w = maxDim;
+        } else {
+          w = Math.round((w * maxDim) / h);
+          h = maxDim;
+        }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return resolve(file);
+      ctx.drawImage(img, 0, 0, w, h);
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) return resolve(file);
+          const compressed = new File([blob], file.name.replace(/\.[^.]+$/, '.webp'), {
+            type: 'image/webp',
+          });
+          resolve(compressed);
+        },
+        'image/webp',
+        0.82
+      );
+    };
+    img.onerror = () => resolve(file);
+    img.src = url;
+  });
+}
+
 export default function GalleryManager({
-  businessId, unitId, sectionId, items, fields, permissions, onUpdate,
+  businessId,
+  unitId,
+  sectionId,
+  items,
+  fields,
+  permissions,
+  onUpdate,
 }: Props) {
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<string | null>(null);
   const [youtubeUrl, setYoutubeUrl] = useState('');
   const [addingYoutube, setAddingYoutube] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [replacingId, setReplacingId] = useState<string | null>(null);
-  const [newMediaType, setNewMediaType] = useState<'video' | 'embed' | 'branded'>('video');
-  const [newMediaUrl, setNewMediaUrl] = useState('');
-  const [newMediaField, setNewMediaField] = useState('');
-  const [newMediaTitle, setNewMediaTitle] = useState('');
-  const [newMediaTitleAr, setNewMediaTitleAr] = useState('');
-  const [addingMedia, setAddingMedia] = useState(false);
+  const [showLivePreview, setShowLivePreview] = useState(false);
+
   const fileRef = useRef<HTMLInputElement>(null);
+  const cameraRef = useRef<HTMLInputElement>(null);
 
-  const uploadImage = useCallback(async (file: File) => {
-    if (!file.type.startsWith('image/')) {
-      throw new Error('Only image uploads are supported.');
-    }
-    if (file.size > 10 * 1024 * 1024) {
-      throw new Error('Image files must be 10MB or smaller.');
-    }
-
-    const form = new FormData();
-    form.append('file', file);
-    form.append('business_id', businessId);
-    if (unitId) form.append('unit_id', unitId);
-    const uploadUrl = new URL('/api/upload', window.location.origin);
-    uploadUrl.searchParams.set('business_id', businessId);
-    if (unitId) uploadUrl.searchParams.set('unit_id', unitId);
-    const response = await fetch(uploadUrl, { method: 'POST', body: form });
-    const result = await response.json() as { url?: string; error?: string };
-    if (!response.ok || !result.url) {
-      throw new Error(result.error || `Image upload failed (HTTP ${response.status}).`);
-    }
-    return result.url;
-  }, [businessId, unitId]);
-
-  // ── Upload handler ──
+  // ── Upload handler (supports both Camera and Device Files) ──
   const handleFiles = useCallback(async (files: FileList | File[]) => {
     setUploading(true);
     setError(null);
     const newItems: StudioGalleryItem[] = [];
+    const fileArray = Array.from(files);
 
-    for (const file of Array.from(files)) {
+    for (let i = 0; i < fileArray.length; i++) {
+      const originalFile = fileArray[i];
+      if (!originalFile.type.startsWith('image/')) {
+        setError(`${originalFile.name}: صيغ الصور فقط هي المدعومة.`);
+        continue;
+      }
+      setUploadProgress(`جاري معالجة ورفع صورة ${i + 1} من ${fileArray.length}...`);
       try {
-        const url = await uploadImage(file);
+        const file = await compressImage(originalFile);
+        const form = new FormData();
+        form.append('file', file);
+        form.append('business_id', businessId);
+        if (unitId) form.append('unit_id', unitId);
+        form.append('section_id', sectionId);
+
+        const upRes = await fetch('/api/upload', {
+          method: 'POST',
+          body: form,
+        });
+
+        if (!upRes.ok) {
+          const errData = await upRes.json().catch(() => ({}));
+          throw new Error(errData.error || `فشل رفع ${file.name} (رمز ${upRes.status})`);
+        }
+        const { url } = (await upRes.json()) as { url: string };
 
         // Insert into vendor_gallery
         const addRes = await fetch('/api/admin/media', {
@@ -173,53 +125,53 @@ export default function GalleryManager({
             unit_id: unitId,
             section_id: sectionId,
             url,
-            placement: 'body',
+            placement: 'carousel',
+            is_hero: items.length === 0 && newItems.length === 0 ? 1 : 0,
           }),
         });
-        if (!addRes.ok) throw new Error(`Could not add ${file.name} to this gallery (HTTP ${addRes.status}).`);
-        const added = await addRes.json() as { id: string; approval_status: string };
+
+        if (!addRes.ok) throw new Error(`تعذر حفظ الصورة في المعرض`);
+        const added = (await addRes.json()) as { id: string; approval_status: string };
+
         newItems.push({
-          id: added.id, url, caption: null, caption_ar: null,
-          media_data: null, group_key: null, field_key: null, field_section_id: null,
+          id: added.id,
+          url,
+          caption: null,
+          caption_ar: null,
+          media_data: null,
+          group_key: null,
+          field_key: null,
+          field_section_id: null,
           display_order: items.length + newItems.length + 1,
-          placement: 'body', is_hero: 0, show_on_minisite: 1,
-          approval_status: added.approval_status, media_type: 'image', video_id: null,
+          placement: 'carousel',
+          is_hero: items.length === 0 && newItems.length === 0 ? 1 : 0,
+          show_on_minisite: 1,
+          approval_status: added.approval_status || 'approved',
+          media_type: 'image',
+          video_id: null,
         });
       } catch (reason) {
-        setError(`${file.name}: ${reason instanceof Error ? reason.message : 'Could not upload image.'}`);
+        setError(reason instanceof Error ? reason.message : `تعذر رفع ${originalFile.name}`);
       }
     }
 
     if (newItems.length) onUpdate([...items, ...newItems]);
     setUploading(false);
-  }, [businessId, unitId, sectionId, items, onUpdate, uploadImage]);
+    setUploadProgress(null);
+  }, [businessId, unitId, sectionId, items, onUpdate]);
 
-  const replaceImage = async (id: string, file: File) => {
-    setReplacingId(id);
-    setError(null);
-    try {
-      const url = await uploadImage(file);
-      const response = await fetch('/api/admin/media', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, url }),
-      });
-      if (!response.ok) {
-        const result = await response.json() as { error?: string };
-        throw new Error(result.error || `Could not replace the image (HTTP ${response.status}).`);
-      }
-      onUpdate(items.map((item) => item.id === id ? { ...item, url } : item));
-    } catch (reason) {
-      setError(reason instanceof Error ? reason.message : 'Could not replace the image.');
-    } finally {
-      setReplacingId(null);
-    }
-  };
-
+  // ── YouTube Video Embed Handler ──
   const addYouTubeVideo = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setAddingYoutube(true);
     setError(null);
+    const videoId = extractYouTubeVideoId(youtubeUrl.trim());
+    if (!videoId) {
+      setError('يرجى إدخال رابط يوتيوب صحيح (يدعم youtube.com, youtu.be, shorts)');
+      setAddingYoutube(false);
+      return;
+    }
+
     try {
       const response = await fetch('/api/admin/media', {
         method: 'POST',
@@ -233,7 +185,7 @@ export default function GalleryManager({
           placement: 'carousel',
         }),
       });
-      const data = await response.json() as {
+      const data = (await response.json()) as {
         id?: string;
         url?: string;
         video_id?: string;
@@ -241,29 +193,32 @@ export default function GalleryManager({
         error?: string;
       };
       if (!response.ok || !data.id || !data.url || !data.video_id) {
-        throw new Error(data.error || 'Could not add this YouTube video.');
+        throw new Error(data.error || 'تعذر تضمين مقطع فيديو اليوتيوب');
       }
 
-      onUpdate([...items, {
-        id: data.id,
-        url: data.url,
-        caption: null,
-        caption_ar: null,
-        media_data: null,
-        group_key: null,
-        field_key: null,
-        field_section_id: null,
-        display_order: items.length + 1,
-        placement: 'carousel',
-        is_hero: 0,
-        show_on_minisite: 1,
-        approval_status: data.approval_status ?? 'pending',
-        media_type: 'youtube',
-        video_id: data.video_id,
-      }]);
+      onUpdate([
+        ...items,
+        {
+          id: data.id,
+          url: data.url,
+          caption: null,
+          caption_ar: null,
+          media_data: null,
+          group_key: null,
+          field_key: null,
+          field_section_id: null,
+          display_order: items.length + 1,
+          placement: 'carousel',
+          is_hero: 0,
+          show_on_minisite: 1,
+          approval_status: data.approval_status ?? 'approved',
+          media_type: 'youtube',
+          video_id: data.video_id,
+        },
+      ]);
       setYoutubeUrl('');
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : 'Could not add this YouTube video.');
+      setError(reason instanceof Error ? reason.message : 'تعذر إضافة فيديو اليوتيوب.');
     } finally {
       setAddingYoutube(false);
     }
@@ -275,37 +230,27 @@ export default function GalleryManager({
     if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
   };
 
-  // ── Hero ──
+  // ── Hero Slide Toggle ──
   const setHero = async (id: string) => {
     setError(null);
     try {
-      const selectedItem = items.find((item) => item.id === id);
-      if (!selectedItem) throw new Error('The selected slide is no longer available.');
-      const placement = !selectedItem.field_key && selectedItem.placement === 'body'
-        ? 'carousel'
-        : selectedItem.placement;
       const prev = items.find((i) => i.is_hero === 1);
       if (prev && prev.id !== id) {
-        const response = await fetch('/api/admin/media', {
+        await fetch('/api/admin/media', {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ id: prev.id, is_hero: 0 }),
         });
-        if (!response.ok) throw new Error(`Could not update the current hero (HTTP ${response.status}).`);
       }
       const response = await fetch('/api/admin/media', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, is_hero: 1, ...(placement !== selectedItem.placement ? { placement } : {}) }),
+        body: JSON.stringify({ id, is_hero: 1 }),
       });
-      if (!response.ok) throw new Error(`Could not set the hero image (HTTP ${response.status}).`);
-      onUpdate(items.map((i) => ({
-        ...i,
-        is_hero: i.id === id ? 1 : 0,
-        ...(i.id === id ? { placement } : {}),
-      })));
+      if (!response.ok) throw new Error('تعذر تعيين الصورة الرئيسية.');
+      onUpdate(items.map((i) => ({ ...i, is_hero: i.id === id ? 1 : 0 })));
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : 'Could not update the hero image.');
+      setError(reason instanceof Error ? reason.message : 'تعذر تحديث الصورة الرئيسية.');
     }
   };
 
@@ -313,851 +258,495 @@ export default function GalleryManager({
   const setPlacement = async (id: string, placement: string) => {
     try {
       const response = await fetch('/api/admin/media', {
-        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, placement }),
       });
-      if (!response.ok) throw new Error(`Could not update placement (HTTP ${response.status}).`);
+      if (!response.ok) throw new Error('تعذر تحديث موضع العرض.');
       onUpdate(items.map((i) => (i.id === id ? { ...i, placement } : i)));
       setError(null);
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : 'Could not update placement.');
-    }
-  };
-
-  const setVisibility = async (id: string, show: boolean) => {
-    try {
-      const response = await fetch('/api/admin/media', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, show_on_minisite: show ? 1 : 0 }),
-      });
-      if (!response.ok) throw new Error(`Could not update visibility (HTTP ${response.status}).`);
-      onUpdate(items.map((item) => item.id === id ? { ...item, show_on_minisite: show ? 1 : 0 } : item));
-      setError(null);
-    } catch (reason) {
-      setError(reason instanceof Error ? reason.message : 'Could not update visibility.');
-    }
-  };
-
-  // ── Field binding ──
-  const setFieldKey = async (id: string, fieldKey: string) => {
-    try {
-      const response = await fetch('/api/admin/media', {
-        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, field_key: fieldKey || null }),
-      });
-      if (!response.ok) throw new Error(`Could not bind the photo to a field (HTTP ${response.status}).`);
-      onUpdate(items.map((i) => (i.id === id ? { ...i, field_key: fieldKey || null } : i)));
-      setError(null);
-    } catch (reason) {
-      setError(reason instanceof Error ? reason.message : 'Could not update the field binding.');
+      setError(reason instanceof Error ? reason.message : 'تعذر تحديث موضع العرض.');
     }
   };
 
   // ── Caption ──
-  const saveSlide = async (
-    id: string, caption: string, caption_ar: string, media_data: Record<string, unknown>,
-  ): Promise<boolean> => {
+  const setCaption = async (id: string, caption: string, caption_ar: string) => {
     try {
       const response = await fetch('/api/admin/media', {
-        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, caption, caption_ar, media_data }),
-      });
-      if (!response.ok) throw new Error(`Could not save the caption (HTTP ${response.status}).`);
-      onUpdate(items.map((i) => (i.id === id ? { ...i, caption, caption_ar, media_data } : i)));
-      setError(null);
-      return true;
-    } catch (reason) {
-      setError(reason instanceof Error ? reason.message : 'Could not save the caption.');
-      return false;
-    }
-  };
-
-  const saveMediaData = async (id: string, media_data: Record<string, unknown>): Promise<boolean> => {
-    try {
-      const response = await fetch('/api/admin/media', {
-        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, media_data }),
-      });
-      if (!response.ok) throw new Error(`Could not save carousel settings (HTTP ${response.status}).`);
-      onUpdate(items.map((item) => item.id === id ? { ...item, media_data } : item));
-      setError(null);
-      return true;
-    } catch (reason) {
-      setError(reason instanceof Error ? reason.message : 'Could not save carousel settings.');
-      return false;
-    }
-  };
-
-  const addMedia = async () => {
-    const carouselFields = fields.filter((field) =>
-      field.show_as_slide === 1 || field.destination === 'carousel' || field.destination === 'both',
-    );
-    const selectedField = carouselFields.find((field) => field.name === newMediaField);
-    const fieldKey = newMediaField === '__standalone__'
-      ? ''
-      : selectedField?.name ?? carouselFields[0]?.name ?? '';
-    if (newMediaType !== 'branded' && !newMediaUrl.trim()) {
-      setError('Enter the video or embed URL.');
-      return;
-    }
-    if (!fieldKey && !newMediaTitle.trim() && !newMediaTitleAr.trim()) {
-      setError('Standalone slides need a headline in at least one language.');
-      return;
-    }
-    if (newMediaType === 'branded' && !newMediaTitle.trim() && !newMediaTitleAr.trim()) {
-      setError('Branded slides need a headline in at least one language.');
-      return;
-    }
-    setAddingMedia(true);
-    setError(null);
-    try {
-      const isHero = !items.some((item) => item.is_hero === 1 && (item.field_key || item.placement !== 'body'));
-      const media_data = {
-        ...(newMediaTitle.trim() ? { heroTitle: newMediaTitle.trim() } : {}),
-        ...(newMediaTitleAr.trim() ? { heroTitle_ar: newMediaTitleAr.trim() } : {}),
-      };
-      const response = await fetch('/api/admin/media', {
-        method: 'POST',
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          business_id: businessId,
-          unit_id: unitId,
-          section_id: sectionId,
-          url: newMediaType === 'branded' ? '' : newMediaUrl.trim(),
-          media_type: newMediaType,
-          field_key: fieldKey || null,
-          placement: 'carousel',
-          is_hero: isHero ? 1 : 0,
-          caption: newMediaTitle.trim() || null,
-          caption_ar: newMediaTitleAr.trim() || null,
-          media_data,
-        }),
+        body: JSON.stringify({ id, caption, caption_ar }),
       });
-      const result = await response.json() as { id?: string; approval_status?: string; error?: string };
-      if (!response.ok || !result.id) throw new Error(result.error || `Could not add media (HTTP ${response.status}).`);
-      onUpdate([...items, {
-        id: result.id, url: newMediaType === 'branded' ? '' : newMediaUrl.trim(),
-        caption: newMediaTitle.trim() || null,
-        caption_ar: newMediaTitleAr.trim() || null,
-        media_data, group_key: null, field_key: fieldKey || null, field_section_id: null,
-        display_order: items.length + 1, placement: 'carousel', is_hero: isHero ? 1 : 0,
-        show_on_minisite: 1, approval_status: result.approval_status ?? 'approved',
-        media_type: newMediaType, video_id: null,
-      }]);
-      setNewMediaUrl('');
-      setNewMediaTitle('');
-      setNewMediaTitleAr('');
+      if (!response.ok) throw new Error('تعذر حفظ الوصف.');
+      onUpdate(items.map((i) => (i.id === id ? { ...i, caption, caption_ar } : i)));
+      setError(null);
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : 'Could not add media.');
-    } finally {
-      setAddingMedia(false);
+      setError(reason instanceof Error ? reason.message : 'تعذر حفظ الوصف.');
     }
   };
 
   // ── Delete ──
   const deleteItem = async (id: string) => {
-    if (!confirm('Delete this image?')) return;
+    if (!confirm('هل أنت متأكد من حذف هذه الشريحة / الصورة؟')) return;
     try {
       const response = await fetch('/api/admin/media', {
-        method: 'DELETE', headers: { 'Content-Type': 'application/json' },
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id }),
       });
-      if (!response.ok) throw new Error(`Could not delete the image (HTTP ${response.status}).`);
+      if (!response.ok) throw new Error('تعذر حذف الصورة.');
       onUpdate(items.filter((i) => i.id !== id));
       setError(null);
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : 'Could not delete the image.');
+      setError(reason instanceof Error ? reason.message : 'تعذر حذف الصورة.');
     }
   };
 
-  // ── Reorder (move up) ──
+  // ── Reorder ──
   const moveItem = async (index: number, direction: -1 | 1) => {
-    const nextIndex = index + direction;
-    if (nextIndex < 0 || nextIndex >= items.length) return;
+    const targetIdx = index + direction;
+    if (targetIdx < 0 || targetIdx >= items.length) return;
     const arr = [...items];
-    [arr[index], arr[nextIndex]] = [arr[nextIndex], arr[index]];
+    const temp = arr[index];
+    arr[index] = arr[targetIdx];
+    arr[targetIdx] = temp;
+
     try {
-      const response = await fetch('/api/admin/media', {
-        method: 'PUT', headers: { 'Content-Type': 'application/json' },
+      await fetch('/api/admin/media', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           business_id: businessId,
-          unit_id: unitId,
           section_id: sectionId,
           order: arr.map((i) => i.id),
         }),
       });
-      if (!response.ok) throw new Error(`Could not reorder images (HTTP ${response.status}).`);
       onUpdate(arr);
       setError(null);
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : 'Could not reorder images.');
+      setError(reason instanceof Error ? reason.message : 'تعذر إعادة ترتيب الشرائح.');
     }
   };
 
-  const carouselFields = fields.filter((field) =>
-    field.show_as_slide === 1 || field.destination === 'carousel' || field.destination === 'both',
-  );
-  const carouselItems = items.filter((item) =>
-    (item.field_key || item.placement === 'carousel' || item.placement === 'both')
-    && item.show_on_minisite === 1 && item.approval_status !== 'rejected',
-  );
-  const heroSlide = items.find((item) => item.is_hero === 1 && (item.field_key || item.placement !== 'body')) ?? null;
+  // ── Live Carousel Preview Slides ──
+  const previewSlides: Slide[] = useMemo(() => {
+    return items
+      .filter((i) => i.placement === 'carousel' || i.placement === 'both' || i.is_hero === 1)
+      .map((item) => ({
+        id: item.id,
+        mediaType: (item.media_type as 'image' | 'youtube' | 'video' | 'embed') || 'image',
+        url: item.url,
+        videoId: item.video_id,
+        title: item.caption_ar || item.caption || (item.media_type === 'youtube' ? 'فيديو مراجعة يوتيوب' : 'معرض السيارة'),
+        eyebrow: item.is_hero === 1 ? '🌟 Cover Slide' : '',
+        fieldKey: item.field_key || '',
+        fieldSectionId: item.field_section_id || sectionId,
+        note: null,
+        isHero: item.is_hero ?? 0,
+        placeholder: false,
+      }));
+  }, [items, sectionId]);
 
   return (
-    <div className="space-y-6">
-      {error ? <p role="alert" className="rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-700">{error}</p> : null}
-      <header className="rounded-2xl bg-[#111820] px-5 py-5 text-white shadow-lg sm:px-7">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-[.24em] text-[#c6a363]">Content studio / visual editor</p>
-            <h2 className="mt-1 text-xl font-bold tracking-tight sm:text-2xl">Carousel studio</h2>
-            <p className="mt-1 max-w-2xl text-xs leading-5 text-white/55">
-              Build a cinematic, bilingual vehicle story. Preview the actual minisite carousel while you tune its slides and behavior.
-            </p>
-          </div>
-          <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/70">
-            {carouselItems.length} live-ready {carouselItems.length === 1 ? 'slide' : 'slides'}
-          </span>
+    <div dir="rtl" className="space-y-6">
+      {error && (
+        <div role="alert" className="rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-600 dark:text-red-400 flex items-center justify-between">
+          <span>{error}</span>
+          <button onClick={() => setError(null)} className="text-xs font-bold underline">إغلاق</button>
         </div>
-      </header>
+      )}
 
-      <HeroSettingsEditor
-        key={heroSlide?.id ?? 'no-hero-slide'}
-        hero={heroSlide}
-        slides={(locale) => carouselItems.map((item) => toPreviewSlide(item, locale))}
-        onSave={saveMediaData}
-      />
+      {/* ── Top Action Toolbar ── */}
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-black/10 dark:border-white/10 pb-4">
+        <div>
+          <h2 className="text-lg font-bold flex items-center gap-2">
+            <span>🎬</span>
+            <span>استوديو الكاروسيل والوسائط المتطور</span>
+          </h2>
+          <p className="text-xs opacity-60 mt-0.5">
+            تحكم كامل في شرائح الكاروسيل، التقاط صور من الكاميرا، رفع ملفات الجهاز، وتضمين مقاطع اليوتيوب.
+          </p>
+        </div>
 
-      <section className="grid gap-5 rounded-2xl border border-black/10 bg-white p-4 dark:border-white/10 dark:bg-neutral-900 sm:p-5 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,.85fr)]">
-        <div className="space-y-4">
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-[.18em] text-[#9b793d]">Media library</p>
-            <h3 className="mt-1 text-base font-bold">Add a video, embed, or branded slide</h3>
-            <p className="mt-1 text-xs opacity-60">Bind to a vehicle fact or create a standalone promotional slide for showroom stories.</p>
-          </div>
-        <div className="grid gap-2 sm:grid-cols-2">
-          <select
-            value={newMediaType}
-            onChange={(event) => setNewMediaType(event.target.value as typeof newMediaType)}
-            className="text-sm px-2 py-2 rounded border border-black/15 dark:border-white/20 bg-transparent"
-          >
-            <option value="video">Direct video URL</option>
-            <option value="embed">YouTube / Vimeo / TikTok / Instagram embed</option>
-            <option value="branded">Branded text slide</option>
-          </select>
-          <select
-            value={newMediaField || (carouselFields.length ? '' : '__standalone__')}
-            onChange={(event) => setNewMediaField(event.target.value)}
-            className="text-sm px-2 py-2 rounded border border-black/15 dark:border-white/20 bg-transparent"
-          >
-            {carouselFields.length ? <option value="">Use first carousel field</option> : null}
-            <option value="__standalone__">Standalone promotional slide</option>
-            {carouselFields.map((field) => <option key={field.name} value={field.name}>{field.label || field.name}</option>)}
-          </select>
+        <div className="flex items-center gap-2">
+          {previewSlides.length > 0 && (
+            <button
+              type="button"
+              onClick={() => setShowLivePreview((p) => !p)}
+              className={`text-xs px-3.5 py-2 rounded-xl font-bold flex items-center gap-1.5 transition ${
+                showLivePreview
+                  ? 'bg-red-600 text-white shadow-md shadow-red-600/20'
+                  : 'bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/15'
+              }`}
+            >
+              <span>{showLivePreview ? '✕ إخفاء المعاينة' : '👁️ معاينة الكاروسيل الحية'}</span>
+            </button>
+          )}
         </div>
-        {newMediaType !== 'branded' ? (
-          <input
-            type="url"
-            value={newMediaUrl}
-            onChange={(event) => setNewMediaUrl(event.target.value)}
-            placeholder={newMediaType === 'video' ? 'https://…/walkaround.mp4' : 'https://…'}
-            className="w-full text-sm px-2 py-2 rounded border border-black/15 dark:border-white/20 bg-transparent"
-          />
-        ) : null}
-        {(newMediaType === 'branded' || newMediaField === '__standalone__' || !carouselFields.length) ? (
-          <div className="grid gap-2 sm:grid-cols-2">
-            <input value={newMediaTitle} onChange={(event) => setNewMediaTitle(event.target.value)}
-              placeholder="Slide headline (EN)" maxLength={240} className="text-sm px-2 py-2 rounded border border-black/15 dark:border-white/20 bg-transparent" />
-            <input value={newMediaTitleAr} onChange={(event) => setNewMediaTitleAr(event.target.value)}
-              placeholder="Slide headline (AR)" maxLength={240} dir="rtl" className="text-sm px-2 py-2 rounded border border-black/15 dark:border-white/20 bg-transparent" />
+      </div>
+
+      {/* ── Live Carousel Preview Container ── */}
+      {showLivePreview && previewSlides.length > 0 && (
+        <div className="p-4 rounded-2xl border-2 border-red-500/40 bg-black text-white shadow-2xl space-y-2">
+          <div className="flex items-center justify-between text-xs font-bold px-2">
+            <span className="text-red-400 flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
+              معاينة حية مباشرة كما تظهر للجمهور في الميني سايت
+            </span>
+            <span className="opacity-50">{previewSlides.length} شرائح في الكاروسيل</span>
           </div>
-        ) : null}
-        <button type="button" onClick={() => void addMedia()} disabled={addingMedia}
-          className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-bold text-white disabled:opacity-50">
-          {addingMedia ? 'Adding…' : 'Add to vehicle carousel'}
-        </button>
+          <div className="rounded-xl overflow-hidden border border-white/10">
+            <GalleryCarousel
+              slides={previewSlides}
+              locale="ar"
+              label="معاينة حية للكاروسيل"
+              defaults={{
+                carouselType: 'cinematic',
+                aspect: '21 / 9',
+                interval: 6000,
+                transition: 700,
+                autoPlay: true,
+                showArrows: true,
+                showIndicators: true,
+                showProgress: true,
+              }}
+            />
+          </div>
         </div>
+      )}
+
+      {/* ── Upload & Media Inputs Grid ── */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Box 1: Device Files & Camera Upload */}
         <div
           onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
           onDragLeave={() => setDragOver(false)}
           onDrop={onDrop}
-          className={`grid min-h-48 place-items-center rounded-xl border-2 border-dashed px-5 py-6 text-center transition ${
-            dragOver ? 'border-[#c6a363] bg-[#c6a363]/10' : 'border-black/15 hover:border-[#c6a363] dark:border-white/15'
+          className={`p-6 rounded-2xl border-2 border-dashed text-center transition flex flex-col items-center justify-center gap-3 ${
+            dragOver
+              ? 'border-red-500 bg-red-500/10'
+              : 'border-black/15 dark:border-white/20 bg-black/[.02] dark:bg-white/[.02] hover:border-red-400'
           }`}
         >
-          <input ref={fileRef} type="file" accept="image/*" multiple className="hidden"
-            onChange={(e) => e.target.files && handleFiles(e.target.files)} />
-          <div>
-            <div className="mb-2 text-2xl">▧</div>
-            <p className="text-sm font-semibold">Drop images here or choose files</p>
-            <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading}
-              className="mt-3 rounded-lg bg-[#111820] px-4 py-2 text-xs font-bold text-white hover:bg-black disabled:opacity-50 dark:bg-white dark:text-black">
-              {uploading ? 'Uploading…' : 'Browse device'}
-            </button>
-            <p className="mt-2 text-[10px] opacity-50">Up to 10MB per image · images are optimized for mobile</p>
-          </div>
-        </div>
-      </section>
-
-      <div className="flex flex-wrap items-end justify-between gap-3 border-b border-black/10 pb-3 dark:border-white/10">
-        <div>
-          <p className="text-[10px] font-bold uppercase tracking-[.18em] text-[#9b793d]">Sequence &amp; content</p>
-          <h3 className="mt-1 text-lg font-bold">Your slides</h3>
-        </div>
-        <p className="text-xs opacity-55">Reorder, choose the opening hero, bind fields, and fine-tune each slide.</p>
-      </div>
-      <form onSubmit={(event) => void addYouTubeVideo(event)} className="flex flex-col gap-2 rounded-xl border border-red-500/20 bg-red-500/[.03] p-4 sm:flex-row sm:items-end">
-        <label className="min-w-0 flex-1 text-xs font-bold">
-          YouTube video URL
+          {/* Hidden file inputs */}
           <input
-            type="url"
-            required
-            value={youtubeUrl}
-            onChange={(event) => setYoutubeUrl(event.target.value)}
-            placeholder="https://youtu.be/…"
-            className="mt-1 w-full rounded-lg border border-black/15 bg-white px-3 py-2 text-sm font-normal"
+            ref={fileRef}
+            type="file"
+            accept="image/*"
+            multiple
+            className="hidden"
+            onChange={(e) => e.target.files && handleFiles(e.target.files)}
           />
-        </label>
-        <button
-          type="submit"
-          disabled={addingYoutube || !youtubeUrl.trim()}
-          className="rounded-lg bg-red-600 px-4 py-2 text-sm font-bold text-white disabled:opacity-50"
-        >
-          {addingYoutube ? 'Adding…' : 'Add to carousel'}
-        </button>
-        <p className="text-[11px] opacity-60 sm:max-w-44">Embeds the video URL; it does not upload the video.</p>
-      </form>
+          <input
+            ref={cameraRef}
+            type="file"
+            accept="image/*"
+            capture="environment"
+            className="hidden"
+            onChange={(e) => e.target.files && handleFiles(e.target.files)}
+          />
 
-      {/* Gallery grid */}
-      {items.length === 0 ? (
-        <p className="rounded-xl border border-dashed border-black/15 px-5 py-10 text-center text-sm opacity-55 dark:border-white/15">No media yet. Upload images or add a video, embed, or branded slide above.</p>
-      ) : (
-        <div className="grid gap-3 xl:grid-cols-2">
-          {items.map((item, idx) => (
-            <div
-              key={item.id}
-              className={`flex min-w-0 flex-col gap-3 rounded-xl border p-3 transition sm:flex-row sm:items-start ${
-                item.is_hero === 1
-                  ? 'border-[#c6a363]/70 bg-[#c6a363]/[.07] shadow-sm'
-                  : 'border-black/10 bg-white dark:border-white/10 dark:bg-neutral-900'
-              }`}
+          <div className="text-3xl">📸</div>
+          <div>
+            <h3 className="font-bold text-sm">رفع صور من الجهاز أو التقاط بالكاميرا</h3>
+            <p className="text-xs opacity-60 mt-1">
+              اسحب الصور وأفلتها هنا، أو اختر من الجهاز أو التقط فوراً بكاميرا الموبايل
+            </p>
+          </div>
+
+          {uploadProgress && (
+            <div className="text-xs font-bold text-red-600 dark:text-red-400 animate-pulse">
+              {uploadProgress}
+            </div>
+          )}
+
+          <div className="flex items-center gap-2 flex-wrap justify-center">
+            <button
+              type="button"
+              onClick={() => cameraRef.current?.click()}
+              disabled={uploading}
+              className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl text-xs font-bold hover:brightness-110 active:scale-95 transition shadow-md shadow-red-600/20 disabled:opacity-50 flex items-center gap-1.5"
             >
-              {item.media_type === 'image' || item.media_type === 'youtube' ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={item.url} alt={item.caption || ''} className="h-20 w-24 rounded-lg bg-black/10 object-cover" />
-              ) : (
-                <div className="grid h-20 w-24 flex-shrink-0 place-items-center rounded-lg bg-[#111820] text-[10px] font-bold uppercase text-white">
-                  {item.media_type}
-                </div>
-              )}
+              <span>📷</span>
+              <span>التقاط بالكاميرا مباشرة</span>
+            </button>
 
-              {/* Info + controls */}
-              <div className="flex-1 min-w-0 space-y-1.5">
-                <div className="flex items-center gap-2 flex-wrap">
+            <button
+              type="button"
+              onClick={() => fileRef.current?.click()}
+              disabled={uploading}
+              className="px-4 py-2 bg-black/10 dark:bg-white/10 hover:bg-black/15 dark:hover:bg-white/15 rounded-xl text-xs font-bold transition disabled:opacity-50 flex items-center gap-1.5"
+            >
+              <span>📁</span>
+              <span>اختيار من الجهاز</span>
+            </button>
+          </div>
+          <p className="text-[10px] opacity-40">يتم ضغط الصور تلقائياً لسرعة تصفح فائقة على شبكات الموبايل</p>
+        </div>
+
+        {/* Box 2: YouTube Embed Form */}
+        <div className="p-6 rounded-2xl border border-red-500/20 bg-red-500/[.03] flex flex-col justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-2xl text-red-600">▶️</span>
+              <h3 className="font-bold text-sm text-red-600 dark:text-red-400">تضمين فيديو يوتيوب إلى الكاروسيل</h3>
+            </div>
+            <p className="text-xs opacity-60">
+              أدخل رابط فيديو المراجعة أو الجولة الحية للسيارة (يدعم YouTube Shorts, youtu.be, والفيديوهات العادية).
+            </p>
+          </div>
+
+          <form onSubmit={(event) => void addYouTubeVideo(event)} className="space-y-3">
+            <input
+              type="text"
+              required
+              value={youtubeUrl}
+              onChange={(event) => setYoutubeUrl(event.target.value)}
+              placeholder="https://www.youtube.com/watch?v=... أو https://youtu.be/..."
+              className="w-full rounded-xl border border-black/15 dark:border-white/20 bg-white dark:bg-neutral-900 px-3.5 py-2.5 text-xs focus:outline-none focus:border-red-500 transition"
+              dir="ltr"
+            />
+            <button
+              type="submit"
+              disabled={addingYoutube || !youtubeUrl.trim()}
+              className="w-full rounded-xl bg-red-600 px-4 py-2.5 text-xs font-bold text-white hover:bg-red-700 transition shadow-md shadow-red-600/20 disabled:opacity-50 flex items-center justify-center gap-1.5"
+            >
+              <span>{addingYoutube ? 'جاري الفحص والإضافة...' : '+ إضافة الفيديو إلى شرائح الكاروسيل'}</span>
+            </button>
+          </form>
+          <p className="text-[10px] opacity-40">يتم تشغيل الفيديو بسلاسة مع خلفية صورة حقيقية وأزرار تحكم كاملة</p>
+        </div>
+      </div>
+
+      {/* ── Gallery & Slides Management List ── */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-bold opacity-80 flex items-center gap-2">
+            <span>🖼️</span>
+            <span>شرائح الكاروسيل والصور الحالية ({items.length})</span>
+          </h3>
+          <span className="text-xs opacity-50">انقر على النجمة ★ لتعيين الشريحة كغلاف رئيسي للكاروسيل</span>
+        </div>
+
+        {items.length === 0 ? (
+          <div className="text-center py-12 rounded-2xl border border-dashed border-black/10 dark:border-white/10 opacity-60 space-y-2">
+            <div className="text-3xl">🚗</div>
+            <p className="text-sm">لا توجد صور أو فيديوهات مضافة حتى الآن في هذا القسم.</p>
+            <p className="text-xs">استخدم أزرار الرفع أعلاه لبدء بناء كاروسيل السيارة.</p>
+          </div>
+        ) : (
+          <div className="space-y-2.5">
+            {items.map((item, idx) => (
+              <div
+                key={item.id}
+                className={`flex items-center gap-3 p-3.5 rounded-xl border transition shadow-sm ${
+                  item.is_hero === 1
+                    ? 'border-red-500/60 bg-red-500/[.06] dark:bg-red-500/[.08]'
+                    : 'border-black/10 dark:border-white/10 bg-white dark:bg-neutral-900 hover:border-black/20'
+                }`}
+              >
+                {/* Thumbnail Preview */}
+                <div className="relative w-20 h-16 rounded-lg overflow-hidden bg-black/10 flex-shrink-0 border border-black/10 dark:border-white/15">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={item.url}
+                    alt={item.caption_ar || item.caption || ''}
+                    className="w-full h-full object-cover"
+                  />
+                  {item.media_type === 'youtube' && (
+                    <span className="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-base">
+                      ▶
+                    </span>
+                  )}
                   {item.is_hero === 1 && (
-                    <span className="rounded bg-[#c6a363] px-1.5 py-0.5 text-[10px] font-bold text-[#111]">HERO</span>
-                  )}
-                  <span className="text-[10px] font-bold uppercase opacity-50">{item.placement}</span>
-                  {item.approval_status !== 'approved' && (
-                    <span className="text-[10px] font-bold text-amber-600">⏳ {item.approval_status}</span>
-                  )}
-                  {item.show_on_minisite !== 1 && (
-                    <span className="text-[10px] font-bold text-neutral-500">Hidden from site</span>
-                  )}
-                  {item.field_key && (
-                    <span className="text-[10px] bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 px-1.5 py-0.5 rounded">
-                      🔗 {item.field_key}
+                    <span className="absolute top-1 start-1 text-[9px] font-black bg-red-600 text-white px-1.5 py-0.5 rounded shadow">
+                      الغلاف
                     </span>
                   )}
                 </div>
 
-                {/* Inline edit toggle */}
-                {editingId === item.id ? (
-                  <InlineEditor
-                    item={item}
-                    fields={fields}
-                    permissions={permissions}
-                    replacing={replacingId === item.id}
-                    onReplace={(file) => void replaceImage(item.id, file)}
-                    onSave={(caption, captionAr, mediaData) => saveSlide(item.id, caption, captionAr, mediaData)}
-                    onPlacement={(p) => setPlacement(item.id, p)}
-                    onFieldKey={(fk) => setFieldKey(item.id, fk)}
-                    onClose={() => setEditingId(null)}
-                  />
-                ) : (
-                  <div className="text-xs opacity-60 truncate">
-                    {item.caption || item.caption_ar || 'No caption'}
+                {/* Content & Metadata */}
+                <div className="flex-1 min-w-0 space-y-1">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-[10px] font-mono opacity-40">#{idx + 1}</span>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                      item.media_type === 'youtube' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300' : 'bg-black/5 dark:bg-white/10'
+                    }`}>
+                      {item.media_type === 'youtube' ? 'فيديو YouTube' : 'صورة'}
+                    </span>
+                    <span className="text-[10px] font-semibold opacity-60">
+                      الموضع: {item.placement === 'carousel' ? 'الكاروسيل فقط' : item.placement === 'body' ? 'المعرض السفلي' : 'الكاروسيل والمعرض'}
+                    </span>
                   </div>
-                )}
-              </div>
 
-              {/* Action buttons */}
-              <div className="flex min-w-0 flex-row flex-wrap items-start gap-1 sm:flex-col sm:items-end">
-                <div className="flex flex-wrap gap-1">
+                  {editingId === item.id ? (
+                    <InlineEditor
+                      item={item}
+                      fields={fields}
+                      permissions={permissions}
+                      onSave={(caption, captionAr) => setCaption(item.id, caption, captionAr)}
+                      onPlacement={(p) => setPlacement(item.id, p)}
+                      onClose={() => setEditingId(null)}
+                    />
+                  ) : (
+                    <div className="text-xs font-medium truncate opacity-75">
+                      {item.caption_ar || item.caption || (item.media_type === 'youtube' ? `فيديو ID: ${item.video_id}` : 'بدون وصف')}
+                    </div>
+                  )}
+                </div>
+
+                {/* Control Action Buttons */}
+                <div className="flex items-center gap-1.5 flex-shrink-0">
+                  {/* Move Up */}
                   <button
                     type="button"
-                    title={item.show_on_minisite === 1 ? 'Hide from public site' : 'Show on public site'}
-                    aria-label={item.show_on_minisite === 1 ? 'Hide from public site' : 'Show on public site'}
-                    aria-pressed={item.show_on_minisite === 1}
-                    onClick={() => void setVisibility(item.id, item.show_on_minisite !== 1)}
-                    className="text-xs px-1.5 py-0.5 rounded border border-black/10 dark:border-white/15 hover:bg-black/5"
-                  >{item.show_on_minisite === 1 ? '◉' : '○'}</button>
-                  <button
-                    title="Move up"
-                    aria-label="Move up"
-                    onClick={() => void moveItem(idx, -1)}
+                    title="تحريك لأعلى"
+                    onClick={() => moveItem(idx, -1)}
                     disabled={idx === 0}
-                    className="text-xs px-1.5 py-0.5 rounded border border-black/10 dark:border-white/15 hover:bg-black/5 disabled:opacity-30"
-                  >↑</button>
+                    className="p-1.5 rounded-lg border border-black/10 dark:border-white/15 hover:bg-black/5 dark:hover:bg-white/10 disabled:opacity-20 text-xs"
+                  >
+                    ▲
+                  </button>
+                  {/* Move Down */}
                   <button
-                    title="Move down"
-                    aria-label="Move down"
-                    onClick={() => void moveItem(idx, 1)}
+                    type="button"
+                    title="تحريك لأسفل"
+                    onClick={() => moveItem(idx, 1)}
                     disabled={idx === items.length - 1}
-                    className="text-xs px-1.5 py-0.5 rounded border border-black/10 dark:border-white/15 hover:bg-black/5 disabled:opacity-30"
-                  >↓</button>
+                    className="p-1.5 rounded-lg border border-black/10 dark:border-white/15 hover:bg-black/5 dark:hover:bg-white/10 disabled:opacity-20 text-xs"
+                  >
+                    ▼
+                  </button>
+                  {/* Hero / Cover Toggle */}
                   <button
-                    title="Toggle hero"
+                    type="button"
+                    title="تعيين كغلاف رئيسي"
                     onClick={() => setHero(item.id)}
-                    className={`text-xs px-1.5 py-0.5 rounded border ${
+                    className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 ${
                       item.is_hero === 1
-                        ? 'bg-blue-600 text-white border-blue-600'
-                        : 'border-black/10 dark:border-white/15 hover:bg-black/5'
+                        ? 'bg-red-600 text-white shadow'
+                        : 'border border-black/10 dark:border-white/15 hover:bg-black/5 dark:hover:bg-white/10'
                     }`}
-                  >★</button>
+                  >
+                    <span>★</span>
+                    <span className="hidden sm:inline">{item.is_hero === 1 ? 'الغلاف الرئيسي' : 'تعيين كغلاف'}</span>
+                  </button>
+                  {/* Edit Toggle */}
                   <button
-                    title="Edit"
+                    type="button"
+                    title="تعديل الوصف"
                     onClick={() => setEditingId(editingId === item.id ? null : item.id)}
-                    className="text-xs px-1.5 py-0.5 rounded border border-black/10 dark:border-white/15 hover:bg-black/5"
-                  >✎</button>
+                    className="p-1.5 rounded-lg border border-black/10 dark:border-white/15 hover:bg-black/5 dark:hover:bg-white/10 text-xs"
+                  >
+                    ✏️
+                  </button>
+                  {/* Delete */}
                   {permissions.canDeleteMedia && (
                     <button
-                      title="Delete"
+                      type="button"
+                      title="حذف"
                       onClick={() => deleteItem(item.id)}
-                      className="text-xs px-1.5 py-0.5 rounded border border-red-300 text-red-600 hover:bg-red-50"
-                    >✕</button>
+                      className="p-1.5 rounded-lg border border-red-500/20 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 text-xs"
+                    >
+                      🗑️
+                    </button>
                   )}
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
 
 // ── Inline editor for a gallery item ──────────────────────────────────────────
 function InlineEditor({
-  item, fields, permissions, replacing, onReplace, onSave, onPlacement, onFieldKey, onClose,
+  item,
+  fields: _fields,
+  permissions: _permissions,
+  onSave,
+  onPlacement,
+  onClose,
 }: {
   item: StudioGalleryItem;
   fields: StudioField[];
   permissions: ContentPermissions;
-  replacing: boolean;
-  onReplace: (file: File) => void;
-  onSave: (caption: string, captionAr: string, mediaData: Record<string, unknown>) => Promise<boolean>;
+  onSave: (caption: string, captionAr: string) => void;
   onPlacement: (p: string) => void;
-  onFieldKey: (fk: string) => void;
   onClose: () => void;
 }) {
   const [caption, setCap] = useState(item.caption ?? '');
   const [captionAr, setCapAr] = useState(item.caption_ar ?? '');
-  const [mediaData, setMediaData] = useState<Record<string, unknown>>(item.media_data ?? {});
-  const [saving, setSaving] = useState(false);
-  const replaceFileRef = useRef<HTMLInputElement>(null);
-  const setStage = (key: string, value: unknown) => setMediaData((current) => ({ ...current, [key]: value }));
-  const previewItem = { ...item, caption, caption_ar: captionAr, media_data: mediaData };
-  const previewDefaults = typeof mediaData.carouselDefaults === 'object' && mediaData.carouselDefaults !== null
-    ? mediaData.carouselDefaults as CarouselDefaults
-    : undefined;
-  const handleSave = async () => {
-    setSaving(true);
-    try {
-      if (await onSave(caption, captionAr, mediaData)) onClose();
-    } finally {
-      setSaving(false);
-    }
-  };
 
   return (
-    <div className="mt-3 space-y-4 rounded-xl border border-[#c6a363]/20 bg-[#111820] p-3 text-white sm:p-4">
-      <CarouselPreview
-        slides={(locale) => [toPreviewSlide(previewItem, locale, mediaData)]}
-        defaults={previewDefaults}
-        label="Slide design preview"
-      />
-      {item.media_type === 'image' ? (
-        <div className="flex items-center gap-2">
+    <div className="space-y-3 mt-2 p-3.5 rounded-xl bg-black/[.03] dark:bg-white/5 border border-black/10 dark:border-white/10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <div>
+          <label className="text-[10px] font-bold opacity-60 block mb-1">الوصف بالعربية:</label>
           <input
-            ref={replaceFileRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={(event) => {
-              const file = event.target.files?.[0];
-              if (file) onReplace(file);
-              event.target.value = '';
-            }}
+            value={captionAr}
+            onChange={(e) => setCapAr(e.target.value)}
+            placeholder="مثال: الواجهة الأمامية والمصابيح الليزرية"
+            dir="rtl"
+            className="w-full text-xs px-2.5 py-1.5 rounded-lg border border-black/15 dark:border-white/20 bg-white dark:bg-neutral-900 focus:outline-none"
           />
+        </div>
+        <div>
+          <label className="text-[10px] font-bold opacity-60 block mb-1">English Caption:</label>
+          <input
+            value={caption}
+            onChange={(e) => setCap(e.target.value)}
+            placeholder="e.g. Front dynamic laser headlights"
+            dir="ltr"
+            className="w-full text-xs px-2.5 py-1.5 rounded-lg border border-black/15 dark:border-white/20 bg-white dark:bg-neutral-900 focus:outline-none"
+          />
+        </div>
+      </div>
+
+      <div className="flex gap-2 items-center flex-wrap">
+        <span className="text-[11px] font-bold opacity-60">موضع الظهور:</span>
+        {[
+          { key: 'carousel', label: 'سلايدر الكاروسيل' },
+          { key: 'body', label: 'المعرض السفلي' },
+          { key: 'both', label: 'كلاهما (سلايدر ومعرض)' },
+        ].map((p) => (
           <button
             type="button"
-            onClick={() => replaceFileRef.current?.click()}
-            disabled={replacing}
-            className="rounded-lg border border-white/15 px-3 py-2 text-xs text-white/80 disabled:opacity-50"
-          >
-            {replacing ? 'Uploading replacement…' : 'Replace image from device'}
-          </button>
-        </div>
-      ) : null}
-      <div className="grid grid-cols-2 gap-2">
-        <input
-          value={caption}
-          onChange={(e) => setCap(e.target.value)}
-          placeholder="Caption (EN)"
-          className="text-xs px-2 py-1 rounded border border-black/15 dark:border-white/20 bg-transparent"
-        />
-        <input
-          value={captionAr}
-          onChange={(e) => setCapAr(e.target.value)}
-          placeholder="Caption (AR)"
-          dir="rtl"
-          className="text-xs px-2 py-1 rounded border border-black/15 dark:border-white/20 bg-transparent"
-        />
-      </div>
-      <div className="flex gap-2 items-center flex-wrap">
-        <label className="text-[11px] font-bold opacity-60">Placement:</label>
-        {['body', 'carousel', 'both'].map((p) => (
-          <button
-            key={p}
-            onClick={() => onPlacement(p)}
-            className={`text-[11px] px-2 py-0.5 rounded ${
-              item.placement === p
-                ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900'
-                : 'border border-black/15 dark:border-white/20'
+            key={p.key}
+            onClick={() => onPlacement(p.key)}
+            className={`text-[11px] px-2.5 py-1 rounded-lg transition ${
+              item.placement === p.key
+                ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 font-bold'
+                : 'border border-black/15 dark:border-white/20 hover:bg-black/5'
             }`}
-          >{p}</button>
+          >
+            {p.label}
+          </button>
         ))}
       </div>
-      {permissions.canEditFields && (
-        <div className="flex gap-2 items-center">
-          <label className="text-[11px] font-bold opacity-60">Bind to field:</label>
-          <select
-            value={item.field_key ?? ''}
-            onChange={(e) => onFieldKey(e.target.value)}
-            className="text-xs px-2 py-1 rounded border border-black/15 dark:border-white/20 bg-transparent"
-          >
-            <option value="">— none —</option>
-            {fields.filter((f) => f.show_as_slide === 1 || f.destination === 'carousel' || f.destination === 'both').map((f) => (
-              <option key={f.name} value={f.name}>{f.label || f.name}</option>
-            ))}
-          </select>
-        </div>
-      )}
-      <details className="rounded-lg border border-white/10 bg-white/[.03] p-3">
-        <summary className="cursor-pointer text-xs font-bold">Slide design &amp; effects</summary>
-        <div className="mt-3 grid gap-3 sm:grid-cols-2">
-          <label className="space-y-1 text-[11px]">
-            <span className="block font-bold opacity-60">Motion effect</span>
-            <select value={String(mediaData.animation ?? 'fade')} onChange={(e) => setStage('animation', e.target.value)}
-              className="w-full rounded border border-black/15 bg-transparent px-2 py-1.5 dark:border-white/20">
-              <option value="fade">Cinematic fade</option><option value="kenburns">Ken Burns</option>
-              <option value="zoom">Zoom</option><option value="slide">Slide</option>
-            </select>
-          </label>
-          <label className="space-y-1 text-[11px]">
-            <span className="block font-bold opacity-60">Display</span>
-            <select value={String(mediaData.displayMode ?? 'media')} onChange={(e) => setStage('displayMode', e.target.value)}
-              className="w-full rounded border border-black/15 bg-transparent px-2 py-1.5 dark:border-white/20">
-              <option value="media">Media with text</option><option value="text_only">Text only</option>
-            </select>
-          </label>
-          <label className="space-y-1 text-[11px]">
-            <span className="block font-bold opacity-60">Image fit</span>
-            <select value={String(mediaData.imageFit ?? 'cover')} onChange={(e) => setStage('imageFit', e.target.value)}
-              className="w-full rounded border border-black/15 bg-transparent px-2 py-1.5 dark:border-white/20">
-              <option value="cover">Fill / cover</option><option value="contain">Fit / contain</option>
-            </select>
-          </label>
-          <label className="space-y-1 text-[11px]">
-            <span className="block font-bold opacity-60">Image position</span>
-            <select value={String(mediaData.imagePosition ?? 'center')} onChange={(e) => setStage('imagePosition', e.target.value)}
-              className="w-full rounded border border-black/15 bg-transparent px-2 py-1.5 dark:border-white/20">
-              <option value="center">Center</option><option value="top">Top</option><option value="bottom">Bottom</option>
-            </select>
-          </label>
-          <label className="space-y-1 text-[11px]">
-            <span className="block font-bold opacity-60">Font preset</span>
-            <select value={String(mediaData.fontFamily ?? 'Arial')} onChange={(e) => setStage('fontFamily', e.target.value)}
-              className="w-full rounded border border-black/15 bg-transparent px-2 py-1.5 dark:border-white/20">
-              {['Arial', 'Georgia', 'Tahoma', 'Trebuchet MS', 'Verdana', 'system-ui', 'serif', 'sans-serif']
-                .map((font) => <option key={font} value={font}>{font}</option>)}
-            </select>
-          </label>
-          <label className="space-y-1 text-[11px]">
-            <span className="block font-bold opacity-60">Text alignment</span>
-            <select value={String(mediaData.textAlign ?? 'start')} onChange={(e) => setStage('textAlign', e.target.value)}
-              className="w-full rounded border border-black/15 bg-transparent px-2 py-1.5 dark:border-white/20">
-              <option value="start">Start</option><option value="center">Center</option><option value="end">End</option>
-            </select>
-          </label>
-          <label className="space-y-1 text-[11px]">
-            <span className="block font-bold opacity-60">Hero title (EN)</span>
-            <input value={String(mediaData.heroTitle ?? '')} onChange={(e) => setStage('heroTitle', e.target.value)}
-              className="w-full rounded border border-black/15 bg-transparent px-2 py-1.5 dark:border-white/20" maxLength={240} />
-          </label>
-          <label className="space-y-1 text-[11px]">
-            <span className="block font-bold opacity-60">Hero title (AR)</span>
-            <input dir="rtl" value={String(mediaData.heroTitle_ar ?? '')} onChange={(e) => setStage('heroTitle_ar', e.target.value)}
-              className="w-full rounded border border-black/15 bg-transparent px-2 py-1.5 dark:border-white/20" maxLength={240} />
-          </label>
-          <label className="space-y-1 text-[11px]">
-            <span className="block font-bold opacity-60">Subtitle (EN)</span>
-            <input value={String(mediaData.heroSubtitle ?? '')} onChange={(e) => setStage('heroSubtitle', e.target.value)}
-              className="w-full rounded border border-black/15 bg-transparent px-2 py-1.5 dark:border-white/20" maxLength={240} />
-          </label>
-          <label className="space-y-1 text-[11px]">
-            <span className="block font-bold opacity-60">Subtitle (AR)</span>
-            <input dir="rtl" value={String(mediaData.heroSubtitle_ar ?? '')} onChange={(e) => setStage('heroSubtitle_ar', e.target.value)}
-              className="w-full rounded border border-black/15 bg-transparent px-2 py-1.5 dark:border-white/20" maxLength={240} />
-          </label>
-          <label className="space-y-1 text-[11px]">
-            <span className="block font-bold opacity-60">Title size: {String(mediaData.titleSize ?? 42)}px</span>
-            <input type="range" min="16" max="96" value={Number(mediaData.titleSize ?? 42)}
-              onChange={(e) => setStage('titleSize', Number(e.target.value))} className="w-full" />
-          </label>
-          <label className="space-y-1 text-[11px]">
-            <span className="block font-bold opacity-60">Subtitle size: {String(mediaData.subtitleSize ?? 16)}px</span>
-            <input type="range" min="12" max="48" value={Number(mediaData.subtitleSize ?? 16)}
-              onChange={(e) => setStage('subtitleSize', Number(e.target.value))} className="w-full" />
-          </label>
-          <label className="space-y-1 text-[11px]">
-            <span className="block font-bold opacity-60">Overlay strength: {Math.round(Number(mediaData.overlayOpacity ?? 0.58) * 100)}%</span>
-            <input type="range" min="0" max="100" value={Math.round(Number(mediaData.overlayOpacity ?? 0.58) * 100)}
-              onChange={(e) => setStage('overlayOpacity', Number(e.target.value) / 100)} className="w-full" />
-          </label>
-          <label className="space-y-1 text-[11px]">
-            <span className="block font-bold opacity-60">Slide transition (ms)</span>
-            <input type="number" min="100" max="3000" step="100" value={Number(mediaData.transition ?? 700)}
-              onChange={(e) => setStage('transition', Math.min(3000, Math.max(100, Number(e.target.value))))}
-              className="w-full rounded border border-black/15 bg-transparent px-2 py-1.5 dark:border-white/20" />
-          </label>
-          <ColorSetting label="Title color" value={String(mediaData.titleColor ?? '#ffffff')} onChange={(value) => setStage('titleColor', value)} />
-          <ColorSetting label="Subtitle color" value={String(mediaData.subtitleColor ?? '#ffffff')} onChange={(value) => setStage('subtitleColor', value)} />
-          <ColorSetting label="Background color" value={String(mediaData.bgColor ?? '#101820')} onChange={(value) => setStage('bgColor', value)} />
-          <label className="space-y-1 text-[11px]">
-            <span className="block font-bold opacity-60">Watermark</span>
-            <input value={String(mediaData.watermark ?? '')} onChange={(e) => setStage('watermark', e.target.value)}
-              className="w-full rounded border border-black/15 bg-transparent px-2 py-1.5 dark:border-white/20" maxLength={120} />
-          </label>
-          <label className="space-y-1 text-[11px]">
-            <span className="block font-bold opacity-60">Call-to-action label</span>
-            <input value={String(mediaData.ctaText ?? '')} onChange={(e) => setStage('ctaText', e.target.value)}
-              className="w-full rounded border border-black/15 bg-transparent px-2 py-1.5 dark:border-white/20" maxLength={120} />
-          </label>
-          <label className="space-y-1 text-[11px]">
-            <span className="block font-bold opacity-60">Call-to-action URL</span>
-            <input value={String(mediaData.ctaLink ?? '')} onChange={(e) => setStage('ctaLink', e.target.value)}
-              className="w-full rounded border border-black/15 bg-transparent px-2 py-1.5 dark:border-white/20" maxLength={240} />
-          </label>
-          <label className="space-y-1 text-[11px]">
-            <span className="block font-bold opacity-60">In-page destination</span>
-            <input value={String(mediaData.targetSectionId ?? '')} onChange={(e) => setStage('targetSectionId', e.target.value)}
-              className="w-full rounded border border-black/15 bg-transparent px-2 py-1.5 dark:border-white/20"
-              maxLength={120} placeholder="Optional section ID, e.g. sec_auto_inventory" />
-          </label>
-          {['video', 'youtube', 'embed'].includes(item.media_type) ? (
-            <label className="space-y-1 text-[11px]">
-              <span className="block font-bold opacity-60">Video slide hold: {Number(mediaData.maxDuration ?? 20)} sec</span>
-              <input type="range" min="5" max="180" value={Math.min(180, Math.max(5, Number(mediaData.maxDuration ?? 20)))}
-                onChange={(e) => setStage('maxDuration', Number(e.target.value))}
-                className="w-full accent-[#c6a363]" />
-            </label>
-          ) : null}
-          <label className="flex items-center gap-2 text-[11px] sm:col-span-2">
-            <input type="checkbox" checked={mediaData.showCaption !== false} onChange={(e) => setStage('showCaption', e.target.checked)} />
-            Show slide caption
-          </label>
-        </div>
-      </details>
-      <div className="flex gap-2 justify-end">
-        <button onClick={onClose} className="text-xs px-2 py-1 opacity-60">Cancel</button>
+
+      <div className="flex gap-2 justify-end pt-1">
         <button
-          type="button" onClick={() => void handleSave()} disabled={saving}
-          className="text-xs px-3 py-1 bg-blue-600 text-white rounded font-bold disabled:opacity-50"
-        >{saving ? 'Saving…' : 'Save slide'}</button>
+          type="button"
+          onClick={onClose}
+          className="text-xs px-3 py-1 rounded-lg opacity-60 hover:opacity-100"
+        >
+          إلغاء
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            onSave(caption, captionAr);
+            onClose();
+          }}
+          className="text-xs px-4 py-1.5 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700 transition"
+        >
+          حفظ التعديلات
+        </button>
       </div>
     </div>
-  );
-}
-
-function ColorSetting({ label, value, onChange }: { label: string; value: string; onChange: (value: string) => void }) {
-  return (
-    <label className="flex items-center justify-between gap-2 text-[11px]">
-      <span className="font-bold opacity-60">{label}</span>
-      <input type="color" value={/^#[0-9a-f]{6}$/i.test(value) ? value : '#ffffff'} onChange={(event) => onChange(event.target.value)} />
-    </label>
-  );
-}
-
-function HeroSettingsEditor({
-  hero, slides, onSave,
-}: {
-  hero: StudioGalleryItem | null;
-  slides: (locale: SiteLocale) => Slide[];
-  onSave: (id: string, mediaData: Record<string, unknown>) => Promise<boolean>;
-}) {
-  const existing = hero?.media_data?.carouselDefaults;
-  const current = typeof existing === 'object' && existing !== null
-    ? existing as Record<string, unknown>
-    : {};
-  const [settings, setSettings] = useState<Record<string, unknown>>({
-    autoPlay: true, interval: 6000, transition: 700, aspect: '16 / 9',
-    showArrows: true, showIndicators: true, showProgress: true,
-    titleSize: 42, subtitleSize: 16, overlayOpacity: 0.58,
-    imageFit: 'cover', imagePosition: 'center', contentAlign: 'start',
-    fontFamily: 'Arial', accent: '#c9a55c', titleColor: '#ffffff',
-    subtitleColor: '#ffffff', bgColor: '#101820', ...current,
-  });
-  const [activeGroup, setActiveGroup] = useState<'look' | 'playback'>('look');
-  const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
-  if (!hero) {
-    return (
-      <section className="rounded-2xl border border-[#c6a363]/25 bg-[#111820] p-5 text-white">
-        <p className="text-[10px] font-bold uppercase tracking-[.2em] text-[#c6a363]">Carousel design</p>
-        <p className="mt-2 text-sm text-white/65">Choose a field-bound slide below and mark it as the hero to unlock the global carousel controls.</p>
-      </section>
-    );
-  }
-  const set = (key: string, value: unknown) => {
-    setSaved(false);
-    setSettings((state) => ({ ...state, [key]: value }));
-  };
-  const save = async () => {
-    setSaving(true);
-    setSaved(false);
-    try {
-      setSaved(await onSave(hero.id, { ...(hero.media_data ?? {}), carouselDefaults: settings }));
-    } finally {
-      setSaving(false);
-    }
-  };
-  const bool = (key: string) => settings[key] !== false;
-  const number = (key: string, fallback: number) => Number(settings[key] ?? fallback);
-  const inputClass = 'mt-1 w-full rounded-lg border border-black/10 bg-white px-3 py-2 text-xs dark:border-white/15 dark:bg-[#10161d]';
-  const labelClass = 'block text-[11px] font-semibold';
-  return (
-    <section className="overflow-hidden rounded-2xl border border-[#c6a363]/25 bg-[#111820] p-4 text-white shadow-lg sm:p-5">
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <p className="text-[10px] font-bold uppercase tracking-[.2em] text-[#c6a363]">Hero &amp; carousel</p>
-          <h3 className="mt-1 text-sm font-bold">Design the overall experience</h3>
-        </div>
-        <span className="rounded-full border border-white/10 px-3 py-1 text-[10px] text-white/55">Editing the HERO slide</span>
-      </div>
-      <div className="grid gap-5 xl:grid-cols-[minmax(0,1.25fr)_minmax(19rem,.75fr)]">
-        <CarouselPreview slides={slides} defaults={settings as CarouselDefaults} label="Carousel settings preview" />
-        <div className="rounded-xl border border-white/10 bg-white/[.035] p-4">
-          <div className="flex gap-2 border-b border-white/10 pb-3">
-            {([
-              ['look', 'Look & typography'],
-              ['playback', 'Playback & controls'],
-            ] as const).map(([group, label]) => (
-              <button key={group} type="button" onClick={() => setActiveGroup(group)}
-                aria-pressed={activeGroup === group}
-                className={`rounded-lg px-3 py-2 text-[10px] font-bold transition ${activeGroup === group ? 'bg-[#c6a363] text-[#111]' : 'bg-white/5 text-white/60 hover:bg-white/10'}`}>
-                {label}
-              </button>
-            ))}
-          </div>
-
-          {activeGroup === 'look' ? (
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              <label className={labelClass}>Aspect ratio
-                <select value={String(settings.aspect)} onChange={(e) => set('aspect', e.target.value)} className={inputClass}>
-                  {['21 / 9', '16 / 9', '4 / 3', '4 / 5', '1 / 1'].map((ratio) => <option key={ratio} value={ratio}>{ratio}</option>)}
-                </select>
-              </label>
-              <label className={labelClass}>Default image fit
-                <select value={String(settings.imageFit)} onChange={(e) => set('imageFit', e.target.value)} className={inputClass}>
-                  <option value="cover">Fill frame</option><option value="contain">Show full image</option>
-                </select>
-              </label>
-              <label className={labelClass}>Image position
-                <select value={String(settings.imagePosition)} onChange={(e) => set('imagePosition', e.target.value)} className={inputClass}>
-                  <option value="center">Center</option><option value="top">Top</option><option value="bottom">Bottom</option>
-                </select>
-              </label>
-              <label className={labelClass}>Content alignment
-                <select value={String(settings.contentAlign)} onChange={(e) => set('contentAlign', e.target.value)} className={inputClass}>
-                  <option value="start">Start</option><option value="center">Center</option><option value="end">End</option>
-                </select>
-              </label>
-              <label className={labelClass}>Font preset
-                <select value={String(settings.fontFamily)} onChange={(e) => set('fontFamily', e.target.value)} className={inputClass}>
-                  {['Arial', 'Georgia', 'Tahoma', 'Trebuchet MS', 'Verdana', 'system-ui', 'serif', 'sans-serif'].map((font) => <option key={font} value={font}>{font}</option>)}
-                </select>
-              </label>
-              <label className={labelClass}>Watermark
-                <input value={String(settings.watermark ?? '')} onChange={(e) => set('watermark', e.target.value)} maxLength={120} className={inputClass} placeholder="Brand or showroom name" />
-              </label>
-              <RangeSetting label="Title size" value={number('titleSize', 42)} min={16} max={96} suffix="px" onChange={(value) => set('titleSize', value)} />
-              <RangeSetting label="Subtitle size" value={number('subtitleSize', 16)} min={12} max={48} suffix="px" onChange={(value) => set('subtitleSize', value)} />
-              <RangeSetting label="Overlay strength" value={Math.round(number('overlayOpacity', 0.58) * 100)} min={0} max={100} suffix="%" onChange={(value) => set('overlayOpacity', value / 100)} />
-              <div className="grid grid-cols-2 gap-3 sm:col-span-2">
-                <ColorSetting label="Accent" value={String(settings.accent)} onChange={(v) => set('accent', v)} />
-                <ColorSetting label="Title color" value={String(settings.titleColor)} onChange={(v) => set('titleColor', v)} />
-                <ColorSetting label="Subtitle color" value={String(settings.subtitleColor)} onChange={(v) => set('subtitleColor', v)} />
-                <ColorSetting label="Background" value={String(settings.bgColor)} onChange={(v) => set('bgColor', v)} />
-              </div>
-            </div>
-          ) : (
-            <div className="mt-4 space-y-4">
-              <RangeSetting label="Slide hold" value={number('interval', 6000) / 1000} min={2} max={30} step={0.5} suffix=" sec" onChange={(value) => set('interval', value * 1000)} />
-              <RangeSetting label="Transition duration" value={number('transition', 700)} min={100} max={3000} step={100} suffix=" ms" onChange={(value) => set('transition', value)} />
-              <div className="grid gap-2 sm:grid-cols-2">
-                {[
-                  ['autoPlay', 'Autoplay'], ['showArrows', 'Navigation arrows'],
-                  ['showIndicators', 'Slide indicators'], ['showProgress', 'Progress bar'],
-                ].map(([key, label]) => (
-                  <label key={key} className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/[.03] px-3 py-2 text-xs text-white/75">
-                    <input type="checkbox" checked={bool(key)} onChange={(e) => set(key, e.target.checked)} className="accent-[#c6a363]" />
-                    {label}
-                  </label>
-                ))}
-              </div>
-            </div>
-          )}
-          <button type="button" onClick={() => void save()} disabled={saving}
-            className="mt-5 w-full rounded-lg bg-[#c6a363] px-4 py-2.5 text-xs font-extrabold text-[#111] transition hover:bg-[#d8b979] disabled:opacity-50">
-            {saving ? 'Saving design…' : 'Save carousel design'}
-          </button>
-          {saved ? <p role="status" className="mt-2 text-center text-[11px] text-emerald-300">Carousel design saved.</p> : null}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function RangeSetting({
-  label, value, min, max, step = 1, suffix = '', onChange,
-}: {
-  label: string;
-  value: number;
-  min: number;
-  max: number;
-  step?: number;
-  suffix?: string;
-  onChange: (value: number) => void;
-}) {
-  return (
-    <label className="block text-[11px] font-semibold text-white/75">
-      <span className="flex justify-between gap-2"><span>{label}</span><span className="text-[#c6a363]">{value}{suffix}</span></span>
-      <input type="range" min={min} max={max} step={step} value={value}
-        onChange={(event) => onChange(Number(event.target.value))}
-        className="mt-2 w-full accent-[#c6a363]" />
-    </label>
   );
 }

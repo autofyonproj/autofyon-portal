@@ -162,13 +162,19 @@ export default async function PlatformAdminDashboard({
   }
 
   let setupMarkets: { id: string; slug: string; name_en: string; name_ar: string | null; default_locale: string; currency: string; active: number }[] = [];
-  let setupTypes: { id: string; name: string; name_ar: string | null; icon: string | null; description: string | null; is_parent: number; parent_id: string | null; market_id: string; vendor_claimable: number; sort_order: number; sections: string | null; own_sections: string | null; allowed_child_kinds: string | null }[] = [];
+  let setupTypes: {
+    id: string; name: string; name_ar: string | null; icon: string | null;
+    description: string | null; allowed_child_kinds: string | null;
+    is_parent: number; parent_id: string | null; market_id: string;
+    vendor_claimable: number; sort_order: number;
+    sections: string | null; own_sections: string | null;
+  }[] = [];
   let setupSections: { id: string; name: string; name_ar: string | null; icon: string | null; sort_order: number; enable_gallery: number; enable_blog: number; options: string | null }[] = [];
 
   if (activeTab === 'setup') {
     [setupMarkets, setupTypes, setupSections] = await Promise.all([
       query<typeof setupMarkets[number]>(`SELECT id, slug, name_en, name_ar, default_locale, currency, active FROM markets ORDER BY id`),
-      query<typeof setupTypes[number]>(`SELECT id, name, name_ar, icon, description, is_parent, parent_id, market_id, vendor_claimable, sort_order, sections, own_sections, allowed_child_kinds FROM business_types ORDER BY sort_order, id`),
+      query<typeof setupTypes[number]>(`SELECT id, name, name_ar, icon, description, allowed_child_kinds, is_parent, parent_id, market_id, vendor_claimable, sort_order, sections, own_sections FROM business_types ORDER BY sort_order, id`),
       query<typeof setupSections[number]>(`SELECT id, name, name_ar, icon, sort_order, enable_gallery, enable_blog, options FROM sections ORDER BY sort_order, id`),
     ]);
   }
@@ -203,7 +209,20 @@ export default async function PlatformAdminDashboard({
             إدارة كافة المعارض، الوكلاء، الدومينات الخاصة، والمخزون الوطني للسيارات
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 flex-wrap">
+          <Link
+            href="/admin/platform/carousel"
+            className="text-xs px-3 py-2 rounded-lg bg-red-600 text-white font-bold hover:bg-red-700 transition shadow-sm flex items-center gap-1.5"
+          >
+            <span>🎬</span>
+            <span>Hero & Promos Carousel</span>
+          </Link>
+          <Link
+            href="/admin/platform/media-manager"
+            className="text-xs px-3 py-2 rounded-lg border border-purple-500/30 text-purple-600 dark:text-purple-400 font-semibold hover:bg-purple-500/10 transition"
+          >
+            📸 Media Library
+          </Link>
           <Link
             href="/admin/platform/business-applications"
             className="text-xs px-3 py-2 rounded-lg border border-amber-600/30 font-semibold hover:bg-amber-500/5"
@@ -261,6 +280,12 @@ export default async function PlatformAdminDashboard({
         ))}
       </div>
       <div className="flex flex-wrap gap-2">
+        <Link
+          href="/admin/platform/carousel"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-amber-600/30 bg-amber-500/10 px-4 py-2 text-sm font-bold text-amber-800 dark:text-amber-300 hover:bg-amber-500/20"
+        >
+          🎬 Universal Carousel &amp; Media Studio ↗
+        </Link>
         <Link
           href="/admin/platform/clients"
           className="inline-flex rounded-lg border border-green-700/25 bg-green-700/5 px-4 py-2 text-sm font-bold text-green-900 hover:bg-green-700/10"

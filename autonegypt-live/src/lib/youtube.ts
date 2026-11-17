@@ -8,25 +8,51 @@ const YOUTUBE_HOSTS = new Set([
   'www.youtube-nocookie.com',
 ]);
 
-export function extractYouTubeVideoId(value: string): string | null {
+export function extractYouTubeVideoId(raw: string): string | null {
+  if (!raw || typeof raw !== 'string') return null;
+  const value = raw.trim();
+
+  // If already a clean 11-char video ID
+  if (/^[\w-]{11}$/.test(value)) {
+    return value;
+  }
+
+  let urlStr = value;
+  if (!/^https?:\/\//i.test(urlStr)) {
+    urlStr = 'https://' + urlStr;
+  }
+
   let url: URL;
   try {
-    url = new URL(value);
+    url = new URL(urlStr);
   } catch {
     return null;
   }
-  if (!['http:', 'https:'].includes(url.protocol) || !YOUTUBE_HOSTS.has(url.hostname.toLowerCase())) {
+
+  const hostname = url.hostname.toLowerCase().replace(/^www\./, '');
+  if (!['youtu.be', 'youtube.com', 'm.youtube.com', 'music.youtube.com', 'youtube-nocookie.com'].includes(hostname)) {
+    // Also test if query param v exists anywhere
+    const vParam = url.searchParams.get('v');
+    if (vParam && /^[\w-]{11}$/.test(vParam)) return vParam;
     return null;
   }
 
-  const segments = url.pathname.split('/').filter(Boolean);
-  const candidate = url.hostname.toLowerCase() === 'youtu.be'
-    ? segments[0]
-    : url.pathname === '/watch'
-      ? url.searchParams.get('v')
-      : ['embed', 'v', 'shorts', 'live'].includes(segments[0] ?? '')
-        ? segments[1]
-        : null;
+  if (hostname === 'youtu.be') {
+    const candidate = url.pathname.slice(1).split('/')[0]?.split('?')[0];
+    return candidate && /^[\w-]{11}$/.test(candidate) ? candidate : null;
+  }
 
-  return candidate && /^[\w-]{11}$/.test(candidate) ? candidate : null;
+  // youtube.com
+  const v = url.searchParams.get('v');
+  if (v && /^[\w-]{11}$/.test(v)) {
+    return v;
+  }
+
+  const segments = url.pathname.split('/').filter(Boolean);
+  if (['embed', 'v', 'shorts', 'live'].includes(segments[0] ?? '')) {
+    const candidate = segments[1]?.split('?')[0];
+    return candidate && /^[\w-]{11}$/.test(candidate) ? candidate : null;
+  }
+
+  return null;
 }
