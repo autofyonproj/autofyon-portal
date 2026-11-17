@@ -148,13 +148,7 @@ export default function PublicSiteChrome({
             href={localePath(locale, [])}
             aria-label={isAr ? 'أوتوفاي أون — قُدْ، اكتشف، تواصل' : 'AutoFyon — Drive, Explore, Connect'}
           >
-            <AutoFyonEmblem />
-            <span className="public-brand-copy">
-              <AutoFyonWordmark size="md" />
-              <span className="public-brand-caption">
-                {isAr ? 'قُدْ • اكتشف • تواصل' : 'DRIVE  •  EXPLORE  •  CONNECT'}
-              </span>
-            </span>
+            <AutoFyonBrandLogo size="md" />
           </Link>
 
           {/* ── Desktop Navigation ──────────────────────────────────── */}
@@ -271,12 +265,17 @@ export default function PublicSiteChrome({
         <div className="public-footer-inner">
 
           {/* Col 1 — Brand */}
-          <div>
-            <span className="public-footer-brand" aria-label="AutoFyon">
-              AUTOFY<span style={{ color: 'var(--af-red, #e01f26)' }}>ON</span>
-              <span style={{ fontSize: 9, fontWeight: 500, fontStyle: 'normal', color: 'rgba(240,244,248,0.4)', marginLeft: 1, alignSelf: 'flex-end', paddingBottom: 2 }}>.com</span>
-            </span>
-            <p>{isAr
+          <div className="space-y-3">
+            <Link href={localePath(locale, [])} className="inline-block" aria-label="AutoFyon">
+              <img
+                src="/brand/autofyon-logo-dark.png"
+                alt="AutoFyon.com — Drive • Explore • Connect"
+                className="h-10 w-auto object-contain select-none"
+                width={340}
+                height={95}
+              />
+            </Link>
+            <p className="text-xs opacity-70 leading-relaxed max-w-sm">{isAr
               ? 'مساحة واحدة لاكتشاف السيارات والمعارض في مصر.'
               : 'The automotive operating system for Egypt\'s car market.'}
             </p>

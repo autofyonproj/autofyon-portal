@@ -30,21 +30,31 @@ export default function VehicleContentStudio({
   }
 
   return (
-    <section className="space-y-4">
+    <section dir="rtl" className="space-y-4">
       <div>
-        <h2 className="text-lg font-bold">Vehicle gallery and carousel</h2>
-        <p className="text-sm opacity-60">Upload photos for this exact vehicle, choose carousel placement, and bind a photo to a model field when needed.</p>
+        <h2 className="text-lg font-bold flex items-center gap-2">
+          <span>🚗</span>
+          <span>معرض وسلايدر هذه السيارة (Vehicle Carousel & Media)</span>
+        </h2>
+        <p className="text-xs opacity-60 mt-1">
+          ارفع صور هذه السيارة تحديداً، تحكم في ترتيب الشرائح، التقط بالكاميرا مباشرة، أو أضف فيديو مراجعة من يوتيوب.
+        </p>
       </div>
-      <nav className="flex gap-2 overflow-x-auto border-b border-black/10 pb-2" aria-label="Vehicle gallery sections">
+      <nav className="flex gap-2 overflow-x-auto border-b border-black/10 dark:border-white/10 pb-2" aria-label="Vehicle gallery sections">
         {sections.map((item) => (
           <button
             type="button"
             key={item.id}
             onClick={() => setActiveSection(item.id)}
             aria-current={activeSection === item.id ? 'page' : undefined}
-            className={`whitespace-nowrap rounded-lg px-3 py-2 text-sm ${activeSection === item.id ? 'bg-neutral-900 text-white' : 'border border-black/10 hover:bg-black/5'}`}
+            className={`whitespace-nowrap rounded-xl px-3.5 py-2 text-xs font-bold transition flex items-center gap-1.5 ${
+              activeSection === item.id
+                ? 'bg-red-600 text-white shadow-md shadow-red-600/20'
+                : 'border border-black/10 dark:border-white/15 hover:bg-black/5 dark:hover:bg-white/10 opacity-75'
+            }`}
           >
-            {item.name}
+            {item.icon && <span>{item.icon}</span>}
+            <span>{item.name_ar || item.name}</span>
           </button>
         ))}
       </nav>

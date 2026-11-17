@@ -203,7 +203,20 @@ export default async function PlatformAdminDashboard({
             إدارة كافة المعارض، الوكلاء، الدومينات الخاصة، والمخزون الوطني للسيارات
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 flex-wrap">
+          <Link
+            href="/admin/platform/carousel"
+            className="text-xs px-3 py-2 rounded-lg bg-red-600 text-white font-bold hover:bg-red-700 transition shadow-sm flex items-center gap-1.5"
+          >
+            <span>🎬</span>
+            <span>Hero & Promos Carousel</span>
+          </Link>
+          <Link
+            href="/admin/platform/media-manager"
+            className="text-xs px-3 py-2 rounded-lg border border-purple-500/30 text-purple-600 dark:text-purple-400 font-semibold hover:bg-purple-500/10 transition"
+          >
+            📸 Media Library
+          </Link>
           <Link
             href="/admin/platform/business-applications"
             className="text-xs px-3 py-2 rounded-lg border border-amber-600/30 font-semibold hover:bg-amber-500/5"

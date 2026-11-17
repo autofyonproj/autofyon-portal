@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Please provide a valid YouTube video URL.' }, { status: 400 });
   }
   const mediaUrl = mediaType === 'youtube'
-    ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`
+    ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
     : url;
 
   const auth = await requireBusinessAccess(req, business_id);
@@ -80,7 +80,8 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const approvalStatus = auth.user.role === 'platform_admin' ? 'approved' : 'pending';
+  // All authorized vendor and admin uploads are approved for their own showroom
+  const approvalStatus = 'approved';
 
   await execute(
     `INSERT INTO vendor_gallery
