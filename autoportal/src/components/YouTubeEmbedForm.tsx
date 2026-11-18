@@ -2,8 +2,23 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import type { StudioField, StudioGalleryItem } from '@/lib/content-admin';
 
-export default function YouTubeEmbedForm({ businessId }: { businessId: string }) {
+interface Props {
+  businessId: string;
+  sectionId?: string;
+  fields?: StudioField[];
+  unitId?: string;
+  onAdded?: (item: StudioGalleryItem) => void;
+}
+
+export default function YouTubeEmbedForm({
+  businessId,
+  sectionId,
+  fields,
+  unitId,
+  onAdded,
+}: Props) {
   const router = useRouter();
   const [url, setUrl] = useState('');
   const [titleAr, setTitleAr] = useState('');
@@ -11,6 +26,17 @@ export default function YouTubeEmbedForm({ businessId }: { businessId: string })
   const [endInput, setEndInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
+
+  const parseTimeToSeconds = (val: string): number | undefined => {
+    if (!val) return undefined;
+    if (val.includes(':')) {
+      const parts = val.split(':').map((p) => parseFloat(p) || 0);
+      if (parts.length === 2) return Math.round(parts[0] * 60 + parts[1]);
+      if (parts.length === 3) return Math.round(parts[0] * 3600 + parts[1] * 60 + parts[2]);
+    }
+    const num = parseFloat(val);
+    return isNaN(num) ? undefined : Math.round(num);
+  };
 
   const handleEmbed = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,6 +52,8 @@ export default function YouTubeEmbedForm({ businessId }: { businessId: string })
           business_id: businessId,
           youtube_url: url,
           title_ar: titleAr || 'فيديو مراجعة وتجربة حية',
+          section_id: sectionId,
+          unit_id: unitId,
           start_seconds: startInput ? parseTimeToSeconds(startInput) : undefined,
           end_seconds: endInput ? parseTimeToSeconds(endInput) : undefined,
         }),
@@ -36,27 +64,23 @@ export default function YouTubeEmbedForm({ businessId }: { businessId: string })
         throw new Error(d.error || 'فشل في ربط الفيديو');
       }
 
+      const item = await res.json() as StudioGalleryItem | { ok: boolean };
       setStatus('✓ تم تضمين فيديو اليوتيوب بالقص الزمني في السلايدر بنجاح!');
       setUrl('');
       setTitleAr('');
       setStartInput('');
       setEndInput('');
-      router.refresh();
+
+      if (onAdded && 'id' in item) {
+        onAdded(item as StudioGalleryItem);
+      } else {
+        router.refresh();
+      }
     } catch (err: any) {
       setStatus(`❌ خطأ: ${err.message}`);
     } finally {
       setLoading(false);
     }
-  };
-
-  const parseTimeToSeconds = (val: string): number => {
-    if (!val) return 0;
-    if (val.includes(':')) {
-      const parts = val.split(':').map((p) => parseFloat(p) || 0);
-      if (parts.length === 2) return Math.round(parts[0] * 60 + parts[1]);
-      if (parts.length === 3) return Math.round(parts[0] * 3600 + parts[1] * 60 + parts[2]);
-    }
-    return Math.round(parseFloat(val) || 0);
   };
 
   return (

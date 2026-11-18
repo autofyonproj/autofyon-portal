@@ -20,6 +20,7 @@ import {
   loadCustomSiteProfile, loadSiteProfile, SITE_TEMPLATES,
   type CustomSiteProfile, type SiteProfile,
 } from '@/lib/site-builder';
+import { loadSocialLinks } from '@/lib/social-links';
 import {
   sanitizeSlideBlocks, extractClaimedFieldKeys, humanizeStoredKey, stringifyFieldValue,
   isPrintable, STORED_KEY_SKIP, maybeFormatPriceField,
@@ -187,6 +188,7 @@ export type SlideMedia = {
   watermark?: string | null;
   titleColor?: string;
   titleSize?: number;
+  subtitleColor?: string;
   subtitleSize?: number;
   textAlign?: 'start' | 'center' | 'end';
   fontFamily?: string;
@@ -258,6 +260,8 @@ export interface MinisiteView {
     brandLogoUrl: string | null;
     /** Authored `sec_auto_showroom` answers: address, phone, hours. */
     contact: Record<string, unknown>;
+    /** Social platform links configured by the vendor. */
+    socialLinks: import('@/lib/social-link-types').SocialLink[];
   };
   sections: Section[];
   /** Verified provider links attached to this model by typed graph relationships. */
@@ -1630,6 +1634,7 @@ export async function loadMinisite(
   const modelServices = business.type_id === 'vehicle_model'
     ? await loadModelServiceLinks(business.id, locale)
     : [];
+  const socialLinks = await loadSocialLinks(business.id, null, true);
 
   return {
     locale,
@@ -1644,8 +1649,8 @@ export async function loadMinisite(
       identity: customData['sec_1_identity'] ?? {},
       brandLogoUrl,
       contact,
-    },
-    sections,
+      socialLinks,
+    },    sections,
     modelServices,
     specifications,
     active,

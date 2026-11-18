@@ -341,7 +341,7 @@ export default async function CarsView({
                         <div className="relative z-10 w-16 h-16 flex items-center justify-center bg-white/90 dark:bg-white/10 rounded-2xl p-2.5 backdrop-blur-sm border border-black/5 dark:border-white/10 shadow-sm transition-transform duration-300 group-hover:scale-110">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
-                            src={`https://cdn.jsdelivr.net/gh/filippofilip95/car-logos-dataset@master/logos/optimized/${c.brandSlug}.png`}
+                            src={`https://cdn.jsdelivr.net/gh/filippofilip95/car-logos-dataset/logos/optimized/${c.brandSlug}.svg`}
                             alt={c.brandName || ''}
                             className="max-w-full max-h-full object-contain filter drop-shadow-sm"
                             loading="lazy"

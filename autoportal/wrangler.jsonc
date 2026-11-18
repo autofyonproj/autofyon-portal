@@ -18,5 +18,11 @@
   "routes": [
     { "pattern": "autofyon.com/*",      "zone_name": "autofyon.com" },
     { "pattern": "www.autofyon.com/*",  "zone_name": "autofyon.com" }
-  ]
+  ],
+  "env": {
+    "staging": {
+      "name": "peeppeepmasr",
+      "workers_dev": true
+    }
+  }
 }

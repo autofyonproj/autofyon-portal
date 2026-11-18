@@ -57,8 +57,8 @@ export default function FieldEditor({ fields, values, saving, canEdit, onSave }:
         </summary>
         <div className="mt-3 grid gap-3 p-3 rounded-lg bg-black/[.02] dark:bg-white/5 border border-black/10 dark:border-white/10">
           {fields.filter((f) => ['text', 'textarea', 'select'].includes(f.field_type)).map((f) => (
-            <div key={`${f.name}_ar`} className="flex items-center gap-2">
-              <label className="w-40 text-[11px] font-medium truncate opacity-60">
+            <div key={`${f.name}_ar`} className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-2">
+              <label className="w-full text-[11px] font-medium opacity-60 sm:w-40 sm:truncate">
                 {f.label || f.name} (AR)
               </label>
               <input
@@ -104,8 +104,8 @@ function FieldInput({
   const id = `fld_${field.id}`;
 
   return (
-    <div className="flex items-start gap-3">
-      <label htmlFor={id} className="w-40 pt-2 text-xs font-bold opacity-70 flex-shrink-0">
+    <div className="flex min-w-0 flex-col gap-1 sm:flex-row sm:items-start sm:gap-3">
+      <label htmlFor={id} className="w-full pt-1 text-xs font-bold opacity-70 sm:w-40 sm:flex-shrink-0 sm:pt-2">
         {label}
         {field.show_as_slide === 1 && (
           <span className="ms-1 text-[9px] bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 px-1 py-0.5 rounded">

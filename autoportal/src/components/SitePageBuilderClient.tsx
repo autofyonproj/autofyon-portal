@@ -2,7 +2,7 @@
 
 import { useMemo, useState, type FormEvent } from 'react';
 import type { SitePage, SitePageComponent, SiteComponentType } from '@/lib/site-pages';
-import { SITE_COMPONENT_TYPES, defaultSiteComponents } from '@/lib/site-pages';
+import { SITE_COMPONENT_TYPES } from '@/lib/site-pages';
 
 const COMPONENT_LABELS: Record<SiteComponentType, { en: string; description: string }> = {
   hero_carousel: { en: 'Hero carousel', description: 'Required opening carousel. Approved carousel media is shared across this make or model’s pages.' },
@@ -17,7 +17,7 @@ const COMPONENT_LABELS: Record<SiteComponentType, { en: string; description: str
   contact: { en: 'Contact details', description: 'The current published contact information.' },
 };
 
-function initialHome(businessId: string, businessName: string): SitePage {
+function initialHome(businessId: string, businessName: string, components: SitePageComponent[]): SitePage {
   return {
     id: `new-home-${businessId}`,
     businessId,
@@ -25,7 +25,7 @@ function initialHome(businessId: string, businessName: string): SitePage {
     draftSlug: '',
     draftTitle: businessName,
     draftTitleAr: '',
-    draftComponents: defaultSiteComponents(),
+    draftComponents: components,
     publishedSlug: null,
     publishedTitle: null,
     publishedTitleAr: null,
@@ -40,17 +40,19 @@ export default function SitePageBuilderClient({
   businessSlug,
   contentStudioUrl,
   initialPages,
+  initialHomeComponents,
 }: {
   businessId: string;
   businessName: string;
   businessSlug: string;
   contentStudioUrl: string;
   initialPages: SitePage[];
+  initialHomeComponents: SitePageComponent[];
 }) {
   const [pages, setPages] = useState(initialPages);
   const homePage = useMemo(
-    () => pages.find((page) => page.pageType === 'home') ?? initialHome(businessId, businessName),
-    [pages, businessId, businessName],
+    () => pages.find((page) => page.pageType === 'home') ?? initialHome(businessId, businessName, initialHomeComponents),
+    [pages, businessId, businessName, initialHomeComponents],
   );
   const [selectedId, setSelectedId] = useState(homePage.id);
   const selected = pages.find((page) => page.id === selectedId) ?? homePage;
@@ -187,9 +189,9 @@ export default function SitePageBuilderClient({
   }
 
   const previewHref = selected.pageType === 'home'
-    ? `/${businessSlug}`
-    : selected.publishedSlug
-      ? `/${businessSlug}/pages/${encodeURIComponent(selected.publishedSlug)}`
+    ? `/${businessSlug}?preview=1`
+    : selected.draftSlug
+      ? `/${businessSlug}/pages/${encodeURIComponent(selected.draftSlug)}?preview=1`
       : null;
 
   return (

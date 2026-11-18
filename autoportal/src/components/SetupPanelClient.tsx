@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -11,6 +11,7 @@ interface Market {
 
 interface BusinessType {
   id: string; name: string; name_ar: string | null; icon: string | null;
+  description: string | null; allowed_child_kinds: string | null;
   is_parent: number; parent_id: string | null; market_id: string;
   vendor_claimable: number; sort_order: number;
   sections: string | null; own_sections: string | null;
@@ -87,11 +88,17 @@ function ErrBox({ msg }: { msg: string }) {
   return <div className="text-xs font-semibold text-red-600 bg-red-50 dark:bg-red-900/20 dark:text-red-400 px-3 py-2 rounded-lg border border-red-200 dark:border-red-800">{msg}</div>;
 }
 
+function stringArray(value: string | null): string[] {
+  try {
+    const parsed: unknown = JSON.parse(value ?? '[]');
+    return Array.isArray(parsed) ? parsed.filter((item): item is string => typeof item === 'string') : [];
+  } catch {
+    return [];
+  }
+}
+
 // ── 1. Markets Manager ────────────────────────────────────────────────────────
 
-// Markets UI is currently hidden (automotive is the only active market).
-// Manager preserved dormant — re-enable by uncommenting the section in the main export.
-// eslint-disable-next-line @typescript-eslint/no-unused-vars -- dormant, kept for future re-enable
 function MarketsManager({ initial }: { initial: Market[] }) {
   const [markets, setMarkets] = useState(initial);
   const [form, setForm] = useState({ id: '', slug: '', name_en: '', name_ar: '', currency: 'EGP', default_locale: 'ar' });
@@ -110,7 +117,9 @@ function MarketsManager({ initial }: { initial: Market[] }) {
   }
 
   async function toggle(id: string, active: number) {
-    await fetch('/api/admin/setup/markets', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, active: active ? 0 : 1 }) });
+    setErr(null);
+    const response = await fetch('/api/admin/setup/markets', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, active: active ? 0 : 1 }) });
+    if (!response.ok) { setErr(((await response.json()) as { error: string }).error); return; }
     setMarkets(ms => ms.map(m => m.id === id ? { ...m, active: active ? 0 : 1 } : m));
   }
 
@@ -125,7 +134,6 @@ function MarketsManager({ initial }: { initial: Market[] }) {
         <div className="flex items-end">
           <button disabled={saving} className="w-full px-4 py-2 rounded-lg bg-black text-white text-sm font-bold hover:opacity-80 disabled:opacity-40">{saving ? 'Saving…' : '+ Add Market'}</button>
         </div>
-        {err && <div className="col-span-full"><ErrBox msg={err} /></div>}
       </form>
 
       <div className="divide-y divide-black/5 dark:divide-white/5 border border-black/10 rounded-xl overflow-hidden">
@@ -146,20 +154,23 @@ function MarketsManager({ initial }: { initial: Market[] }) {
           </div>
         ))}
       </div>
+      {err && <ErrBox msg={err} />}
     </div>
   );
 }
 
 // ── 2. Business Types Manager ─────────────────────────────────────────────────
 
-function BusinessTypesManager({ initial }: { initial: BusinessType[] }) {
+function BusinessTypesManager({ initial, markets }: { initial: BusinessType[]; markets: Market[] }) {
   const [types, setTypes] = useState(initial);
-  const [form, setForm] = useState({ id: '', name: '', name_ar: '', icon: '', parent_id: '', market_id: 'automotive', is_parent: '0', vendor_claimable: '0', sort_order: '99', sections: '[]', own_sections: '[]' });
+  const [form, setForm] = useState({ id: '', name: '', name_ar: '', icon: '', description: '', parent_id: '', market_id: markets.find((market) => market.active)?.id ?? '', is_parent: '0', vendor_claimable: '0', sort_order: '99', sections: '[]', own_sections: '[]', allowed_child_kinds: '[]' });
   const [err, setErr] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [editSections, setEditSections] = useState('');
   const [editOwnSections, setEditOwnSections] = useState('');
+  const [editDescription, setEditDescription] = useState('');
+  const [editAllowedChildKinds, setEditAllowedChildKinds] = useState('');
 
   const parents = types.filter(t => t.is_parent);
   const children = types.filter(t => !t.is_parent);
@@ -172,13 +183,15 @@ function BusinessTypesManager({ initial }: { initial: BusinessType[] }) {
     const all = await fetch('/api/admin/setup/business-types');
     const data = await all.json() as { types: BusinessType[] };
     setTypes(data.types);
-    setForm({ id: '', name: '', name_ar: '', icon: '', parent_id: '', market_id: 'automotive', is_parent: '0', vendor_claimable: '0', sort_order: '99', sections: '[]', own_sections: '[]' });
+    setForm({ id: '', name: '', name_ar: '', icon: '', description: '', parent_id: '', market_id: markets.find((market) => market.active)?.id ?? '', is_parent: '0', vendor_claimable: '0', sort_order: '99', sections: '[]', own_sections: '[]', allowed_child_kinds: '[]' });
     setSaving(false);
   }
 
   async function saveEdit(id: string) {
-    await fetch('/api/admin/setup/business-types', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, sections: editSections, own_sections: editOwnSections }) });
-    setTypes(ts => ts.map(t => t.id === id ? { ...t, sections: editSections, own_sections: editOwnSections } : t));
+    setErr(null);
+    const response = await fetch('/api/admin/setup/business-types', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, description: editDescription || null, allowed_child_kinds: editAllowedChildKinds, sections: editSections, own_sections: editOwnSections }) });
+    if (!response.ok) { setErr(((await response.json()) as { error: string }).error); return; }
+    setTypes(ts => ts.map(t => t.id === id ? { ...t, description: editDescription || null, allowed_child_kinds: editAllowedChildKinds, sections: editSections, own_sections: editOwnSections } : t));
     setEditId(null);
   }
 
@@ -186,6 +199,8 @@ function BusinessTypesManager({ initial }: { initial: BusinessType[] }) {
     setEditId(t.id);
     setEditSections(t.sections ?? '[]');
     setEditOwnSections(t.own_sections ?? '[]');
+    setEditDescription(t.description ?? '');
+    setEditAllowedChildKinds(t.allowed_child_kinds ?? '[]');
   }
 
   return (
@@ -196,6 +211,7 @@ function BusinessTypesManager({ initial }: { initial: BusinessType[] }) {
         <Input label="Name (EN) *" placeholder="My Type" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} required />
         <Input label="Name (AR)" placeholder="نوعي" value={form.name_ar} onChange={e => setForm(f => ({ ...f, name_ar: e.target.value }))} />
         <Input label="Icon (FA class)" placeholder="fa-car" value={form.icon} onChange={e => setForm(f => ({ ...f, icon: e.target.value }))} />
+        <Input label="Description" placeholder="What this minisite category represents" value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} />
         <div className="space-y-1">
           <label className="text-xs font-semibold opacity-60">Parent Kind</label>
           <select value={form.parent_id} onChange={e => setForm(f => ({ ...f, parent_id: e.target.value }))} className="w-full text-sm border border-black/15 rounded-lg px-3 py-2 bg-white dark:bg-neutral-800 focus:outline-none">
@@ -203,12 +219,21 @@ function BusinessTypesManager({ initial }: { initial: BusinessType[] }) {
             {parents.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
           </select>
         </div>
-        <Input label="Market ID" placeholder="automotive" value={form.market_id} onChange={e => setForm(f => ({ ...f, market_id: e.target.value }))} />
+        <div className="space-y-1">
+          <label className="text-xs font-semibold opacity-60">Market</label>
+          <select value={form.market_id} onChange={e => setForm(f => ({ ...f, market_id: e.target.value }))} required className="w-full text-sm border border-black/15 rounded-lg px-3 py-2 bg-white dark:bg-neutral-800">
+            {markets.filter((market) => market.active).map((market) => <option key={market.id} value={market.id}>{market.name_en}</option>)}
+          </select>
+        </div>
         <div className="space-y-1">
           <label className="text-xs font-semibold opacity-60">Is Parent?</label>
           <select value={form.is_parent} onChange={e => setForm(f => ({ ...f, is_parent: e.target.value }))} className="w-full text-sm border border-black/15 rounded-lg px-3 py-2 bg-white dark:bg-neutral-800">
             <option value="0">No (leaf kind)</option><option value="1">Yes (group)</option>
           </select>
+        </div>
+        <div className="col-span-full space-y-1">
+          <label className="text-xs font-semibold opacity-60">Allowed child type IDs (JSON array)</label>
+          <textarea value={form.allowed_child_kinds} onChange={e => setForm(f => ({ ...f, allowed_child_kinds: e.target.value }))} rows={2} placeholder='["vehicle_model","vehicle_trim"]' className="w-full text-xs font-mono border border-black/15 rounded px-2 py-1 bg-white dark:bg-neutral-800" />
         </div>
         <div className="space-y-1">
           <label className="text-xs font-semibold opacity-60">Vendor Claimable?</label>
@@ -226,18 +251,50 @@ function BusinessTypesManager({ initial }: { initial: BusinessType[] }) {
       <div className="space-y-3">
         {parents.map(p => (
           <div key={p.id} className="border border-black/10 rounded-xl overflow-hidden">
-            <div className="flex items-center gap-2 px-4 py-2 bg-black/[.03] dark:bg-white/[.03]">
-              <span className="font-bold text-sm">{p.name}</span>
-              <span className="text-xs opacity-40">{p.name_ar}</span>
-              <Pill color="blue">parent</Pill>
-              <Pill>{p.id}</Pill>
-            </div>
+            {editId === p.id ? (
+              <div className="space-y-2 bg-black/[.03] p-4 dark:bg-white/[.03]">
+                <div className="grid gap-2 sm:grid-cols-2">
+                  <label className="space-y-1 text-xs font-semibold opacity-60">Description
+                    <textarea value={editDescription} onChange={e => setEditDescription(e.target.value)} rows={2} className="w-full rounded border border-black/15 bg-white px-2 py-1 text-xs dark:bg-neutral-800" />
+                  </label>
+                  <label className="space-y-1 text-xs font-semibold opacity-60">Allowed child type IDs (JSON array)
+                    <textarea value={editAllowedChildKinds} onChange={e => setEditAllowedChildKinds(e.target.value)} rows={2} className="w-full rounded border border-black/15 bg-white px-2 py-1 font-mono text-xs dark:bg-neutral-800" />
+                  </label>
+                  <label className="space-y-1 text-xs font-semibold opacity-60">Sections (JSON array)
+                    <textarea value={editSections} onChange={e => setEditSections(e.target.value)} rows={2} className="w-full rounded border border-black/15 bg-white px-2 py-1 font-mono text-xs dark:bg-neutral-800" />
+                  </label>
+                  <label className="space-y-1 text-xs font-semibold opacity-60">Own sections (JSON array)
+                    <textarea value={editOwnSections} onChange={e => setEditOwnSections(e.target.value)} rows={2} className="w-full rounded border border-black/15 bg-white px-2 py-1 font-mono text-xs dark:bg-neutral-800" />
+                  </label>
+                </div>
+                <div className="flex gap-2">
+                  <button onClick={() => saveEdit(p.id)} className="rounded bg-black px-3 py-1 text-xs font-bold text-white">Save</button>
+                  <button onClick={() => setEditId(null)} className="rounded border border-black/15 px-3 py-1 text-xs font-semibold">Cancel</button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 bg-black/[.03] px-4 py-2 dark:bg-white/[.03]">
+                <span className="text-sm font-bold">{p.name}</span>
+                <span className="text-xs opacity-40">{p.name_ar}</span>
+                <Pill color="blue">parent</Pill>
+                <Pill>{p.id}</Pill>
+                <button onClick={() => startEdit(p)} className="ms-auto rounded border border-black/15 px-2 py-0.5 text-xs font-semibold hover:bg-black/5">Edit category</button>
+              </div>
+            )}
             <div className="divide-y divide-black/5 dark:divide-white/5">
               {children.filter(c => c.parent_id === p.id).map(c => (
                 <div key={c.id} className="px-4 py-2.5">
                   {editId === c.id ? (
                     <div className="space-y-2">
                       <div className="grid grid-cols-2 gap-2">
+                        <div className="space-y-1">
+                          <label className="text-xs font-semibold opacity-60">Description</label>
+                          <textarea value={editDescription} onChange={e => setEditDescription(e.target.value)} rows={2} className="w-full text-xs border border-black/15 rounded px-2 py-1 bg-white dark:bg-neutral-800" />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-xs font-semibold opacity-60">Allowed child type IDs (JSON array)</label>
+                          <textarea value={editAllowedChildKinds} onChange={e => setEditAllowedChildKinds(e.target.value)} rows={2} className="w-full text-xs font-mono border border-black/15 rounded px-2 py-1 bg-white dark:bg-neutral-800" />
+                        </div>
                         <div className="space-y-1">
                           <label className="text-xs font-semibold opacity-60">sections (JSON array)</label>
                           <textarea value={editSections} onChange={e => setEditSections(e.target.value)} rows={2} className="w-full text-xs font-mono border border-black/15 rounded px-2 py-1 bg-white dark:bg-neutral-800" />
@@ -258,7 +315,7 @@ function BusinessTypesManager({ initial }: { initial: BusinessType[] }) {
                       <span className="text-xs opacity-40">{c.name_ar}</span>
                       {c.vendor_claimable ? <Pill color="green">claimable</Pill> : null}
                       <Pill>{c.id}</Pill>
-                      <button onClick={() => startEdit(c)} className="text-xs px-2 py-0.5 rounded border border-black/15 font-semibold hover:bg-black/5">Edit sections</button>
+                      <button onClick={() => startEdit(c)} className="text-xs px-2 py-0.5 rounded border border-black/15 font-semibold hover:bg-black/5">Edit category</button>
                     </div>
                   )}
                 </div>
@@ -364,29 +421,43 @@ function SectionsManager({ initial }: { initial: Section[] }) {
 // ── 4. Field Groups & Form Fields ─────────────────────────────────────────────
 
 function FieldsManager({ types, sections }: { types: BusinessType[]; sections: Section[] }) {
-  const [selType, setSelType] = useState('vehicle_model');
-  const [selSection, setSelSection] = useState('sec_auto_specs');
+  const [selType, setSelType] = useState(types.find((type) => !type.is_parent)?.id ?? '');
+  const [selSection, setSelSection] = useState('');
   const [groups, setGroups] = useState<FieldGroup[]>([]);
   const [fields, setFields] = useState<FormField[]>([]);
   const [err, setErr] = useState<string | null>(null);
 
   const [gForm, setGForm] = useState({ name: '', label: '', label_ar: '', sort_order: '99' });
   const [fForm, setFForm] = useState({ name: '', label: '', label_ar: '', field_type: 'text', group_key: '', sort_order: '99', options: '', show_as_slide: '0', destination: '' });
+  const availableSections = useMemo(() => {
+    const byId = new Map(types.map((type) => [type.id, type]));
+    const carried = new Set<string>();
+    let current = byId.get(selType);
+    while (current) {
+      stringArray(current.sections).forEach((id) => carried.add(id));
+      stringArray(current.own_sections).forEach((id) => carried.add(id));
+      current = current.parent_id ? byId.get(current.parent_id) : undefined;
+    }
+    return sections.filter((section) => carried.has(section.id));
+  }, [types, sections, selType]);
+  const activeSectionId = availableSections.some((section) => section.id === selSection)
+    ? selSection
+    : availableSections[0]?.id ?? '';
 
   const load = useCallback(async () => {
-    if (!selType || !selSection) return;
-    const res = await fetch(`/api/admin/setup/fields?business_type_id=${selType}&section_id=${selSection}`);
+    if (!selType || !activeSectionId) return;
+    const res = await fetch(`/api/admin/setup/fields?business_type_id=${selType}&section_id=${activeSectionId}`);
     const data = await res.json() as { groups: FieldGroup[]; fields: FormField[] };
     setGroups(data.groups ?? []);
     setFields(data.fields ?? []);
-  }, [selType, selSection]);
+  }, [selType, activeSectionId]);
 
   // eslint-disable-next-line react-hooks/set-state-in-effect -- async data hydration on mount; every setState fires after `await fetch`, so no synchronous cascade is possible.
   useEffect(() => { void load(); }, [load]);
 
   async function addGroup(e: React.FormEvent) {
     e.preventDefault(); setErr(null);
-    const res = await fetch('/api/admin/setup/fields', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ kind: 'group', business_type_id: selType, section_id: selSection, ...gForm, sort_order: Number(gForm.sort_order) }) });
+    const res = await fetch('/api/admin/setup/fields', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ kind: 'group', business_type_id: selType, section_id: activeSectionId, ...gForm, sort_order: Number(gForm.sort_order) }) });
     if (!res.ok) { setErr(((await res.json()) as { error: string }).error); return; }
     setGForm({ name: '', label: '', label_ar: '', sort_order: '99' });
     await load();
@@ -394,7 +465,7 @@ function FieldsManager({ types, sections }: { types: BusinessType[]; sections: S
 
   async function addField(e: React.FormEvent) {
     e.preventDefault(); setErr(null);
-    const body = { kind: 'field', business_type_id: selType, section_id: selSection, ...fForm, sort_order: Number(fForm.sort_order), show_as_slide: Number(fForm.show_as_slide), options: fForm.options || null, group_key: fForm.group_key || null, destination: fForm.destination || null };
+    const body = { kind: 'field', business_type_id: selType, section_id: activeSectionId, ...fForm, sort_order: Number(fForm.sort_order), show_as_slide: Number(fForm.show_as_slide), options: fForm.options || null, group_key: fForm.group_key || null, destination: fForm.destination || null };
     const res = await fetch('/api/admin/setup/fields', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
     if (!res.ok) { setErr(((await res.json()) as { error: string }).error); return; }
     setFForm({ name: '', label: '', label_ar: '', field_type: 'text', group_key: '', sort_order: '99', options: '', show_as_slide: '0', destination: '' });
@@ -420,11 +491,12 @@ function FieldsManager({ types, sections }: { types: BusinessType[]; sections: S
         </div>
         <div className="space-y-1 flex-1 min-w-40">
           <label className="text-xs font-semibold opacity-60">Section</label>
-          <select value={selSection} onChange={e => setSelSection(e.target.value)} className="w-full text-sm border border-black/15 rounded-lg px-3 py-2 bg-white dark:bg-neutral-800 focus:outline-none">
-            {sections.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+          <select value={activeSectionId} onChange={e => setSelSection(e.target.value)} className="w-full text-sm border border-black/15 rounded-lg px-3 py-2 bg-white dark:bg-neutral-800 focus:outline-none">
+            {availableSections.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
           </select>
         </div>
       </div>
+      {!availableSections.length && <p className="rounded-lg bg-amber-50 p-3 text-xs text-amber-800">This category does not carry any sections yet. Assign sections to the type or one of its parent categories first.</p>}
 
       {err && <ErrBox msg={err} />}
 
@@ -667,11 +739,14 @@ function StatBox({ label, value, tone }: { label: string; value: number; tone: '
 
 // ── Main export ───────────────────────────────────────────────────────────────
 
-export default function SetupPanelClient({ initialTypes, initialSections }: Props) {
+export default function SetupPanelClient({ initialMarkets, initialTypes, initialSections }: Props) {
   return (
     <div className="space-y-4">
+      <SectionCard title="🌍 Markets" icon="🌍">
+        <MarketsManager initial={initialMarkets} />
+      </SectionCard>
       <SectionCard title="🏷️ Business Types" icon="🏷️">
-        <BusinessTypesManager initial={initialTypes} />
+        <BusinessTypesManager initial={initialTypes} markets={initialMarkets} />
       </SectionCard>
       <SectionCard title="📚 Sections" icon="📚">
         <SectionsManager initial={initialSections} />

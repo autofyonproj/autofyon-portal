@@ -27,12 +27,14 @@ import {
 import type { CSSProperties } from 'react';
 import GalleryCarousel from '@/components/GalleryCarousel';
 import SitePageRenderer from '@/components/SitePageRenderer';
-import { getPublishedSitePage, listPublishedCustomPages } from '@/lib/site-pages';
+import { getPublishedSitePage, listPublishedCustomPages, type SitePage } from '@/lib/site-pages';
 import { notFound } from 'next/navigation';
 import FinanceCalculator from '@/components/FinanceCalculator';
 import ContactDock from '@/components/ContactDock';
 import { IconClock, IconPhone, IconPin, IconWhatsApp } from '@/components/icons';
 import { localeDir, localePath, type SiteLocale } from '@/lib/site-locale';
+import SocialLinks from '@/components/SocialLinks';
+import { socialLinksLabel } from '@/lib/social-link-types';
 import { requiresAutofyonSponsorship } from '@/lib/autofyon-customer-plan';
 import { unitsBySeller, type UnitCard } from '@/lib/units';
 import AnalyticsTracker from '@/components/AnalyticsTracker';
@@ -301,9 +303,10 @@ function GalleryGrid({ items }: { items: GalleryItem[] }) {
 
 // ── contact plate: the buyer's exit, beside the name that earned the trust ───
 function ContactPlate({
-  contact, locale, phone,
+  contact, locale, phone, socialLinks,
 }: {
   contact: Record<string, unknown>; locale: SiteLocale; phone: string | null;
+  socialLinks: MinisiteData['business']['socialLinks'];
 }) {
   const address = loc(contact.address, contact.address_ar, locale);
   const hours = loc(contact.opening_hours, contact.opening_hours_ar, locale);
@@ -346,6 +349,7 @@ function ContactPlate({
           </a>
         </div>
       ) : null}
+      <SocialLinks links={socialLinks} locale={locale} label={socialLinksLabel(locale, 'business')} />
     </section>
   );
 }
@@ -371,7 +375,7 @@ interface BodyProps {
 }
 
 function SectionBody({ active, locale, identity, fieldsIndex, claimed, carousel, brand, slug, isCustomDomain, heroHoisted }: BodyProps) {
-  const { section, groups, marketComparisons, gallery, slides, shelves, blogs } = active;
+  const { section, groups, gallery, slides, shelves, blogs } = active;
   const isOverview = section.id === 'sec_1_identity';
   const sectionName = displayName(section, locale);
 
@@ -446,76 +450,6 @@ function SectionBody({ active, locale, identity, fieldsIndex, claimed, carousel,
         );
       })}
 
-      {marketComparisons.length ? (
-        <section className="panel" id={`${section.id}-market-comparisons`}>
-          <div className="panel-head">
-            <h2 className="panel-title">
-              {locale === 'ar' ? 'مقارنة المواصفات: مصر ودول الخليج' : 'Egypt vs GCC specifications'}
-            </h2>
-            <span className="panel-rule" />
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[42rem] border-collapse text-start text-sm">
-              <thead>
-                <tr className="border-b border-[var(--line)] text-xs text-[var(--ink-soft)]">
-                  <th scope="col" className="px-3 py-2 font-semibold">{locale === 'ar' ? 'المواصفة' : 'Specification'}</th>
-                  <th scope="col" className="px-3 py-2 font-semibold">{locale === 'ar' ? 'مصر' : 'Egypt'}</th>
-                  <th scope="col" className="px-3 py-2 font-semibold">{locale === 'ar' ? 'السوق الخليجي' : 'GCC market'}</th>
-                  <th scope="col" className="px-3 py-2 font-semibold">{locale === 'ar' ? 'الفرق' : 'Difference'}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {marketComparisons.map((comparison) => {
-                  const attribute = locale === 'ar'
-                    ? comparison.attributeAr ?? comparison.attribute
-                    : comparison.attribute;
-                  const egyptMeta = [
-                    comparison.egyptTrim,
-                    comparison.egyptUnit,
-                  ].filter(Boolean).join(' · ');
-                  const gccMeta = [
-                    comparison.gccCountry,
-                    comparison.gccModelYear,
-                    comparison.gccTrim,
-                    comparison.gccGenerationOrPowertrain,
-                  ].filter(Boolean).join(' · ');
-                  const sourceLink = (url: string | null, sourceId: string | null) => url ? (
-                    <a href={url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
-                      {sourceId ? `${locale === 'ar' ? 'المصدر' : 'Source'}: ${sourceId}` : (locale === 'ar' ? 'فتح المصدر' : 'Open source')}
-                    </a>
-                  ) : sourceId ? (
-                    <span>{locale === 'ar' ? 'المصدر' : 'Source'}: {sourceId}</span>
-                  ) : null;
-                  return (
-                    <tr key={comparison.id} className="border-b border-[var(--line)] align-top">
-                      <th scope="row" className="px-3 py-3 text-start font-semibold">{attribute}</th>
-                      <td className="px-3 py-3">
-                        <div className="font-semibold">{comparison.egyptValue}{comparison.egyptUnit ? ` ${comparison.egyptUnit}` : ''}</div>
-                        {egyptMeta ? <div className="mt-1 text-xs text-[var(--ink-soft)]">{egyptMeta}</div> : null}
-                        {comparison.egyptSourceId || comparison.egyptSourceUrl ? (
-                          <div className="mt-1 text-xs">{sourceLink(comparison.egyptSourceUrl, comparison.egyptSourceId)}</div>
-                        ) : null}
-                      </td>
-                      <td className="px-3 py-3">
-                        <div className="font-semibold">{comparison.gccValue}{comparison.gccUnit ? ` ${comparison.gccUnit}` : ''}</div>
-                        {gccMeta ? <div className="mt-1 text-xs text-[var(--ink-soft)]">{gccMeta}</div> : null}
-                        {comparison.gccSourceId || comparison.gccSourceUrl ? (
-                          <div className="mt-1 text-xs">{sourceLink(comparison.gccSourceUrl, comparison.gccSourceId)}</div>
-                        ) : null}
-                      </td>
-                      <td className="px-3 py-3 text-[var(--ink-soft)]">
-                        {comparison.differenceSummary ?? comparison.comparability ?? '—'}
-                        {comparison.confidence ? <div className="mt-1 text-xs">{locale === 'ar' ? 'الثقة' : 'Confidence'}: {comparison.confidence}</div> : null}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </section>
-      ) : null}
-
       {shelves.map((shelf, i) => {
         const heading = shelfHeading(section.id, shelf.label, locale);
         const showHeading = shelves.length > 1 || shelf.label !== sectionName;
@@ -565,14 +499,19 @@ function SectionBody({ active, locale, identity, fieldsIndex, claimed, carousel,
 export default async function MinisiteView({
   view,
   pageSlug,
+  previewPage,
+  preview = false,
 }: {
   view: MinisiteData;
   pageSlug?: string;
+  previewPage?: SitePage | null;
+  preview?: boolean;
 }) {
-  const [sitePage, customPages] = await Promise.all([
-    getPublishedSitePage(view.business.id, pageSlug ?? ''),
+  const [publishedPage, customPages] = await Promise.all([
+    previewPage ? Promise.resolve(null) : getPublishedSitePage(view.business.id, pageSlug ?? ''),
     listPublishedCustomPages(view.business.id),
   ]);
+  const sitePage = previewPage ?? publishedPage;
   if (pageSlug && !sitePage) notFound();
 
   const locale = view.locale;
@@ -590,7 +529,6 @@ export default async function MinisiteView({
   const name = displayName(b, locale);
   const typeName = loc(b.typeName, b.typeName_ar, locale) ?? '';
   const tagline = loc(b.identity.tagline, b.identity.tagline_ar, locale);
-  const brandLogoUrl = view.siteProfile.logoUrl ?? b.brandLogoUrl;
   const phone = typeof b.contact.phone === 'string' ? b.contact.phone : null;
   const siteStyle = {
     '--gold': view.siteProfile.accentColor,
@@ -614,27 +552,22 @@ export default async function MinisiteView({
       data-template={view.siteProfile.layout}
       style={siteStyle}
     >
+      {preview ? <div className="sticky top-0 z-50 bg-amber-300 px-4 py-2 text-center text-sm font-bold text-black">Admin draft preview — this version is not live</div> : null}
       <AnalyticsTracker businessId={b.id} />
       <div className="sheet">
         {/* The seller trail sits beneath the shared portal navigation. */}
         <div className="mark">
-          <div className="flex min-w-0 items-center gap-3">
-            {brandLogoUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img className="mark-brand-logo" src={brandLogoUrl} alt="" />
-            ) : null}
-            <nav aria-label={t('home', locale)} className="flex flex-wrap items-center gap-2">
-              <a className="link-quiet" href={localePath(locale, [])}>{t('home', locale)}</a>
-              {view.ancestry.map((a) => (
-                <span key={a.id} className="flex items-center gap-2">
-                  <span aria-hidden className="opacity-40">/</span>
-                  {a.slug
-                    ? <a className="link-quiet" href={homeHref(locale, a.slug, view.isCustomDomain)}>{displayName(a, locale)}</a>
-                    : <span>{displayName(a, locale)}</span>}
-                </span>
-              ))}
-            </nav>
-          </div>
+          <nav aria-label={t('home', locale)} className="flex flex-wrap items-center gap-2">
+            <a className="link-quiet" href={localePath(locale, [])}>{t('home', locale)}</a>
+            {view.ancestry.map((a) => (
+              <span key={a.id} className="flex items-center gap-2">
+                <span aria-hidden className="opacity-40">/</span>
+                {a.slug
+                  ? <a className="link-quiet" href={homeHref(locale, a.slug, view.isCustomDomain)}>{displayName(a, locale)}</a>
+                  : <span>{displayName(a, locale)}</span>}
+              </span>
+            ))}
+          </nav>
         </div>
 
         {!sitePage && heroFirst && active ? (
@@ -646,7 +579,6 @@ export default async function MinisiteView({
               defaults={view.carousel}
               fieldsIndex={view.fieldsIndex}
               brand={name}
-              logoUrl={brandLogoUrl}
               slug={b.slug}
             />
           </section>
@@ -654,9 +586,9 @@ export default async function MinisiteView({
 
         {!sitePage ? <header className="identity">
           <div>
-            {brandLogoUrl ? (
+            {view.siteProfile.logoUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={brandLogoUrl} alt={name} className="mb-3 max-h-16 max-w-40 object-contain" />
+              <img src={view.siteProfile.logoUrl} alt={name} className="mb-3 max-h-16 max-w-40 object-contain" />
             ) : null}
             <h1 className="nameplate">{name}</h1>
             {typeName ? <p className="kicker">{typeName}</p> : null}
@@ -690,7 +622,7 @@ export default async function MinisiteView({
               </div>
             ) : null}
           </div>
-          <ContactPlate contact={b.contact} locale={locale} phone={phone} />
+          <ContactPlate contact={b.contact} locale={locale} phone={phone} socialLinks={b.socialLinks} />
         </header> : null}
 
         {view.sections.length > 1 ? (
@@ -758,12 +690,7 @@ export default async function MinisiteView({
         )}
 
         {b.type_id === 'vehicle_model' && !sitePage ? (
-          <ModelEcosystemDock
-            modelSlug={b.slug}
-            services={view.modelServices}
-            locale={locale}
-            isCustomDomain={view.isCustomDomain}
-          />
+          <ModelEcosystemDock carName={name} locale={locale} />
         ) : null}
         {!pageSlug && isCustomerBusiness ? (
           <VehicleInventory

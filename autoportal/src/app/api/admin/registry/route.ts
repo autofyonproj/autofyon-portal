@@ -3,6 +3,7 @@ import { requirePlatformAdmin } from '@/lib/admin-auth';
 import { execute, queryOne } from '@/lib/db';
 import { assertNesting, loadTypeRule, TypologyError } from '@/lib/typology';
 import { resolveSections } from '@/lib/minisite';
+import { parseCustomDomain } from '@/lib/custom-domain';
 
 
 function slugify(text: string): string {
@@ -42,9 +43,30 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'type_id and name are required' }, { status: 400 });
     }
 
+    const parsedDomain = parseCustomDomain(custom_domain);
+    if (parsedDomain.error) {
+      return NextResponse.json({ error: parsedDomain.error }, { status: 400 });
+    }
+    if (parsedDomain.domain && type_id !== 'showroom') {
+      return NextResponse.json({ error: 'Custom domains are available only for showroom sites.' }, { status: 400 });
+    }
+    if (parsedDomain.domain && !published) {
+      return NextResponse.json({ error: 'A custom domain can be assigned only to a published showroom.' }, { status: 400 });
+    }
+
     const typeRule = await loadTypeRule(type_id);
     if (!typeRule) {
       return NextResponse.json({ error: `نوع النشاط أو المركبة "${type_id}" غير مسجل في النظام` }, { status: 400 });
+    }
+
+    if (parsedDomain.domain) {
+      const domainConflict = await queryOne<{ id: string }>(
+        'SELECT id FROM businesses WHERE lower(custom_domain) IN (?, ?) LIMIT 1',
+        [parsedDomain.domain, `www.${parsedDomain.domain}`],
+      );
+      if (domainConflict) {
+        return NextResponse.json({ error: 'This custom domain is already assigned to another site.' }, { status: 409 });
+      }
     }
 
     // 1. Enforce Nesting Policy
@@ -107,7 +129,7 @@ export async function POST(req: NextRequest) {
         type_id,
         published ? 1 : 0,
         parent_business_id || null,
-        custom_domain || null,
+        parsedDomain.domain,
         JSON.stringify(autoCustomData),
       ]
     );

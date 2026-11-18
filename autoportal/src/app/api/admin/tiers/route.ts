@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requirePlatformAdmin } from '@/lib/admin-auth';
 import { execute, query, queryOne } from '@/lib/db';
 import { MINISITE_TEMPLATES, VENDOR_TIERS, canVendorUseTemplate } from '@/lib/tiers';
+import { parseCustomDomain } from '@/lib/custom-domain';
 
 
 /**
@@ -26,12 +27,32 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: 'business_id is required' }, { status: 400 });
     }
 
-    const biz = await queryOne<{ id: string; custom_data: string }>(
-      'SELECT id, custom_data FROM businesses WHERE id = ?',
+    const biz = await queryOne<{ id: string; custom_data: string; type_id: string; published: number; status: string }>(
+      'SELECT id, custom_data, type_id, published, status FROM businesses WHERE id = ?',
       [business_id]
     );
     if (!biz) {
       return NextResponse.json({ error: 'التاجر غير موجود' }, { status: 404 });
+    }
+
+    const parsedDomain = parseCustomDomain(custom_domain);
+    if (parsedDomain.error) {
+      return NextResponse.json({ error: parsedDomain.error }, { status: 400 });
+    }
+    if (parsedDomain.domain && biz.type_id !== 'showroom') {
+      return NextResponse.json({ error: 'Custom domains are available only for showroom sites.' }, { status: 400 });
+    }
+    if (parsedDomain.domain && (!biz.published || biz.status !== 'active')) {
+      return NextResponse.json({ error: 'A custom domain can be assigned only to an active, published showroom.' }, { status: 400 });
+    }
+    if (parsedDomain.domain) {
+      const domainConflict = await queryOne<{ id: string }>(
+        'SELECT id FROM businesses WHERE lower(custom_domain) IN (?, ?) AND id != ? LIMIT 1',
+        [parsedDomain.domain, `www.${parsedDomain.domain}`, business_id],
+      );
+      if (domainConflict) {
+        return NextResponse.json({ error: 'This custom domain is already assigned to another site.' }, { status: 409 });
+      }
     }
 
     const selectedTier = tier || 'free';
@@ -53,7 +74,7 @@ export async function PATCH(req: NextRequest) {
           SET custom_domain = COALESCE(?, custom_domain),
               custom_data = ?
         WHERE id = ?`,
-      [custom_domain || null, JSON.stringify(customData), business_id]
+      [parsedDomain.domain, JSON.stringify(customData), business_id]
     );
 
     return NextResponse.json({

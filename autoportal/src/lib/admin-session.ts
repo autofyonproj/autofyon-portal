@@ -1,6 +1,5 @@
 import { getCloudflareContext } from '@opennextjs/cloudflare';
 
-const DEV_SESSION_SECRET = 'autoportal-local-session-key-not-for-production';
 const encoder = new TextEncoder();
 const runtimeEnv: Record<string, string | undefined> = process.env;
 
@@ -11,12 +10,12 @@ async function getSessionKey(): Promise<CryptoKey> {
     const env = context.env as { ADMIN_SESSION_SECRET?: string };
     secret = env.ADMIN_SESSION_SECRET;
   } catch {
-    // If running outside request context or worker initialization
+    // Local tooling may call this without an active Cloudflare request context.
   }
-  const usableSecret =
-    secret ||
-    runtimeEnv.ADMIN_SESSION_SECRET ||
-    'autofyon-master-production-session-secret-2026-key';
+  const usableSecret = secret?.trim() || runtimeEnv.ADMIN_SESSION_SECRET?.trim();
+  if (!usableSecret) {
+    throw new Error('ADMIN_SESSION_SECRET must be configured to sign admin sessions.');
+  }
   return crypto.subtle.importKey(
     'raw',
     encoder.encode(usableSecret),

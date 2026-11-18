@@ -223,7 +223,7 @@ export async function loadSiteProfile(
        FROM site_profiles WHERE target_type = ? AND target_id = ?`,
     [targetType, targetId],
   );
-  const savedTemplateId = targetType === 'business' ? 'editorial' : row?.template_id;
+  const savedTemplateId = row?.template_id;
   const template = SITE_TEMPLATES.find((item) => item.id === savedTemplateId) ?? SITE_TEMPLATES[0];
   let socialLinks: UnitSocialLinks = {};
   try {

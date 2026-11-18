@@ -11,8 +11,9 @@ import type {
 import GalleryManager from './GalleryManager';
 import FieldEditor from './FieldEditor';
 import BlogEditor from './BlogEditor';
+import SocialLinksEditor from './SocialLinksEditor';
 
-type SubTab = 'gallery' | 'fields' | 'blog';
+type SubTab = 'gallery' | 'fields' | 'blog' | 'social';
 
 interface Props {
   initialData: ContentStudioData;
@@ -80,12 +81,12 @@ export default function ContentStudioClient({ initialData, businessId }: Props) 
   return (
     <div className="space-y-4">
       {/* Section tabs */}
-      <div className="flex gap-1 overflow-x-auto pb-1 border-b border-black/10 dark:border-white/10">
+      <div className="flex flex-wrap gap-2 pb-2 border-b border-black/10 dark:border-white/10">
         {data.sections.map((sec) => (
           <button
             key={sec.id}
             onClick={() => setActiveSectionId(sec.id)}
-            className={`px-3 py-2 text-sm font-medium whitespace-nowrap rounded-t-lg transition ${
+            className={`px-3 py-2 text-sm font-semibold rounded-lg transition ${
               sec.id === activeSectionId
                 ? 'bg-blue-600 text-white'
                 : 'hover:bg-black/5 dark:hover:bg-white/5 opacity-70'
@@ -98,7 +99,7 @@ export default function ContentStudioClient({ initialData, businessId }: Props) 
       </div>
 
       {/* Sub-tab switcher */}
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         <SubTabBtn active={subTab === 'gallery'} onClick={() => setSubTab('gallery')}>
           🖼️ Gallery & Carousel
         </SubTabBtn>
@@ -110,6 +111,9 @@ export default function ContentStudioClient({ initialData, businessId }: Props) 
             📰 Blog
           </SubTabBtn>
         ) : null}
+        <SubTabBtn active={subTab === 'social'} onClick={() => setSubTab('social')}>
+          🔗 Social links
+        </SubTabBtn>
       </div>
 
       {/* Content area */}
@@ -142,6 +146,13 @@ export default function ContentStudioClient({ initialData, businessId }: Props) 
             onUpdate={onBlogsUpdate}
           />
         )}
+        {subTab === 'social' && (
+          <SocialLinksEditor
+            businessId={businessId}
+            initialLinks={data.socialLinks}
+            locale="ar"
+          />
+        )}
       </div>
 
       {/* Save status indicator */}
@@ -160,7 +171,7 @@ function SubTabBtn({
   return (
     <button
       onClick={onClick}
-      className={`px-3 py-1.5 text-xs font-bold rounded-lg transition ${
+      className={`px-3 py-2 text-xs font-bold rounded-lg transition ${
         active
           ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900'
           : 'border border-black/15 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/5'

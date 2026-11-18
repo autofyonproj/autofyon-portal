@@ -1,3 +1,38 @@
+import { query } from '@/lib/db';
+import { safeSocialUrl, type SocialLink } from '@/lib/social-link-types';
+export { type SocialLink, socialLinksLabel } from '@/lib/social-link-types';
+
+export async function loadSocialLinks(
+  businessId: string,
+  unitId?: string | null,
+  visibleOnly = false,
+): Promise<SocialLink[]> {
+  const visibility = visibleOnly ? ' AND is_visible = 1' : '';
+  const rows = await query<{
+    platform_key: string;
+    label: string;
+    url: string;
+    is_visible: number;
+    display_order: number;
+  }>(
+    `SELECT platform_key, label, url, is_visible, display_order
+       FROM site_social_links
+      WHERE business_id = ? AND ${unitId ? 'unit_id = ?' : 'unit_id IS NULL'}${visibility}
+      ORDER BY display_order, platform_key`,
+    unitId ? [businessId, unitId] : [businessId],
+  );
+  return rows.flatMap((row) => {
+    const url = safeSocialUrl(row.url);
+    return url ? [{
+      platformKey: row.platform_key,
+      label: row.label,
+      url,
+      visible: row.is_visible === 1,
+      displayOrder: row.display_order,
+    }] : [];
+  });
+}
+
 export const UNIT_SOCIAL_PLATFORMS = [
   'website',
   'facebook',

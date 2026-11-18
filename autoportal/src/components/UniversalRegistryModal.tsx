@@ -177,7 +177,10 @@ export default function UniversalRegistryModal({
                 </label>
                 <select
                   value={typeId}
-                  onChange={(e) => setTypeId(e.target.value)}
+                  onChange={(e) => {
+                    setTypeId(e.target.value);
+                    if (e.target.value !== 'showroom') setCustomDomain('');
+                  }}
                   className="w-full px-3.5 py-2.5 bg-white border border-[#c4a265]/30 rounded-xl text-sm focus:outline-none focus:border-[#c4a265]"
                 >
                   <optgroup label="عالم السيارات والمركبات">
@@ -267,7 +270,7 @@ export default function UniversalRegistryModal({
                 />
               </div>
 
-              <div>
+              {typeId === 'showroom' && <div>
                 <label className="block text-xs font-semibold text-[#0d0f12] mb-1.5">
                   دومين خاص مستقل (Custom Domain) — اختياري
                 </label>
@@ -279,7 +282,7 @@ export default function UniversalRegistryModal({
                   className="w-full px-3.5 py-2.5 bg-white border border-[#c4a265]/30 rounded-xl text-sm focus:outline-none focus:border-[#c4a265] font-mono text-xs"
                   dir="ltr"
                 />
-              </div>
+              </div>}
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">

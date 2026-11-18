@@ -4,6 +4,7 @@ import { queryOne, query } from '@/lib/db';
 import { notFound } from 'next/navigation';
 import MobileCameraUploader from '@/components/MobileCameraUploader';
 import YouTubeEmbedForm from '@/components/YouTubeEmbedForm';
+import { loadContentStudioData } from '@/lib/content-admin';
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -22,6 +23,10 @@ export default async function GalleryPage({ params }: Params) {
     [id],
   );
   if (!showroom) notFound();
+  const content = await loadContentStudioData(id);
+  if (!content) notFound();
+  const videoSection = content.sections.find((section) => section.id === 'sec_auto_exterior' && section.enable_gallery === 1)
+    ?? content.sections.find((section) => section.enable_gallery === 1);
 
   const images = await query<{
     id: string; url: string; caption: string | null; caption_ar: string | null;
@@ -30,6 +35,7 @@ export default async function GalleryPage({ params }: Params) {
     `SELECT id, url, caption, caption_ar, section_id, is_hero, display_order
        FROM vendor_gallery
       WHERE business_id = ? AND show_on_minisite = 1
+        AND unit_id IS NULL
       ORDER BY display_order`,
     [id],
   );
@@ -62,8 +68,13 @@ export default async function GalleryPage({ params }: Params) {
       {/* Mobile Camera Direct Uploader Component */}
       <MobileCameraUploader businessId={id} locale="ar" />
 
-      {/* YouTube Video Embed Form */}
-      <YouTubeEmbedForm businessId={id} />
+      {videoSection ? (
+        <YouTubeEmbedForm
+          businessId={id}
+          sectionId={videoSection.id}
+          fields={content.fields[videoSection.id] ?? []}
+        />
+      ) : null}
 
       {/* Grid of uploaded images */}
       {images.length > 0 && (

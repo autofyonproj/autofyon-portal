@@ -40,8 +40,8 @@ export async function PUT(req: NextRequest) {
   if (!targetType || !targetId || !['business', 'unit'].includes(targetType)) {
     return NextResponse.json({ error: 'targetType and targetId are required' }, { status: 400 });
   }
-  const templateId = targetType === 'business' ? 'editorial' : body.templateId;
-  if (!templateId) return NextResponse.json({ error: 'templateId is required for vehicle pages' }, { status: 400 });
+  const templateId = body.templateId;
+  if (!templateId) return NextResponse.json({ error: 'templateId is required' }, { status: 400 });
   const template = SITE_TEMPLATES.find((item) => item.id === templateId);
   if (!template) return NextResponse.json({ error: 'unknown template' }, { status: 400 });
 

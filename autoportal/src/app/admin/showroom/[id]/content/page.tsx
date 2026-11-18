@@ -45,7 +45,7 @@ export default async function ContentStudioPage({ params }: Params) {
         <div>
           <h1 className="text-xl font-bold">Content Studio</h1>
           <p className="text-xs opacity-50 mt-0.5">
-            Manage sections, gallery, carousel, field values, and blog for {data.business.name}
+            Manage sections, gallery, carousel, field values, blog, and homepage social links for {data.business.name}
           </p>
         </div>
         <a

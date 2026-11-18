@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getAdminUser, canAccessBusiness } from '@/lib/admin-auth';
 import { queryOne } from '@/lib/db';
-import { listSitePages } from '@/lib/site-pages';
+import { defaultSiteComponents, listSitePages } from '@/lib/site-pages';
 import SitePageBuilderClient from '@/components/SitePageBuilderClient';
 
 export default async function SitePageBuilder({
@@ -25,9 +25,12 @@ export default async function SitePageBuilder({
     name_ar: string | null;
     slug: string;
     type_id: string;
+    vendor_claimable: number;
   }>(
-    `SELECT id, name, name_ar, slug, type_id FROM businesses
-      WHERE id = ? AND status = 'active' AND type_id IN ('vehicle_brand', 'vehicle_model')`,
+    `SELECT b.id, b.name, b.name_ar, b.slug, b.type_id, bt.vendor_claimable FROM businesses b
+      JOIN business_types bt ON bt.id = b.type_id AND bt.is_parent = 0
+      LEFT JOIN markets m ON m.id = bt.market_id
+      WHERE b.id = ? AND b.status = 'active' AND COALESCE(m.active, 1) = 1`,
     [businessId],
   );
   if (!business) notFound();
@@ -45,8 +48,8 @@ export default async function SitePageBuilder({
       <header className="border-b border-black/10 pb-4">
         <h1 className="text-2xl font-bold">{business.name_ar || business.name} · Page Builder</h1>
         <p className="mt-1 text-sm opacity-60">
-          Manage the main {business.type_id === 'vehicle_brand' ? 'make' : 'model'} page and create separate update pages.
-          Each page has a required hero carousel, reusable automotive components, and its own publishable layout.
+          Manage this organization’s main minisite page and create separate update pages.
+          Each page has a required hero carousel, reusable content components, and its own publishable layout.
         </p>
       </header>
       <SitePageBuilderClient
@@ -55,6 +58,7 @@ export default async function SitePageBuilder({
         businessSlug={business.slug}
         contentStudioUrl={`/admin/showroom/${business.id}/content`}
         initialPages={pages}
+        initialHomeComponents={defaultSiteComponents(business.type_id, business.vendor_claimable === 1)}
       />
     </div>
   );

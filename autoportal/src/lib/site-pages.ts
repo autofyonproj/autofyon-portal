@@ -14,6 +14,35 @@ export const SITE_COMPONENT_TYPES = [
 ] as const;
 
 export type SiteComponentType = typeof SITE_COMPONENT_TYPES[number];
+export const UNIT_PAGE_COMPONENTS = [
+  'identity', 'hero', 'price', 'specifications', 'offers',
+  'price_history', 'seller', 'trim', 'similar', 'browse_all',
+] as const;
+export type UnitPageComponent = typeof UNIT_PAGE_COMPONENTS[number];
+
+export const DEFAULT_UNIT_PAGE_COMPONENTS: UnitPageComponent[] = [...UNIT_PAGE_COMPONENTS];
+
+export function validateUnitPageComponents(value: unknown): UnitPageComponent[] {
+  if (!Array.isArray(value) || value.length > UNIT_PAGE_COMPONENTS.length) {
+    throw new Error('Choose a valid vehicle page layout.');
+  }
+  const components: UnitPageComponent[] = [];
+  for (const raw of value) {
+    if (typeof raw !== 'string' || !(UNIT_PAGE_COMPONENTS as readonly string[]).includes(raw) || components.includes(raw as UnitPageComponent)) {
+      throw new Error('The vehicle layout contains an unsupported or repeated component.');
+    }
+    components.push(raw as UnitPageComponent);
+  }
+  if (!components.includes('identity') || !components.includes('price')) {
+    throw new Error('Vehicle identity and price must remain on the page.');
+  }
+  return components;
+}
+
+export interface UnitPageLayoutState {
+  draft: UnitPageComponent[];
+  published: UnitPageComponent[] | null;
+}
 
 export interface SitePageComponent {
   id: string;
@@ -57,15 +86,28 @@ interface SitePageRow {
   published: number;
 }
 
-export function defaultSiteComponents(): SitePageComponent[] {
-  return [
+export function defaultSiteComponents(typeId?: string, vendorClaimable = false): SitePageComponent[] {
+  const components: SitePageComponent[] = [
     { id: 'hero-carousel', type: 'hero_carousel', props: {} },
-    { id: 'model-details', type: 'model_details', props: {} },
-    { id: 'model-lineup', type: 'model_lineup', props: { limit: 12 } },
-    { id: 'inventory', type: 'inventory', props: { limit: 12 } },
-    { id: 'blog', type: 'blog', props: { limit: 6 } },
-    { id: 'contact', type: 'contact', props: {} },
   ];
+  if (typeId === 'vehicle_brand') {
+    components.push({ id: 'model-lineup', type: 'model_lineup', props: { limit: 12 } });
+  } else if (typeId === 'vehicle_model' || typeId === 'vehicle_trim') {
+    components.push({ id: 'model-details', type: 'model_details', props: {} });
+  } else if (vendorClaimable && ['showroom', 'main_agency', 'distributor', 'used_car_dealer'].includes(typeId ?? '')) {
+    components.push({ id: 'inventory', type: 'inventory', props: { limit: 12 } });
+  }
+  if (typeId === 'vehicle_brand' || typeId === 'vehicle_model' || typeId === 'vehicle_trim' ||
+      ['showroom', 'main_agency', 'distributor', 'used_car_dealer'].includes(typeId ?? '')) {
+    components.push({ id: 'offers', type: 'offers', props: { limit: 12 } });
+  }
+  components.push(
+    { id: 'gallery', type: 'gallery', props: { limit: 12 } },
+    { id: 'blog', type: 'blog', props: { limit: 6 } },
+    { id: 'faq', type: 'faq', props: {} },
+    { id: 'contact', type: 'contact', props: {} },
+  );
+  return components;
 }
 
 function fromRow(row: SitePageRow): SitePage {
@@ -107,6 +149,18 @@ export async function getPublishedSitePage(
   const row = await queryOne<SitePageRow>(
     `SELECT ${PAGE_SELECT} FROM site_pages
       WHERE business_id = ? AND published = 1 AND published_slug = ? LIMIT 1`,
+    [businessId, slug],
+  );
+  return row ? fromRow(row) : null;
+}
+
+export async function getDraftSitePage(
+  businessId: string,
+  slug = '',
+): Promise<SitePage | null> {
+  const row = await queryOne<SitePageRow>(
+    `SELECT ${PAGE_SELECT} FROM site_pages
+      WHERE business_id = ? AND draft_slug = ? LIMIT 1`,
     [businessId, slug],
   );
   return row ? fromRow(row) : null;

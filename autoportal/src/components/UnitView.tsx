@@ -17,6 +17,8 @@ import { localePath, localeDir, type SiteLocale } from '@/lib/site-locale';
 import { listOffersForModel, type UnitPage, type PublicOffer } from '@/lib/units';
 import { vehicleCategoryLabel } from '@/lib/unit-terms';
 import GalleryCarousel from '@/components/GalleryCarousel';
+import SocialLinks from '@/components/SocialLinks';
+import { socialLinksLabel } from '@/lib/social-link-types';
 import { UNIT_SOCIAL_LABELS, UNIT_SOCIAL_PLATFORMS } from '@/lib/social-links';
 import AnalyticsTracker from '@/components/AnalyticsTracker';
 
@@ -60,7 +62,9 @@ async function offersFor(modelId: string | null): Promise<PublicOffer[]> {
   return listOffersForModel(modelId);
 }
 
-export default async function UnitView({ page, locale }: { page: UnitPage; locale: SiteLocale }) {
+export default async function UnitView({
+  page, locale, preview = false,
+}: { page: UnitPage; locale: SiteLocale; preview?: boolean }) {
   const { unit, seller, model, trim, price, values, history, siblings, contact, reading } = page;
   const t = T(locale);
   const dir = localeDir(locale);
@@ -81,6 +85,12 @@ export default async function UnitView({ page, locale }: { page: UnitPage; local
     '--signal': page.siteProfile.accentColor,
     '--page': page.siteProfile.backgroundColor,
   } as CSSProperties;
+  const componentStyle = (component: typeof page.pageComponents[number]): CSSProperties => {
+    const position = page.pageComponents.indexOf(component);
+    return position < 0
+      ? { display: 'none' }
+      : { order: position + 1, gridColumn: '1 / -1' };
+  };
   const formatPrice = (amount: number) => new Intl.NumberFormat(dateLocale, {
     style: 'currency',
     currency: 'EGP',
@@ -156,10 +166,11 @@ export default async function UnitView({ page, locale }: { page: UnitPage; local
         dir={dir}
         className={`unit-page catalog-page minisite-template minisite-template--${page.siteProfile.layout}`}
         data-template={page.siteProfile.layout}
-        style={siteStyle}
+        style={{ ...siteStyle, display: 'grid' }}
       >
+      {preview ? <div className="rounded-lg bg-amber-300 px-4 py-2 text-center text-sm font-bold text-black">Admin draft preview — this version is not live</div> : null}
       {/* Breadcrumb */}
-      <nav className="catalog-breadcrumb">
+      <nav className="catalog-breadcrumb" style={componentStyle('identity')}>
         <Link href={localePath(locale, [])} className="hover:underline">{t.home}</Link>
         <span>/</span>
         <Link href={localePath(locale, [seller.slug])} className="hover:underline">{nameOf(seller)}</Link>
@@ -174,7 +185,7 @@ export default async function UnitView({ page, locale }: { page: UnitPage; local
       </nav>
 
       {/* Header */}
-      <header className="catalog-heading space-y-3">
+      <header className="catalog-heading space-y-3" style={componentStyle('identity')}>
         <h1>
           {locale === 'ar' ? (unit.title_ar || t.vehicle) : unit.title}
         </h1>
@@ -201,11 +212,11 @@ export default async function UnitView({ page, locale }: { page: UnitPage; local
 
       {page.siteProfile.logoUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={page.siteProfile.logoUrl} alt="" className="mb-4 max-h-16 max-w-40 object-contain" />
+        <img src={page.siteProfile.logoUrl} alt="" className="mb-4 max-h-16 max-w-40 object-contain" style={componentStyle('identity')} />
       ) : null}
 
       {carouselShelf ? (
-        <section className="panel panel--hero">
+        <section className="panel panel--hero" style={componentStyle('hero')}>
           <GalleryCarousel
             slides={carouselShelf.slides}
             locale={locale}
@@ -224,7 +235,7 @@ export default async function UnitView({ page, locale }: { page: UnitPage; local
       </section>
 
       {/* Price Plate */}
-      <section className="unit-price-plate p-5 space-y-2">
+      <section className="unit-price-plate p-5 space-y-2" style={componentStyle('price')}>
         <div className="unit-price-value text-3xl font-bold">
           {price.priceEgp ? formatPrice(price.priceEgp) : t.callPrice}
         </div>
@@ -246,11 +257,11 @@ export default async function UnitView({ page, locale }: { page: UnitPage; local
         )}
       </section>
 
-      {unit.vin && <div className="text-xs font-mono opacity-40">{locale === 'ar' ? 'رقم الشاسيه:' : 'VIN:'} {unit.vin}</div>}
+      {unit.vin && <div className="text-xs font-mono opacity-40" style={componentStyle('specifications')}>{locale === 'ar' ? 'رقم الشاسيه:' : 'VIN:'} {unit.vin}</div>}
 
       {/* Specs */}
       {Object.entries(values).length > 0 && (
-        <section className="space-y-4">
+        <section className="space-y-4" style={componentStyle('specifications')}>
           <h2 className="text-lg font-bold">{t.specs}</h2>
           {Object.entries(values).map(([sectionId, fields]) => {
             if (!fields || typeof fields !== 'object' || Object.keys(fields).length === 0) return null;
@@ -277,7 +288,7 @@ export default async function UnitView({ page, locale }: { page: UnitPage; local
 
       {/* Published offers for the same model */}
       {offers.length > 0 && (
-        <section className="space-y-3">
+        <section className="space-y-3" style={componentStyle('offers')}>
           <h2 className="text-lg font-bold">{t.offersFor}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {offers.map((o) => (
@@ -311,7 +322,7 @@ export default async function UnitView({ page, locale }: { page: UnitPage; local
 
       {/* Price history */}
       {history.length > 1 && (
-        <details className="text-sm">
+        <details className="text-sm" style={componentStyle('price_history')}>
           <summary className="cursor-pointer font-semibold opacity-60 hover:opacity-100">
             {t.priceHistory} ({t.points(history.length)})
           </summary>
@@ -328,13 +339,14 @@ export default async function UnitView({ page, locale }: { page: UnitPage; local
       )}
 
       {/* Seller card */}
-      <section className="unit-info-card p-5 space-y-3">
+      <section className="unit-info-card p-5 space-y-3" style={componentStyle('seller')}>
         <div className="text-xs font-bold opacity-50">{t.seller}</div>
         <div className="flex items-center justify-between gap-4">
           <div>
             <Link href={localePath(locale, [seller.slug])} className="text-lg font-bold hover:underline">{nameOf(seller)}</Link>
             {contact?.phone ? <div className="text-xs opacity-60 mt-1">📞 {String(contact.phone)}</div> : null}
             {contact?.whatsapp ? <div className="text-xs opacity-60">💬 {locale === 'ar' ? 'واتساب' : 'WhatsApp'}: {String(contact.whatsapp)}</div> : null}
+            <SocialLinks links={page.socialLinks} locale={locale} label={socialLinksLabel(locale, 'unit')} />
           </div>
           <Link
             href={localePath(locale, [seller.slug])}
@@ -365,7 +377,7 @@ export default async function UnitView({ page, locale }: { page: UnitPage; local
       ) : null}
 
       {trim && (
-        <div className="text-xs opacity-50">
+        <div className="text-xs opacity-50" style={componentStyle('trim')}>
           {t.trim}:{' '}
           <Link href={localePath(locale, [trim.slug])} className="hover:underline font-semibold">{nameOf(trim)}</Link>
         </div>
@@ -373,7 +385,7 @@ export default async function UnitView({ page, locale }: { page: UnitPage; local
 
       {/* Siblings */}
       {siblings.length > 0 && (
-        <section className="space-y-3">
+        <section className="space-y-3" style={componentStyle('similar')}>
           <h3 className="text-sm font-bold opacity-70">{t.similar}</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {siblings.map((sib) => (
@@ -395,7 +407,7 @@ export default async function UnitView({ page, locale }: { page: UnitPage; local
         </section>
       )}
 
-      <div className="catalog-breadcrumb">
+      <div className="catalog-breadcrumb" style={componentStyle('browse_all')}>
         <Link href={localePath(locale, ['cars'])}>
           {t.browseAll}
         </Link>

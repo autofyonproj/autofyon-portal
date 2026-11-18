@@ -70,21 +70,12 @@ export default function BrandMiniCarouselCard({ brand, locale }: Props) {
             <div className="relative z-10 w-20 h-20 flex items-center justify-center bg-white/95 dark:bg-white/10 rounded-2xl p-3 backdrop-blur-md border border-black/5 dark:border-white/10 shadow-md transition-transform duration-300 group-hover:scale-105">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={brand.logoUrl || `https://cdn.jsdelivr.net/gh/filippofilip95/car-logos-dataset@master/logos/optimized/${brand.slug}.png`}
+                src={brand.logoUrl || `https://cdn.jsdelivr.net/gh/filippofilip95/car-logos-dataset/logos/optimized/${brand.slug}.svg`}
                 alt={brandTitle}
                 className="max-w-full max-h-full object-contain filter drop-shadow-sm"
                 loading="lazy"
                 onError={(e) => {
-                  const img = e.target as HTMLImageElement;
-                  img.style.display = 'none';
-                  const parent = img.parentElement;
-                  if (parent && !parent.querySelector('.logo-fallback')) {
-                    const fb = document.createElement('span');
-                    fb.className = 'logo-fallback';
-                    fb.textContent = brand.slug[0].toUpperCase();
-                    fb.style.cssText = 'font-size:1.5rem;font-weight:900;color:#2d3140;font-style:italic;';
-                    parent.appendChild(fb);
-                  }
+                  (e.target as HTMLElement).style.display = 'none';
                 }}
               />
             </div>

@@ -26,14 +26,16 @@ async function authorizeBusiness(request: Request, businessId: string) {
   if (!canAccessBusiness(user, businessId)) {
     return { response: NextResponse.json({ error: 'forbidden' }, { status: 403 }) };
   }
-  const business = await queryOne<{ id: string; slug: string; name: string; name_ar: string | null; type_id: string }>(
-    'SELECT id, slug, name, name_ar, type_id FROM businesses WHERE id = ? AND status = ?',
+  const business = await queryOne<{
+    id: string; slug: string; name: string; name_ar: string | null; type_id: string; vendor_claimable: number;
+  }>(
+    `SELECT b.id, b.slug, b.name, b.name_ar, b.type_id, bt.vendor_claimable
+       FROM businesses b
+       JOIN business_types bt ON bt.id = b.type_id AND bt.is_parent = 0
+      WHERE b.id = ? AND b.status = ?`,
     [businessId, 'active'],
   );
   if (!business) return { response: NextResponse.json({ error: 'business not found' }, { status: 404 }) };
-  if (!['vehicle_brand', 'vehicle_model'].includes(business.type_id)) {
-    return { response: NextResponse.json({ error: 'Only make and model pages can use the automotive page builder.' }, { status: 400 }) };
-  }
   return { user, business };
 }
 
@@ -97,7 +99,7 @@ export async function POST(request: NextRequest) {
       slug: body.slug,
       title: body.title,
       title_ar: body.title_ar,
-      components: defaultSiteComponents(),
+      components: defaultSiteComponents(auth.business.type_id, auth.business.vendor_claimable === 1),
     }, false);
     await assertSlugAvailable(businessId, input.slug, null);
     const id = `page_${globalThis.crypto.randomUUID()}`;

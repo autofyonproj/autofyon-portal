@@ -23,7 +23,7 @@
 
 import { headers } from 'next/headers';
 import { getAdminUser, canAccessBusiness } from '@/lib/admin-auth';
-import { execute, queryOne } from '@/lib/db';
+import { batch, queryOne, type Statement } from '@/lib/db';
 import {
   TypologyError,
   assertSellable,
@@ -62,6 +62,13 @@ function slugify(input: string, fallback: string): string {
     .replace(/^-+|-+$/g, '')
     .slice(0, 80);
   return s || fallback;
+}
+
+async function availableSlug(base: string): Promise<string> {
+  const existing = await queryOne<{ id: string }>('SELECT id FROM units WHERE slug = ?', [base]);
+  if (!existing) return base;
+  const suffix = globalThis.crypto.randomUUID().slice(0, 8);
+  return `${base.slice(0, 71)}-${suffix}`;
 }
 
 interface LegacyPayload {
@@ -155,6 +162,9 @@ export async function POST(req: Request) {
   let unit: ModernPayload;
   try { unit = normalize(body); }
   catch (e) { return err(e instanceof Error ? e.message : String(e)); }
+  const title = unit.title?.trim();
+  if (!title) return err('title is required');
+  unit.title = title;
   if (unit.vehicle_category && !['car', 'motorcycle', 'scooter', 'commercial'].includes(unit.vehicle_category)) {
     return err('vehicle_category must be car, motorcycle, scooter, or commercial');
   }
@@ -207,10 +217,13 @@ export async function POST(req: Request) {
       }
     }
 
-    const id = `unit_${unit.slug}_${Date.now().toString(36)}`;
+    const slug = await availableSlug(slugify(unit.slug ?? title, `unit-${Date.now()}`));
+    unit.slug = slug;
+    const id = `unit_${slug}_${Date.now().toString(36)}`;
     const now = new Date().toISOString();
 
-    await execute(
+    const statements: Statement[] = [{
+      sql:
       `INSERT INTO units (
          id, market_id, seller_business_id, owner_business_id, stock_source,
          model_business_id, trim_business_id,
@@ -219,7 +232,7 @@ export async function POST(req: Request) {
          price_egp, price_currency, negotiable, media, overrides,
          published, created_at, updated_at
        ) VALUES (?, 'automotive', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '{}', ?, ?, ?, ?)`,
-      [
+      params: [
         id,
         seller.id,
         unit.owner_business_id ?? seller.id,
@@ -238,28 +251,28 @@ export async function POST(req: Request) {
         unit.published ? 1 : 0,
         now, now,
       ],
-    );
+    }];
     const ownerOfferId = `uvo_${id}_${seller.id}`;
-    await execute(
-      `INSERT INTO unit_vendor_offers
+    statements.push({
+      sql: `INSERT INTO unit_vendor_offers
          (id, unit_id, vendor_business_id, price_egp, price_currency, negotiable,
           status, published, created_at, updated_at)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
+      params: [
         ownerOfferId, id, seller.id, unit.price_egp ?? null,
         unit.price_currency ?? 'EGP', unit.negotiable ? 1 : 0,
         unit.status ?? 'available', unit.published ? 1 : 0, now, now,
       ],
-    );
+    });
     // The price at creation is the first provable point on the curve. Same
     // handler, same transaction: a unit without a snapshot is a unit whose
     // current price nobody has claimed to have said.
     if (unit.price_egp != null) {
-      await execute(
-        `INSERT OR REPLACE INTO price_snapshots
+      statements.push({
+        sql: `INSERT OR REPLACE INTO price_snapshots
            (id, subject_type, subject_id, price_egp, currency, source_type, source_url, captured_by, captured_at)
          VALUES (?, 'unit', ?, ?, ?, 'dealer_listing', ?, ?, ?)`,
-        [
+        params: [
           `ps_${id}`,
           id,
           unit.price_egp,
@@ -268,12 +281,12 @@ export async function POST(req: Request) {
           user.id,
           now,
         ],
-      );
-      await execute(
-        `INSERT INTO price_snapshots
+      });
+      statements.push({
+        sql: `INSERT INTO price_snapshots
            (id, subject_type, subject_id, price_egp, currency, source_type, source_url, captured_by, captured_at)
          VALUES (?, 'offer', ?, ?, ?, 'dealer_listing', ?, ?, ?)`,
-        [
+        params: [
           `ps_${ownerOfferId}`,
           ownerOfferId,
           unit.price_egp,
@@ -282,8 +295,9 @@ export async function POST(req: Request) {
           user.id,
           now,
         ],
-      );
+      });
     }
+    await batch(statements);
 
     return ok({ ok: true, id, slug: unit.slug, seller: { id: seller.id, name: seller.name } }, 201);
   } catch (e) {

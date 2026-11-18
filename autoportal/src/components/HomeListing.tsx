@@ -1,12 +1,10 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { localePath, localeDir, type SiteLocale } from '@/lib/site-locale';
-import type { FeaturedItem, Slide } from '@/lib/minisite';
+import type { FeaturedItem } from '@/lib/minisite';
 import type { PortalPageContent } from '@/lib/portal-site';
-import { extractYouTubeVideoId } from '@/lib/youtube';
-import GalleryCarousel from '@/components/GalleryCarousel';
 
 export default function HomeListing({
   locale,
@@ -25,36 +23,6 @@ export default function HomeListing({
   const brands = items.filter((item) => item.type_id === 'vehicle_brand');
   const showrooms = items.filter((item) => item.type_id !== 'vehicle_brand');
   const copy = content[locale];
-
-  const carouselSlides: Slide[] = useMemo(() => {
-    return (content.carouselSlides || []).map((s, idx) => {
-      const isYoutube = s.media_type === 'youtube';
-      const videoId = isYoutube ? extractYouTubeVideoId(s.url) : null;
-      const defaultEyebrow = isAr ? 'عرض حصري ومميز' : 'Featured Selection';
-      const eyebrow = (isAr ? s.badge_ar : s.badge_en) || s.badge_ar || defaultEyebrow;
-      return {
-        id: s.id || `slide-${idx}`,
-        mediaType: s.media_type,
-        videoId,
-        url: s.url,
-        fieldKey: `portal_slide_${idx}`,
-        fieldSectionId: 'portal_hero',
-        eyebrow,
-        title: isAr ? s.title_ar : (s.title_en || s.title_ar),
-        note: (isAr ? s.caption_ar : (s.caption_en || s.caption_ar)) ?? null,
-        caption: (isAr ? s.caption_ar : (s.caption_en || s.caption_ar)) ?? null,
-        isHero: idx === 0 ? 1 : 0,
-        placeholder: false,
-        startTime: s.startTime,
-        endTime: s.endTime,
-        ctaText: (isAr ? s.cta_text_ar : (s.cta_text_en || s.cta_text_ar)) ?? (isAr ? 'عرض التفاصيل ←' : 'View Details →'),
-        ctaLink: s.cta_link ?? null,
-        animation: 'kenburns',
-        imageFit: 'cover',
-        imagePosition: 'center',
-      };
-    });
-  }, [content.carouselSlides, isAr]);
 
   return (
     <main dir={localeDir(locale)} lang={locale} style={{ backgroundColor: content.backgroundColor, '--portal-accent': content.accentColor } as React.CSSProperties} className="min-h-screen bg-[#07090c] text-[#f0f4f8] selection:bg-[#c4a265] selection:text-black font-['Cairo',sans-serif]">
@@ -83,32 +51,8 @@ export default function HomeListing({
             {copy.description}
           </p>
 
-          {/* ════════════════════════════════════════════════════════════
-              HERO CINEMATIC PROMO CAROUSEL
-          ════════════════════════════════════════════════════════════ */}
-          {content.enabledSections.includes('carousel') && carouselSlides.length > 0 && (
-            <div className="mt-10 mb-10 rounded-3xl overflow-hidden border border-[#c4a265]/30 shadow-[0_25px_80px_-15px_rgba(0,0,0,0.9)] bg-black text-right">
-              <GalleryCarousel
-                slides={carouselSlides}
-                locale={locale}
-                label={isAr ? 'عروض وسلايدر البوابة السينمائي' : 'Portal Hero Cinematic Promos'}
-                defaults={{
-                  carouselType: content.carouselType,
-                  aspect: '21 / 9',
-                  interval: 7000,
-                  transition: 700,
-                  autoPlay: true,
-                  showArrows: true,
-                  showIndicators: true,
-                  showProgress: true,
-                }}
-                brand="AutoFyon"
-              />
-            </div>
-          )}
-
           {/* Unified Search Bar */}
-          <div className="max-w-2xl mx-auto">
+          <div className="mt-10 max-w-2xl mx-auto">
             <form action={localePath(locale, ['cars'])} method="get" className="flex items-center bg-white/[0.04] border border-[#c4a265]/30 rounded-2xl p-2 shadow-2xl backdrop-blur-xl focus-within:border-[#dfbe7e] transition-all">
               <input
                 type="search"
@@ -147,10 +91,10 @@ export default function HomeListing({
               🚗 {isAr ? 'معرض المستشار أوتو' : 'Almostashar Auto'}
             </Link>
             <Link
-              href="/admin/platform/carousel"
+              href="/admin/platform"
               className="px-4 py-2 rounded-xl bg-[#c4a265]/10 border border-[#c4a265]/30 text-[#dfbe7e] hover:bg-[#c4a265]/20 transition-all font-semibold"
             >
-              🎬 {isAr ? 'استوديو عروض السلايدر' : 'Hero Promos Studio'}
+              🔐 {isAr ? 'لوحة تحكم المنصة المركزية' : 'Platform Central Admin'}
             </Link>
           </div>
         </div>

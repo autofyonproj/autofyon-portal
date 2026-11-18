@@ -20,6 +20,13 @@ import {
 import { SPEC_TYPE } from '@/lib/typology';
 import { localePath, type SiteLocale } from '@/lib/site-locale';
 import { loadSiteProfile, type SiteProfile } from '@/lib/site-builder';
+import { loadSocialLinks } from '@/lib/social-links';
+import type { SocialLink } from '@/lib/social-link-types';
+import {
+  DEFAULT_UNIT_PAGE_COMPONENTS,
+  validateUnitPageComponents,
+  type UnitPageComponent,
+} from '@/lib/site-pages';
 import {
   priceSourceLabel, priceSourceRank, isPriceSource,
   type UnitKind, type UnitStatus, type StockSource,
@@ -173,8 +180,10 @@ export interface UnitPage {
   terms: ContractTerms | null;
   /** The seller's reachable details, resolved by the minisite's own rule. */
   contact: Record<string, unknown>;
+  socialLinks: SocialLink[];
   /** The same seller's other units, preferring the same model. */
   siblings: UnitCard[];
+  pageComponents: UnitPageComponent[];
   canonicalPath: string;
 }
 
@@ -491,6 +500,19 @@ export async function loadUnit(
     model ? parseJson<Record<string, Record<string, unknown>>>(model.custom_data, {}) : {},
     unit.overrides,
   );
+  const savedLayout = unit.overrides._site_layout;
+  const layout = savedLayout && typeof savedLayout === 'object' && !Array.isArray(savedLayout)
+    ? savedLayout as Record<string, unknown>
+    : {};
+  let pageComponents = DEFAULT_UNIT_PAGE_COMPONENTS;
+  const savedComponents = opts.drafts ? layout.draft : layout.published;
+  if (Array.isArray(savedComponents)) {
+    try {
+      pageComponents = validateUnitPageComponents(savedComponents);
+    } catch (error) {
+      console.warn(`Ignoring invalid published vehicle layout for ${unit.id}:`, error);
+    }
+  }
 
   const reading = await loadAuthoredShelves({
     hostBusinessId: model?.id ?? ownerSeller.id,
@@ -535,7 +557,9 @@ export async function loadUnit(
     spread: model ? await marketSpread(model.id) : null,
     terms: await contractTerms(unit.id, model?.id ?? null),
     contact: await contactFor(seller.id),
+    socialLinks: await loadSocialLinks(seller.id, unit.id, true),
     siblings,
+    pageComponents,
     canonicalPath: unitPath(locale, seller.slug, unit.slug),
   };
 }
@@ -1430,7 +1454,7 @@ export async function searchCatalogBrands(opts: SearchOpts): Promise<{ brands: B
     slug: b.slug,
     name: b.name,
     nameAr: b.name_ar,
-    logoUrl: `https://cdn.jsdelivr.net/gh/filippofilip95/car-logos-dataset@master/logos/optimized/${b.slug}.png`,
+    logoUrl: `https://cdn.jsdelivr.net/gh/filippofilip95/car-logos-dataset/logos/optimized/${b.slug}.svg`,
     origin: null,
     models: modelsByBrand.get(b.id) || [],
     href: localePath(opts.locale, [b.slug]),

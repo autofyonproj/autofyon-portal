@@ -162,13 +162,19 @@ export default async function PlatformAdminDashboard({
   }
 
   let setupMarkets: { id: string; slug: string; name_en: string; name_ar: string | null; default_locale: string; currency: string; active: number }[] = [];
-  let setupTypes: { id: string; name: string; name_ar: string | null; icon: string | null; is_parent: number; parent_id: string | null; market_id: string; vendor_claimable: number; sort_order: number; sections: string | null; own_sections: string | null }[] = [];
+  let setupTypes: {
+    id: string; name: string; name_ar: string | null; icon: string | null;
+    description: string | null; allowed_child_kinds: string | null;
+    is_parent: number; parent_id: string | null; market_id: string;
+    vendor_claimable: number; sort_order: number;
+    sections: string | null; own_sections: string | null;
+  }[] = [];
   let setupSections: { id: string; name: string; name_ar: string | null; icon: string | null; sort_order: number; enable_gallery: number; enable_blog: number; options: string | null }[] = [];
 
   if (activeTab === 'setup') {
     [setupMarkets, setupTypes, setupSections] = await Promise.all([
       query<typeof setupMarkets[number]>(`SELECT id, slug, name_en, name_ar, default_locale, currency, active FROM markets ORDER BY id`),
-      query<typeof setupTypes[number]>(`SELECT id, name, name_ar, icon, is_parent, parent_id, market_id, vendor_claimable, sort_order, sections, own_sections FROM business_types ORDER BY sort_order, id`),
+      query<typeof setupTypes[number]>(`SELECT id, name, name_ar, icon, description, allowed_child_kinds, is_parent, parent_id, market_id, vendor_claimable, sort_order, sections, own_sections FROM business_types ORDER BY sort_order, id`),
       query<typeof setupSections[number]>(`SELECT id, name, name_ar, icon, sort_order, enable_gallery, enable_blog, options FROM sections ORDER BY sort_order, id`),
     ]);
   }

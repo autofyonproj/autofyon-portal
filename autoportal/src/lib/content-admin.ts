@@ -14,6 +14,8 @@
  */
 import { query, queryOne, parseJson, execute } from '@/lib/db';
 import type { AdminUser } from '@/lib/admin-auth';
+import { loadSocialLinks } from '@/lib/social-links';
+import type { SocialLink } from '@/lib/social-link-types';
 export type { AdminUser };
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -83,6 +85,7 @@ export interface ContentStudioData {
     custom_data: Record<string, Record<string, unknown>>;
   };
   sections: StudioSection[];
+  socialLinks: SocialLink[];
   /** section_id → field definitions (inherited up the tree). */
   fields: Record<string, StudioField[]>;
   /** section_id → gallery rows. */
@@ -168,6 +171,7 @@ export async function loadContentStudioData(businessId: string): Promise<Content
 
   // 5. Load blog entries grouped by section
   const blogsMap = await loadBlogsForAdmin(businessId);
+  const socialLinks = await loadSocialLinks(businessId);
 
   return {
     business: {
@@ -175,6 +179,7 @@ export async function loadContentStudioData(businessId: string): Promise<Content
       slug: biz.slug, type_id: biz.type_id, custom_data: customData,
     },
     sections,
+    socialLinks,
     fields: fieldsMap,
     gallery: galleryMap,
     blogs: blogsMap,
@@ -293,7 +298,7 @@ async function loadGalleryForAdmin(businessId: string): Promise<Record<string, S
             field_section_id, display_order, placement, is_hero, show_on_minisite,
             approval_status, media_type, video_id, section_id
        FROM vendor_gallery
-      WHERE business_id = ?
+       WHERE business_id = ? AND unit_id IS NULL
       ORDER BY display_order`,
     [businessId],
   );
