@@ -112,7 +112,7 @@ export async function POST(request: Request) {
   for (const p of prospects) {
     const phone = extractFirstPhone(p.phones);
     const slug = slugify(p.name);
-    const inviteUrl = `https://autofyon.com/join?ref=${encodeURIComponent(campaignRef)}&hint=${encodeURIComponent(slug)}`;
+    const inviteUrl = `https://autofyon.com/join?claim=${encodeURIComponent(p.id)}&name=${encodeURIComponent(p.name)}&phone=${encodeURIComponent(phone)}&slug=${encodeURIComponent(slug)}&ref=${encodeURIComponent(campaignRef)}`;
     const message = interpolate(messageTemplate, {
       name: p.name,
       city: p.city || 'مصر',

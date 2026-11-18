@@ -2,10 +2,18 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
+import {
+  CATEGORIES,
+  GOVERNORATES,
+  DICTIONARY,
+  translateGov,
+  translateCategory,
+} from '@/data/dealers_i18n';
 
 export interface DealerItem {
   id: string;
   name: string;
+  name_en?: string;
   category_key: string;
   original_category: string;
   brand: string;
@@ -17,54 +25,22 @@ export interface DealerItem {
   contact_name: string;
   email: string;
   slug: string;
+  landing_slug?: string;
+  is_verified?: boolean;
 }
 
 interface Props {
   dealers: DealerItem[];
+  locale?: 'ar' | 'en';
 }
 
-const CATEGORIES = [
-  { key: 'all', label: 'كل الأنشطة', icon: '🏢' },
-  { key: 'showroom', label: 'معارض وتجار السيارات', icon: '🚗' },
-  { key: 'authorized_agent', label: 'وكلاء وموزعون', icon: '🛡️' },
-  { key: 'service_center', label: 'مراكز صيانة وخدمة', icon: '🔧' },
-  { key: 'parts_supplier', label: 'قطع غيار واكسسوارات', icon: '⚙️' },
-  { key: 'rental_company', label: 'تأجير وليموزين', icon: '🔑' },
-  { key: 'finance_company', label: 'بنوك وتمويل', icon: '💳' },
-  { key: 'insurer', label: 'شركات تأمين', icon: '📋' },
-];
+export default function DealersDirectoryClient({ dealers, locale = 'ar' }: Props) {
+  const dict = DICTIONARY[locale];
+  const isAr = locale === 'ar';
 
-const GOVERNORATES = [
-  'كل المحافظات',
-  'القاهرة',
-  'الجيزة',
-  'الإسكندرية',
-  'الشرقية',
-  'الغربية',
-  'الدقهلية',
-  'القليوبية',
-  'المنوفية',
-  'البحيرة',
-  'كفر الشيخ',
-  'دمياط',
-  'بورسعيد',
-  'الإسماعيلية',
-  'السويس',
-  'بني سويف',
-  'المنيا',
-  'أسيوط',
-  'سوهاج',
-  'قنا',
-  'الأقصر',
-  'أسوان',
-  'البحر الأحمر',
-  'مطروح',
-];
-
-export default function DealersDirectoryClient({ dealers }: Props) {
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [selectedGov, setSelectedGov] = useState('كل المحافظات');
+  const [selectedGov, setSelectedGov] = useState(isAr ? 'كل المحافظات' : 'All Governorates');
   const [visibleCount, setVisibleCount] = useState(24);
 
   const filteredDealers = useMemo(() => {
@@ -80,13 +56,16 @@ export default function DealersDirectoryClient({ dealers }: Props) {
       }
 
       // Governorate match
-      if (selectedGov !== 'كل المحافظات' && d.city !== selectedGov) {
-        return false;
+      if (selectedGov !== 'كل المحافظات' && selectedGov !== 'All Governorates') {
+        const govEn = translateGov(d.city, 'en');
+        if (d.city !== selectedGov && govEn !== selectedGov) {
+          return false;
+        }
       }
 
       // Search match
       if (q) {
-        const text = `${d.name} ${d.district} ${d.address} ${d.brand} ${d.contact_name} ${d.primary_phone}`.toLowerCase();
+        const text = `${d.name} ${d.name_en || ''} ${d.district} ${d.address} ${d.brand} ${d.contact_name} ${d.primary_phone}`.toLowerCase();
         if (!text.includes(q)) return false;
       }
 
@@ -118,173 +97,196 @@ export default function DealersDirectoryClient({ dealers }: Props) {
     }
   };
 
-  const getCategoryLabel = (cat: string) => {
-    switch (cat) {
-      case 'showroom':
-        return 'معرض سيارات';
-      case 'authorized_agent':
-        return 'وكيل معتمد';
-      case 'distributor':
-        return 'موزع معتمد';
-      case 'service_center':
-        return 'مركز خدمة وصيانة';
-      case 'parts_supplier':
-        return 'قطع غيار واكسسوارات';
-      case 'rental_company':
-        return 'تأجير سيارات وليموزين';
-      case 'finance_company':
-        return 'تمويل وتقسيط';
-      case 'insurer':
-        return 'تأمين سيارات';
-      default:
-        return 'نشاط معتمد';
-    }
-  };
-
   return (
-    <div className="space-y-8 font-sans">
-      {/* Search & Filter Header Bar */}
-      <div className="p-5 sm:p-6 rounded-3xl border border-white/10 bg-gradient-to-b from-[#111622]/90 to-[#07090c]/95 backdrop-blur-2xl shadow-2xl space-y-5">
-        <div className="flex flex-col md:flex-row gap-3">
-          {/* Search Input */}
+    <div className="space-y-6">
+      {/* Search and Filter Controls Toolbar */}
+      <div className="rounded-2xl border border-white/10 bg-[#0d1117]/80 backdrop-blur-xl p-4 sm:p-5 shadow-2xl space-y-4">
+        {/* Top line: Search Bar + Language Switcher */}
+        <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
           <div className="relative flex-1">
-            <span className="absolute right-3.5 top-3.5 text-neutral-400 text-base">🔍</span>
+            <span className={`absolute top-1/2 -translate-y-1/2 text-neutral-400 text-sm ${isAr ? 'right-3.5' : 'left-3.5'}`}>
+              🔍
+            </span>
             <input
               type="text"
               value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setVisibleCount(24);
-              }}
-              placeholder="ابحث باسم المعرض، الماركة، المنطقة، أو التليفون (مثال: أوتو ون، تويوتا، مدينة نصر)..."
-              className="w-full pr-10 pl-4 py-3 bg-black/50 border border-white/10 rounded-2xl text-white placeholder-neutral-500 text-xs sm:text-sm focus:outline-none focus:border-red-500/60 focus:ring-1 focus:ring-red-500/60 transition"
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder={dict.searchPlaceholder}
+              className={`w-full bg-white/[0.04] border border-white/10 rounded-xl py-2.5 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-red-500/60 focus:ring-1 focus:ring-red-500/40 transition-all ${
+                isAr ? 'pr-10 pl-4' : 'pl-10 pr-4'
+              }`}
             />
             {search && (
               <button
                 type="button"
                 onClick={() => setSearch('')}
-                className="absolute left-3 top-3 text-neutral-400 hover:text-white text-xs bg-white/5 px-2 py-1 rounded-md"
+                className={`absolute top-1/2 -translate-y-1/2 text-neutral-500 hover:text-white text-xs ${
+                  isAr ? 'left-3' : 'right-3'
+                }`}
               >
-                مسح
+                ✕
               </button>
             )}
           </div>
 
-          {/* Governorate Dropdown */}
-          <div className="w-full md:w-56">
+          <div className="flex items-center gap-2">
+            {/* Governorate Dropdown */}
             <select
               value={selectedGov}
-              onChange={(e) => {
-                setSelectedGov(e.target.value);
-                setVisibleCount(24);
-              }}
-              className="w-full py-3 px-3.5 bg-black/50 border border-white/10 rounded-2xl text-white text-xs sm:text-sm focus:outline-none focus:border-red-500/60 transition cursor-pointer"
+              onChange={(e) => setSelectedGov(e.target.value)}
+              className="bg-white/[0.04] border border-white/10 rounded-xl px-3 py-2.5 text-xs sm:text-sm text-neutral-200 focus:outline-none focus:border-red-500/60 focus:ring-1 focus:ring-red-500/40 transition-all shrink-0 cursor-pointer"
             >
-              {GOVERNORATES.map((g) => (
-                <option key={g} value={g} className="bg-neutral-900 text-white">
-                  {g}
+              {GOVERNORATES.map((gov) => (
+                <option key={gov.ar} value={isAr ? gov.ar : gov.en} className="bg-[#0f141c] text-white">
+                  📍 {isAr ? gov.ar : gov.en}
                 </option>
               ))}
             </select>
+
+            {/* Language Switch Button */}
+            <Link
+              href={dict.switchLangHref}
+              className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] border border-white/15 text-xs font-bold text-white transition-all shadow-sm shrink-0"
+              title="Change Language / تغيير اللغة"
+            >
+              <span>🌐</span>
+              <span>{dict.switchLang}</span>
+            </Link>
           </div>
         </div>
 
-        {/* Category Filter Chips */}
-        <div className="flex flex-wrap gap-2 pt-1 border-t border-white/5">
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat.key}
-              type="button"
-              onClick={() => {
-                setSelectedCategory(cat.key);
-                setVisibleCount(24);
-              }}
-              className={`px-3.5 py-1.5 rounded-xl border text-xs font-bold transition-all flex items-center gap-1.5 ${
-                selectedCategory === cat.key
-                  ? 'bg-gradient-to-r from-red-600 to-red-700 border-red-500 text-white shadow-md shadow-red-600/30 scale-[1.02]'
-                  : 'bg-white/[0.03] border-white/10 text-neutral-400 hover:text-white hover:bg-white/[0.08]'
-              }`}
-            >
-              <span>{cat.icon}</span>
-              <span>{cat.label}</span>
-            </button>
-          ))}
-        </div>
-
-        {/* Result counter */}
-        <div className="flex items-center justify-between text-xs text-neutral-400 pt-1">
-          <span>
-            يتم عرض <strong className="text-white font-mono">{filteredDealers.length.toLocaleString('ar-EG')}</strong> كيان معتمد
-            {selectedGov !== 'كل المحافظات' && ` في محافظة ${selectedGov}`}
-          </span>
-          {(search || selectedCategory !== 'all' || selectedGov !== 'كل المحافظات') && (
-            <button
-              type="button"
-              onClick={() => {
-                setSearch('');
-                setSelectedCategory('all');
-                setSelectedGov('كل المحافظات');
-                setVisibleCount(24);
-              }}
-              className="text-red-400 hover:text-red-300 font-semibold"
-            >
-              إعادة ضبط الفلاتر ↺
-            </button>
-          )}
+        {/* Category Filter Pills (Horizontal Scroll) */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin scrollbar-thumb-white/10">
+          {CATEGORIES.map((cat) => {
+            const active = selectedCategory === cat.key;
+            const label = isAr ? cat.label_ar : cat.label_en;
+            return (
+              <button
+                key={cat.key}
+                type="button"
+                onClick={() => setSelectedCategory(cat.key)}
+                className={`whitespace-nowrap inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border shrink-0 ${
+                  active
+                    ? 'bg-red-600 border-red-500 text-white shadow-md shadow-red-600/30'
+                    : 'bg-white/[0.03] border-white/10 text-neutral-400 hover:text-white hover:bg-white/[0.07]'
+                }`}
+              >
+                <span>{cat.icon}</span>
+                <span>{label}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      {/* Grid of Dealers */}
-      {visibleItems.length === 0 ? (
-        <div className="p-12 text-center rounded-3xl border border-white/10 bg-white/[0.02] space-y-3">
+      {/* Directory Stats Bar */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs text-neutral-400 px-1 gap-2">
+        <div className="flex items-center gap-2">
+          <span>{dict.showingCount}:</span>
+          <strong className="text-white font-black text-sm">{filteredDealers.length}</strong>
+          <span>{dict.of} 2,800+ {dict.entities}</span>
+          {selectedCategory !== 'all' && (
+            <span className="text-red-400 font-semibold">• {translateCategory(selectedCategory, locale).label}</span>
+          )}
+          {selectedGov !== 'كل المحافظات' && selectedGov !== 'All Governorates' && (
+            <span className="text-amber-400 font-semibold">• {selectedGov}</span>
+          )}
+        </div>
+
+        {(search || selectedCategory !== 'all' || (selectedGov !== 'كل المحافظات' && selectedGov !== 'All Governorates')) && (
+          <button
+            type="button"
+            onClick={() => {
+              setSearch('');
+              setSelectedCategory('all');
+              setSelectedGov(isAr ? 'كل المحافظات' : 'All Governorates');
+            }}
+            className="text-neutral-400 hover:text-red-400 underline transition text-xs"
+          >
+            {dict.resetFilters} ↺
+          </button>
+        )}
+      </div>
+
+      {/* Dealers Cards Grid */}
+      {filteredDealers.length === 0 ? (
+        <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-12 text-center space-y-3">
           <span className="text-4xl block">🔍</span>
-          <h3 className="text-lg font-bold text-white">لا توجد نتائج مطابقة لبحثك</h3>
-          <p className="text-xs text-neutral-400">جرب تعديل كلمات البحث أو اختيار كل المحافظات</p>
+          <h3 className="text-lg font-bold text-white">{dict.noResults}</h3>
+          <p className="text-xs sm:text-sm text-neutral-400 max-w-md mx-auto">{dict.noResultsHint}</p>
+          <button
+            type="button"
+            onClick={() => {
+              setSearch('');
+              setSelectedCategory('all');
+              setSelectedGov(isAr ? 'كل المحافظات' : 'All Governorates');
+            }}
+            className="mt-2 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold text-white transition"
+          >
+            {dict.resetFilters}
+          </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {visibleItems.map((item) => {
-            const hasWhatsapp = item.whatsapp && item.whatsapp.length >= 7;
-            const waHref = hasWhatsapp
-              ? `https://wa.me/2${item.whatsapp}?text=${encodeURIComponent(
-                  `مرحباً، أتواصل مع ${item.name} بخصوص عروض وخدمات السيارات المعروضة على منصة أوتوفيون.`
-                )}`
-              : null;
+            const catInfo = translateCategory(item.category_key, locale);
+            const waHref = item.whatsapp ? `https://wa.me/${item.whatsapp.replace(/\D/g, '')}` : null;
             const telHref = item.primary_phone ? `tel:${item.primary_phone}` : null;
+            const govDisplay = translateGov(item.city, locale);
+            const isVerified = Boolean(item.is_verified);
+
+            // Registration claim URL with pre-filled parameters
+            const claimUrl = `/join?claim=${encodeURIComponent(item.id)}&slug=${encodeURIComponent(
+              item.slug,
+            )}&name=${encodeURIComponent(item.name)}&phone=${encodeURIComponent(item.primary_phone || '')}&city=${encodeURIComponent(
+              item.city || '',
+            )}`;
 
             return (
               <article
                 key={item.id}
-                className="group rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-transparent p-5 hover:border-red-500/40 hover:bg-white/[0.06] transition-all flex flex-col justify-between shadow-xl space-y-4"
+                className={`group relative rounded-2xl p-5 flex flex-col justify-between gap-4 transition-all duration-300 shadow-lg ${
+                  isVerified
+                    ? 'border-2 border-amber-500/50 bg-gradient-to-b from-[#141820] to-[#0d1017] shadow-amber-500/10'
+                    : 'border border-white/10 bg-[#0d1017]/90 hover:border-red-500/30 hover:bg-[#12151e]'
+                }`}
               >
-                <div className="space-y-3">
-                  {/* Category and Location Badges */}
-                  <div className="flex items-center justify-between gap-2">
-                    <span
-                      className={`text-[10px] font-black px-2.5 py-0.5 rounded-full border ${getBadgeStyle(
-                        item.category_key
-                      )}`}
-                    >
-                      {getCategoryLabel(item.category_key)}
-                    </span>
-                    <span className="text-[11px] font-semibold text-neutral-400 flex items-center gap-1">
-                      <span>📍</span>
-                      <span>{item.city}</span>
-                      {item.district && item.district !== 'المركز الرئيسي' && (
-                        <span>• {item.district}</span>
-                      )}
+                {/* Verified Golden Badge Top Banner */}
+                {isVerified && (
+                  <div className="absolute -top-3 left-4 right-4 flex items-center justify-between pointer-events-none">
+                    <span className="inline-flex items-center gap-1 text-[10px] font-black tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 text-neutral-950 shadow-md">
+                      <span>⭐</span>
+                      <span>{dict.verifiedBadge}</span>
                     </span>
                   </div>
+                )}
 
-                  {/* Title & Brand */}
+                <div className={`space-y-3 ${isVerified ? 'pt-1.5' : ''}`}>
+                  {/* Category & City Tags */}
+                  <div className="flex items-center justify-between gap-2 text-xs">
+                    <span
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border font-bold text-[11px] ${getBadgeStyle(
+                        item.category_key,
+                      )}`}
+                    >
+                      <span>{catInfo.icon}</span>
+                      <span>{catInfo.label}</span>
+                    </span>
+
+                    <span className="text-[11px] text-neutral-400 font-medium">📍 {govDisplay}</span>
+                  </div>
+
+                  {/* Dealer Name */}
                   <div>
                     <h3 className="font-black text-base text-white group-hover:text-red-400 transition-colors line-clamp-1">
-                      {item.name}
+                      {isAr ? item.name : item.name_en || item.name}
                     </h3>
                     {item.brand && (
                       <p className="text-[11px] text-amber-400/90 font-semibold mt-0.5 flex items-center gap-1">
                         <span>🏷️</span>
-                        <span>متخصص في: {item.brand}</span>
+                        <span>
+                          {dict.specializedIn}: {item.brand}
+                        </span>
                       </p>
                     )}
                   </div>
@@ -292,6 +294,7 @@ export default function DealersDirectoryClient({ dealers }: Props) {
                   {/* Address */}
                   {item.address && (
                     <p className="text-xs text-neutral-400 line-clamp-2 leading-relaxed">
+                      {item.district ? `${item.district} — ` : ''}
                       {item.address}
                     </p>
                   )}
@@ -299,10 +302,25 @@ export default function DealersDirectoryClient({ dealers }: Props) {
                   {/* Contact Person */}
                   {item.contact_name && (
                     <p className="text-[11px] text-neutral-500">
-                      مسؤول الاتصال: <span className="text-neutral-300 font-medium">{item.contact_name}</span>
+                      {dict.contactPerson}:{' '}
+                      <span className="text-neutral-300 font-medium">{item.contact_name}</span>
                     </p>
                   )}
                 </div>
+
+                {/* Free Package Claim Notice for Unregistered Prospects */}
+                {!isVerified && (
+                  <div className="rounded-xl border border-dashed border-emerald-500/30 bg-emerald-950/20 p-2.5 text-center space-y-1">
+                    <p className="text-[10px] text-emerald-400 font-bold">🎁 {dict.freeOfferNotice}</p>
+                    <Link
+                      href={claimUrl}
+                      className="inline-flex items-center justify-center gap-1 text-[11px] font-black text-emerald-300 hover:text-emerald-200 underline"
+                    >
+                      <span>{dict.claimButton}</span>
+                      <span>→</span>
+                    </Link>
+                  </div>
+                )}
 
                 {/* Actions Bar */}
                 <div className="pt-2 border-t border-white/5 flex gap-2">
@@ -311,19 +329,19 @@ export default function DealersDirectoryClient({ dealers }: Props) {
                       href={waHref}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/30 text-xs font-bold text-emerald-300 transition"
-                      title="محادثة واتساب"
+                      className="flex-1 inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/30 text-xs font-bold text-emerald-300 transition"
+                      title={dict.whatsapp}
                     >
                       <span>💬</span>
-                      <span>واتساب</span>
+                      <span>{dict.whatsapp}</span>
                     </a>
                   )}
 
                   {telHref && (
                     <a
                       href={telHref}
-                      className="inline-flex items-center justify-center gap-1 py-2.5 px-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold text-neutral-200 hover:text-white transition"
-                      title="اتصال هاتفي"
+                      className="inline-flex items-center justify-center gap-1 py-2 px-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold text-neutral-200 hover:text-white transition"
+                      title={dict.call}
                     >
                       <span>📞</span>
                       <span dir="ltr">{item.primary_phone}</span>
@@ -332,10 +350,15 @@ export default function DealersDirectoryClient({ dealers }: Props) {
 
                   {/* Showroom starter landing page link if available */}
                   <Link
-                    href={`/p/${item.slug}`}
-                    className="inline-flex items-center justify-center py-2.5 px-3 rounded-xl bg-red-600/10 hover:bg-red-600/20 border border-red-500/20 text-xs font-bold text-red-300 transition"
-                    title="معاينة الصفحة التسويقية"
+                    href={`/p/${item.landing_slug || item.slug}`}
+                    className={`inline-flex items-center justify-center py-2 px-3 rounded-xl border text-xs font-bold transition ${
+                      isVerified
+                        ? 'bg-amber-500/20 hover:bg-amber-500/30 border-amber-500/40 text-amber-300'
+                        : 'bg-red-600/10 hover:bg-red-600/20 border-red-500/20 text-red-300'
+                    }`}
+                    title={dict.viewPage}
                   >
+                    <span>{dict.viewPage}</span>
                     <span>↗</span>
                   </Link>
                 </div>
@@ -353,7 +376,7 @@ export default function DealersDirectoryClient({ dealers }: Props) {
             onClick={() => setVisibleCount((prev) => prev + 36)}
             className="px-8 py-3.5 rounded-2xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/15 text-xs sm:text-sm font-bold text-white transition-all shadow-lg hover:scale-[1.02]"
           >
-            عرض المزيد ({filteredDealers.length - visibleCount} كيان متبقي) ↓
+            {dict.loadMore} ({filteredDealers.length - visibleCount} {dict.remaining}) ↓
           </button>
         </div>
       )}
