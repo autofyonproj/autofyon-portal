@@ -11,7 +11,10 @@ const DEFAULT_TEMPLATE = `مرحباً يا أهل *{{name}}* 👋
 ✅ استوديو ميديا مانجر لصناعة إعلانات سياراتكم مجاناً
 ✅ توثيق معتمد وشارة ذهبية في دليل معارض مصر للسيارات
 
-للتفعيل المجاني الفوري (أقل من دقيقة):
+معاينة موقع معرضكم المجهز مسبقاً:
+🌐 https://autofyon.com/p/{{slug}}
+
+للتفعيل المجاني الفوري واستلام لوحة التحكم:
 👇 {{inviteUrl}}
 
 يسعدنا خدمتكم دائماً 🙏
@@ -27,7 +30,7 @@ const STATUSES = [
   { value: 'declined', label: 'رفض' },
 ];
 
-const VARS = ['{{name}}', '{{city}}', '{{inviteUrl}}', '{{phone}}'];
+const VARS = ['{{name}}', '{{city}}', '{{slug}}', '{{inviteUrl}}', '{{phone}}'];
 
 interface BlastResult {
   id: string;

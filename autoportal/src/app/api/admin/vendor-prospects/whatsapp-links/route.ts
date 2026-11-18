@@ -116,6 +116,7 @@ export async function POST(request: Request) {
     const message = interpolate(messageTemplate, {
       name: p.name,
       city: p.city || 'مصر',
+      slug,
       inviteUrl,
       phone,
     });
