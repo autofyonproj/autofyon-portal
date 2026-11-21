@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import type { VendorTierId } from '@/lib/tiers';
 
 interface KindReport {
   kind: string;
@@ -37,7 +38,7 @@ export default function UniversalRegistryModal({
   const [parentId, setParentId] = useState('');
   const [customDomain, setCustomDomain] = useState('');
   const [serviceLevel, setServiceLevel] = useState<'template' | 'curated'>('template');
-  const [subscriptionTier, setSubscriptionTier] = useState<'free' | 'pro' | 'enterprise'>('free');
+  const [subscriptionTier, setSubscriptionTier] = useState<VendorTierId>('free');
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -310,6 +311,7 @@ export default function UniversalRegistryModal({
                   className="w-full px-3.5 py-2.5 bg-white border border-[#c4a265]/30 rounded-xl text-sm focus:outline-none focus:border-[#c4a265]"
                 >
                   <option value="free">عضوية مجانية (Free)</option>
+                  <option value="growth">عضوية النمو (Growth)</option>
                   <option value="pro">عضوية احترافية (Pro)</option>
                   <option value="enterprise">عضوية مؤسسات (Enterprise)</option>
                 </select>

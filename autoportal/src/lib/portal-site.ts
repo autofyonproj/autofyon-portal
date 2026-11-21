@@ -36,11 +36,28 @@ export interface PortalCarouselSlide {
   endTime?: number;
 }
 
+export interface PlatformAd {
+  id: string;
+  imageUrl: string;
+  titleAr: string;
+  titleEn: string;
+  linkUrl: string;
+}
+
+export interface PlatformNewsItem {
+  id: string;
+  textAr: string;
+  textEn: string;
+  linkUrl: string;
+}
+
 export interface PortalPageContent {
   accentColor: string;
   backgroundColor: string;
   carouselType: CarouselPresentationType;
   carouselSlides: PortalCarouselSlide[];
+  platformAds: PlatformAd[];
+  newsRibbon: PlatformNewsItem[];
   enabledSections: string[];
   en: PortalLocaleCopy;
   ar: PortalLocaleCopy;
@@ -117,6 +134,8 @@ const DEFAULTS: PortalPageContent = {
   backgroundColor: '#07090c',
   carouselType: 'cinematic',
   carouselSlides: DEFAULT_SLIDES,
+  platformAds: [],
+  newsRibbon: [],
   enabledSections: ['carousel', 'products', 'featured', 'cta'],
   en: {
     badge: 'EGYPT PREMIER AUTOMOTIVE MARKETPLACE & VENDOR PORTAL',
@@ -164,6 +183,18 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
+function safeLink(value: unknown): string {
+  if (typeof value !== 'string') return '';
+  const link = value.trim().slice(0, 1000);
+  if (link.startsWith('/') && !link.startsWith('//') && !link.includes('\\')) return link;
+  try {
+    const url = new URL(link);
+    return url.protocol === 'https:' ? link : '';
+  } catch {
+    return '';
+  }
+}
+
 function normalizeContent(value: unknown): PortalPageContent {
   const raw = isRecord(value) ? value : {};
   const result = structuredClone(DEFAULTS);
@@ -201,9 +232,43 @@ function normalizeContent(value: unknown): PortalPageContent {
     }
   }
 
+  if (Array.isArray(raw.platformAds)) {
+    result.platformAds = raw.platformAds.slice(0, 12).flatMap((item): PlatformAd[] => {
+      if (!isRecord(item)) return [];
+      const imageUrl = safeLink(item.imageUrl);
+      const linkUrl = safeLink(item.linkUrl);
+      const titleAr = typeof item.titleAr === 'string' ? item.titleAr.trim().slice(0, 160) : '';
+      const titleEn = typeof item.titleEn === 'string' ? item.titleEn.trim().slice(0, 160) : '';
+      if (!imageUrl || !linkUrl || (!titleAr && !titleEn)) return [];
+      return [{
+        id: typeof item.id === 'string' ? item.id.slice(0, 80) : `ad-${Math.random().toString(36).slice(2, 9)}`,
+        imageUrl,
+        titleAr,
+        titleEn,
+        linkUrl,
+      }];
+    });
+  }
+
+  if (Array.isArray(raw.newsRibbon)) {
+    result.newsRibbon = raw.newsRibbon.slice(0, 20).flatMap((item): PlatformNewsItem[] => {
+      if (!isRecord(item)) return [];
+      const linkUrl = safeLink(item.linkUrl);
+      const textAr = typeof item.textAr === 'string' ? item.textAr.trim().slice(0, 240) : '';
+      const textEn = typeof item.textEn === 'string' ? item.textEn.trim().slice(0, 240) : '';
+      if (!linkUrl || (!textAr && !textEn)) return [];
+      return [{
+        id: typeof item.id === 'string' ? item.id.slice(0, 80) : `news-${Math.random().toString(36).slice(2, 9)}`,
+        textAr,
+        textEn,
+        linkUrl,
+      }];
+    });
+  }
+
   if (Array.isArray(raw.enabledSections)) {
     result.enabledSections = [...new Set(raw.enabledSections.filter(
-      (item): item is string => typeof item === 'string' && (SECTIONS as readonly string[]).includes(item as any),
+      (item): item is string => typeof item === 'string' && (SECTIONS as readonly string[]).includes(item),
     ))];
   }
   for (const locale of ['en', 'ar'] as const) {

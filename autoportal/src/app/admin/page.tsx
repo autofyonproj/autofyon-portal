@@ -35,18 +35,27 @@ export default async function AdminHome() {
           <div className="text-[11px] font-extrabold bg-red-600/10 text-red-600 dark:text-red-400 px-2.5 py-0.5 rounded-full inline-block mb-1">
             AutoFyon Control Panel
           </div>
-          <h1 className="text-2xl font-bold">لوحة تحكم منصة أوتوفاي أون (AutoFyon C-Panel)</h1>
+          <h1 className="text-2xl font-bold">لوحة تحكم منصة أوتوفيون (AutoFyon C-Panel)</h1>
           <p className="opacity-60 text-xs mt-1">مرحباً بك: {user.email}</p>
         </div>
         <div className="flex items-center gap-2">
           {user.role === 'platform_admin' && (
-            <a
-              href="/admin/platform/carousel"
-              className="text-xs px-3.5 py-2 rounded-xl bg-red-600 text-white font-bold hover:bg-red-700 transition shadow-sm flex items-center gap-1.5"
-            >
-              <span>🎬</span>
-              <span>سلايدر العروض الرئيسي</span>
-            </a>
+            <>
+              <a
+                href="/admin/platform/packages-tester"
+                className="text-xs px-3.5 py-2 rounded-xl bg-amber-600 text-white font-bold hover:bg-amber-700 transition shadow-sm flex items-center gap-1.5"
+              >
+                <span>🧪</span>
+                <span>مختبر الباقات والموديولات</span>
+              </a>
+              <a
+                href="/admin/platform/carousel"
+                className="text-xs px-3.5 py-2 rounded-xl bg-red-600 text-white font-bold hover:bg-red-700 transition shadow-sm flex items-center gap-1.5"
+              >
+                <span>🎬</span>
+                <span>سلايدر العروض الرئيسي</span>
+              </a>
+            </>
           )}
           <a
             href="/"
@@ -124,20 +133,20 @@ export default async function AdminHome() {
             </a>
 
             <a
-              href="/admin/platform"
-              className="p-4 rounded-xl border border-amber-500/20 bg-amber-500/5 hover:bg-amber-500/10 transition shadow-sm flex flex-col justify-between group"
+              href="/admin/platform/packages-tester"
+              className="p-4 rounded-xl border border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/10 transition shadow-sm flex flex-col justify-between group"
             >
               <div>
-                <div className="text-2xl mb-2">⚙️</div>
+                <div className="text-2xl mb-2">🧪</div>
                 <div className="font-bold text-sm text-amber-600 dark:text-amber-400 group-hover:underline">
-                  إدارة المنصة الشاملة
+                  مختبر فحص الباقات والموديولات
                 </div>
                 <div className="text-xs opacity-70 mt-1">
-                  شجرة الهيكلية (Topology)، علاقات الوكلاء والموزعين، وإعدادات الأسواق.
+                  فحص موديولات كل باقة (مجانية، نمو، Pro، توكيلات)، ومحاكاة تجربة المعارض الحية فوراً.
                 </div>
               </div>
               <div className="text-xs font-bold text-amber-500 mt-3 flex items-center gap-1">
-                <span>Platform Master</span>
+                <span>فتح مختبر الباقات</span>
                 <span>←</span>
               </div>
             </a>

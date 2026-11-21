@@ -10,7 +10,7 @@
 				"-ExecutionPolicy",
 				"Bypass",
 				"-File",
-				"${workspaceFolder}\\ANitgravity\\siwatoday\\siwa-oasis\\scripts\\commit-push.ps1",
+				"E:\\siwatoday\\siwa-oasis\\scripts\\commit-push.ps1",
 				"-Message",
 				"${input:commitMessage}"
 			],

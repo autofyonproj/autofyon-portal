@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requirePlatformAdmin } from '@/lib/admin-auth';
 import { execute, query, queryOne } from '@/lib/db';
-import { MINISITE_TEMPLATES, VENDOR_TIERS, canVendorUseTemplate } from '@/lib/tiers';
+import { MINISITE_TEMPLATES, VENDOR_TIERS, canVendorUseTemplate, getVendorTier, isVendorTierId } from '@/lib/tiers';
 import { parseCustomDomain } from '@/lib/custom-domain';
 
 
@@ -27,8 +27,15 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: 'business_id is required' }, { status: 400 });
     }
 
-    const biz = await queryOne<{ id: string; custom_data: string; type_id: string; published: number; status: string }>(
-      'SELECT id, custom_data, type_id, published, status FROM businesses WHERE id = ?',
+    const biz = await queryOne<{
+      id: string;
+      custom_data: string;
+      type_id: string;
+      published: number;
+      status: string;
+      subscription_tier: string;
+    }>(
+      'SELECT id, custom_data, type_id, published, status, subscription_tier FROM businesses WHERE id = ?',
       [business_id]
     );
     if (!biz) {
@@ -55,7 +62,12 @@ export async function PATCH(req: NextRequest) {
       }
     }
 
-    const selectedTier = tier || 'free';
+    const selectedTier = tier === undefined
+      ? (isVendorTierId(biz.subscription_tier) ? biz.subscription_tier : 'free')
+      : tier;
+    if (!isVendorTierId(selectedTier)) {
+      return NextResponse.json({ error: 'Select a valid vendor tier.' }, { status: 400 });
+    }
     if (template_id && !canVendorUseTemplate(selectedTier, template_id)) {
       return NextResponse.json({
         error: `القالب "${template_id}" غير متاح لباقة "${selectedTier}". يرجى ترقية الباقة لاستخدام هذا القالب.`,
@@ -69,12 +81,14 @@ export async function PATCH(req: NextRequest) {
 
     if (template_id) customData._template_id = template_id;
 
+    const selectedTierDefinition = getVendorTier(selectedTier);
     await execute(
       `UPDATE businesses
-          SET custom_domain = COALESCE(?, custom_domain),
+          SET subscription_tier = ?,
+              custom_domain = COALESCE(?, custom_domain),
               custom_data = ?
         WHERE id = ?`,
-      [parsedDomain.domain, JSON.stringify(customData), business_id]
+      [selectedTierDefinition.id, parsedDomain.domain, JSON.stringify(customData), business_id]
     );
 
     return NextResponse.json({

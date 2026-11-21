@@ -124,10 +124,11 @@ export default function PublicSiteChrome({
   }, []);
 
   const navLinks = [
-    { href: localePath(locale, ['cars']),    label: isAr ? 'السيارات'  : 'Vehicles' },
-    { href: localePath(locale, ['brands']),  label: isAr ? 'الماركات'  : 'Brands'   },
-    { href: localePath(locale, ['dealers']), label: isAr ? 'المعارض'   : 'Dealers'  },
-    { href: localePath(locale, ['blog']),    label: isAr ? 'المقالات'  : 'Journal'  },
+    { href: localePath(locale, ['cars']),     label: isAr ? 'السيارات'  : 'Vehicles' },
+    { href: localePath(locale, ['brands']),   label: isAr ? 'الماركات'  : 'Brands'   },
+    { href: localePath(locale, ['dealers']),  label: isAr ? 'المعارض'   : 'Dealers'  },
+    { href: localePath(locale, ['packages']), label: isAr ? 'الباقات والحلول' : 'Packages' },
+    { href: localePath(locale, ['blog']),     label: isAr ? 'المقالات'  : 'Journal'  },
   ];
 
   return (
@@ -146,7 +147,7 @@ export default function PublicSiteChrome({
           <Link
             className="public-brand"
             href={localePath(locale, [])}
-            aria-label={isAr ? 'أوتوفاي أون — قُدْ، اكتشف، تواصل' : 'AutoFyon — Drive, Explore, Connect'}
+            aria-label={isAr ? 'أوتوفيون — قُدْ، اكتشف، تواصل' : 'AutoFyon — Drive, Explore, Connect'}
           >
             <AutoFyonBrandLogo size="md" />
           </Link>
@@ -176,8 +177,8 @@ export default function PublicSiteChrome({
             <PublicLanguageSwitch locale={locale} />
 
             {/* Primary CTA */}
-            <Link className="public-join-link" href="/join">
-              {isAr ? 'للمعارض' : 'For Dealers'}
+            <Link className="public-join-link" href={localePath(locale, ['packages'])}>
+              {isAr ? 'باقات المعارض' : 'For Dealers'}
             </Link>
 
             {/* Mobile hamburger */}

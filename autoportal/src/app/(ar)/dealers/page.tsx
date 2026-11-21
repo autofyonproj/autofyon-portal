@@ -6,9 +6,9 @@ import { DICTIONARY } from '@/data/dealers_i18n';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'دليل معارض وتوكيلات السيارات في مصر | أوتوفاي أون AutoFy On',
+  title: 'دليل معارض وتوكيلات ومراكز السيارات في مصر',
   description:
-    'دليل قطاع السيارات الأكبر في مصر من منصة أوتوفاي أون (AutoFy On): أكثر من 2,800 معرض سيارات، وكيل معتمد، ومراكز صيانة وتمويل مع أرقام الواتساب والاتصال والعناوين.',
+    'دليل قطاع السيارات الشامل في مصر من منصة أوتوفيون (AutoFyon): المعارض والوكلاء ومراكز الصيانة وشركات التمويل والتأمين في جميع المحافظات.',
   alternates: {
     canonical: '/dealers',
     languages: {
@@ -17,8 +17,8 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: 'دليل معارض وتوكيلات السيارات في مصر - أوتوفاي أون AutoFy On',
-    description: 'ابحث في أكثر من 2,800 معرض وتوكيل ومركز صيانة في القاهرة والجيزة والإسكندرية والمحافظات عبر أوتوفاي أون.',
+    title: 'دليل معارض وتوكيلات ومراكز السيارات في مصر | أوتوفيون AutoFyon',
+    description: 'ابحث في المعارض والتوكيلات ومراكز الصيانة وشركات التأمين والتمويل في القاهرة والجيزة والإسكندرية والمحافظات عبر أوتوفيون.',
     url: 'https://autofyon.com/dealers',
   },
 };
@@ -53,29 +53,6 @@ export default async function DealersDirectoryPage() {
             {dict.headerSubtitle}
           </p>
         </header>
-
-        {/* VCF WhatsApp Mobile Bulk Download Banner */}
-        <section className="rounded-2xl border border-emerald-500/30 bg-gradient-to-r from-emerald-950/60 via-[#0a1f18] to-emerald-900/40 p-5 sm:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xl">
-          <div className="space-y-1.5">
-            <div className="inline-flex items-center gap-2 text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
-              <span>{dict.vcfBadge}</span>
-            </div>
-            <h2 className="text-lg sm:text-xl font-bold text-white">
-              {dict.vcfTitle}
-            </h2>
-            <p className="text-xs sm:text-sm text-neutral-300 max-w-2xl">
-              {dict.vcfDesc}
-            </p>
-          </div>
-          <a
-            href="/api/contacts/export-vcf"
-            download="autofyon-dealers-egypt.vcf"
-            className="shrink-0 inline-flex items-center justify-center gap-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 active:scale-95 transition-all text-neutral-950 px-6 py-3.5 text-sm font-black shadow-lg shadow-emerald-500/20 w-full sm:w-auto"
-          >
-            <span className="text-base">📥</span>
-            <span>{dict.vcfButton}</span>
-          </a>
-        </section>
 
         {/* Interactive Client Component */}
         <DealersDirectoryClient dealers={dealers} locale="ar" />

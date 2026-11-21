@@ -39,6 +39,10 @@ import { requiresAutofyonSponsorship } from '@/lib/autofyon-customer-plan';
 import { unitsBySeller, type UnitCard } from '@/lib/units';
 import AnalyticsTracker from '@/components/AnalyticsTracker';
 import ModelEcosystemDock from '@/components/ModelEcosystemDock';
+import { PlatformAdRail, PlatformNewsRibbon } from '@/components/PlatformAnnouncements';
+import { loadPublishedPortalContent } from '@/lib/portal-site';
+import VendorLeadCaptureForm from '@/components/VendorLeadCaptureForm';
+import { isVendorLeadBusinessType } from '@/lib/vendor-leads';
 
 // ── UI strings: labels around the data, never the data itself ────────────────
 const UI: Record<string, { en: string; ar: string }> = {
@@ -517,9 +521,13 @@ export default async function MinisiteView({
   const locale = view.locale;
   const b = view.business;
   const isCustomerBusiness = ['main_agency', 'distributor', 'showroom', 'agent_broker', 'used_car_dealer'].includes(b.type_id);
+  const canCaptureVendorLeads = isVendorLeadBusinessType(b.type_id);
   const showAutofyonSponsorship = isCustomerBusiness
     ? await requiresAutofyonSponsorship(b.id)
     : false;
+  const announcements = !preview && !pageSlug && view.activeSectionId === 'sec_1_identity'
+    ? await loadPublishedPortalContent()
+    : null;
   const vendorVehicles = !pageSlug && isCustomerBusiness
     ? await unitsBySeller(b.id, { locale, limit: 12 })
     : [];
@@ -554,7 +562,10 @@ export default async function MinisiteView({
     >
       {preview ? <div className="sticky top-0 z-50 bg-amber-300 px-4 py-2 text-center text-sm font-bold text-black">Admin draft preview — this version is not live</div> : null}
       <AnalyticsTracker businessId={b.id} />
-      <div className="sheet">
+      {announcements ? <PlatformNewsRibbon items={announcements.newsRibbon} locale={locale} /> : null}
+      <div dir="ltr" className="mx-auto grid w-full max-w-[1480px] grid-cols-1 gap-4 px-3 lg:grid-cols-[minmax(0,1fr)_17rem] lg:items-start lg:px-6">
+        <div className="order-2 min-w-0 lg:order-1" dir={localeDir(locale)}>
+        <div className="sheet">
         {/* The seller trail sits beneath the shared portal navigation. */}
         <div className="mark">
           <nav aria-label={t('home', locale)} className="flex flex-wrap items-center gap-2">
@@ -702,6 +713,9 @@ export default async function MinisiteView({
             vehicleOverrides={vehicleOverrides}
           />
         ) : null}
+        {!preview && !pageSlug && canCaptureVendorLeads ? (
+          <VendorLeadCaptureForm businessSlug={b.slug} businessName={name} locale={locale} landingType="minisite" />
+        ) : null}
 
         {showAutofyonSponsorship ? (
           <footer className="mt-10 border-t border-[var(--line)] pt-4 text-center text-xs text-[var(--ink-soft)]">
@@ -719,6 +733,13 @@ export default async function MinisiteView({
             >
               {locale === 'ar' ? 'إدارة موقع المعرض' : 'Manage this business'}
             </a>
+          </div>
+        ) : null}
+      </div>
+        </div>
+        {announcements?.platformAds.length ? (
+          <div className="order-1 min-w-0 lg:order-2 lg:sticky lg:top-4" dir={localeDir(locale)}>
+            <PlatformAdRail ads={announcements.platformAds} locale={locale} />
           </div>
         ) : null}
       </div>

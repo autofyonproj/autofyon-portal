@@ -20,6 +20,10 @@ export async function getDealersWithVerified(): Promise<DealerItem[]> {
     ...d,
     is_verified: false,
     landing_slug: d.slug,
+    primary_phone: '',
+    whatsapp: '',
+    contact_name: '',
+    email: '',
   }));
 
   try {
@@ -30,6 +34,8 @@ export async function getDealersWithVerified(): Promise<DealerItem[]> {
          FROM businesses b
     LEFT JOIN autofyon_media_landings l ON l.business_id = b.id
         WHERE b.status = 'active'
+          AND b.published = 1
+          AND l.published = 1
           AND b.type_id IN (
             'showroom', 'distributor', 'main_agency', 'used_car_dealer',
             'service_center', 'spare_parts', 'finance_bank', 'leasing_company', 'insurance_company'
@@ -60,7 +66,7 @@ export async function getDealersWithVerified(): Promise<DealerItem[]> {
         name: r.name_ar || r.name,
         name_en: r.name || r.name_ar,
         category_key: r.type_id === 'main_agency' || r.type_id === 'distributor' ? 'authorized_agent' : r.type_id,
-        original_category: 'معرض معتمد على أوتوفاي أون',
+        original_category: 'معرض معتمد على أوتوفيون',
         brand: custom.sec_1_identity?.brand || '',
         address,
         district: custom.sec_1_identity?.district || '',

@@ -15,10 +15,19 @@
       "database_id": "85d85249-e0bb-41c6-99f3-a328fd8c3213"
     }
   ],
+  // "r2_buckets": [
+  //   {
+  //     "binding": "CRM_DOCUMENTS",
+  //     "bucket_name": "autofyon-crm-documents"
+  //   }
+  // ],
   "routes": [
     { "pattern": "autofyon.com/*",      "zone_name": "autofyon.com" },
     { "pattern": "www.autofyon.com/*",  "zone_name": "autofyon.com" }
   ],
+  "triggers": {
+    "crons": ["0 3 * * *"]
+  },
   "env": {
     "staging": {
       "name": "peeppeepmasr",

@@ -2,7 +2,9 @@
 
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import {
+  isStandaloneCrmTierId,
   STANDALONE_FEATURES,
+  type StandaloneCrmTierId,
   type StandaloneFeature,
   type StandaloneFeatureMap,
   type StandaloneFeatureOverrides,
@@ -22,7 +24,9 @@ type ClientCopy = {
   serial: string;
   companyName: string;
   phone: string;
+  businessId: string | null;
   templateId: string;
+  crmTier: StandaloneCrmTierId;
   templateName: string;
   featureOverrides: StandaloneFeatureOverrides;
   effectiveFeatures: StandaloneFeatureMap;
@@ -86,12 +90,14 @@ function downloadCopyConfig(copy: ClientCopy, clientTrackingToken: string) {
     productName: 'Almostashar Auto',
     productNameAr: 'المستشار أوتو',
     companyName: copy.companyName,
+    businessId: copy.businessId,
     licensee: copy.companyName,
     masterSenderPhone: copy.phone,
     masterEmail: 'autofyon@gmail.com',
     allowedDevices: 2,
     issueDate: copy.createdAt.slice(0, 10),
     version: copy.packageVersion || '2.7.0',
+    crmTier: copy.crmTier,
     clientId: copy.serial,
     serial: copy.serial,
     status: copy.status,
@@ -124,7 +130,9 @@ export default function MasterCopiesClient() {
   const [templateActive, setTemplateActive] = useState(true);
   const [companyName, setCompanyName] = useState('');
   const [phone, setPhone] = useState('');
+  const [businessId, setBusinessId] = useState('');
   const [copyTemplateId, setCopyTemplateId] = useState('');
+  const [copyCrmTier, setCopyCrmTier] = useState<StandaloneCrmTierId>('growth');
   const [copyFollowUpAt, setCopyFollowUpAt] = useState('');
   const [copyNotes, setCopyNotes] = useState('');
   const [copyOverrides, setCopyOverrides] = useState<StandaloneFeatureOverrides>({});
@@ -186,7 +194,9 @@ export default function MasterCopiesClient() {
     setEditingSerial(copy.serial);
     setCompanyName(copy.companyName);
     setPhone(copy.phone);
+    setBusinessId(copy.businessId || '');
     setCopyTemplateId(copy.templateId);
+    setCopyCrmTier(copy.crmTier);
     setCopyFollowUpAt(copy.followUpAt || '');
     setCopyNotes(copy.notes);
     setCopyOverrides(copy.featureOverrides);
@@ -249,7 +259,9 @@ export default function MasterCopiesClient() {
             serial: editingSerial,
             companyName,
             phone,
+            businessId: businessId.trim() || null,
             templateId: copyTemplateId,
+            crmTier: copyCrmTier,
             featureOverrides: copyOverrides,
             status: copyStatus,
             followUpAt: copyFollowUpAt || null,
@@ -265,7 +277,9 @@ export default function MasterCopiesClient() {
             action: 'create_copy',
             companyName,
             phone,
+            businessId: businessId.trim() || null,
             templateId: copyTemplateId,
+            crmTier: copyCrmTier,
             featureOverrides: copyOverrides,
             followUpAt: copyFollowUpAt || null,
             notes: copyNotes,
@@ -276,7 +290,9 @@ export default function MasterCopiesClient() {
       setEditingSerial('');
       setCompanyName('');
       setPhone('');
+      setBusinessId('');
       setCopyFollowUpAt('');
+      setCopyCrmTier('growth');
       setCopyNotes('');
       setCopyOverrides({});
       setCopyStatus('pending_verification');
@@ -387,7 +403,7 @@ export default function MasterCopiesClient() {
         <form onSubmit={submitCopy} className="space-y-4 rounded-xl border border-black/10 p-5">
           <div className="flex items-center justify-between gap-3">
             <h2 className="font-bold">{editingSerial ? `تعديل النسخة ${editingSerial}` : 'تسجيل نسخة عميل'}</h2>
-            {editingSerial && <button type="button" className="text-xs underline" onClick={() => { setEditingSerial(''); setCompanyName(''); setPhone(''); }}>نسخة جديدة</button>}
+            {editingSerial && <button type="button" className="text-xs underline" onClick={() => { setEditingSerial(''); setCompanyName(''); setPhone(''); setBusinessId(''); setCopyCrmTier('growth'); setCopyTemplateId(''); }}>نسخة جديدة</button>}
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             <label className="space-y-1 text-sm">
@@ -398,6 +414,11 @@ export default function MasterCopiesClient() {
               <span>هاتف واتساب</span>
               <input required inputMode="tel" value={phone} onChange={(event) => setPhone(event.target.value)} className="w-full rounded-lg border p-2" />
             </label>
+            <label className="space-y-1 text-sm sm:col-span-2">
+              <span>معرّف نشاط AutoFyon لربط البيانات (اختياري)</span>
+              <input maxLength={100} value={businessId} onChange={(event) => setBusinessId(event.target.value)} className="w-full rounded-lg border p-2 font-mono" />
+              <span className="block text-xs opacity-60">اتركه فارغاً للنسخة المستقلة فقط. الربط يتيح إرسال العمليات كمسودات مراجعة واستيراد المسودات المعتمدة.</span>
+            </label>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             <label className="space-y-1 text-sm">
@@ -405,6 +426,14 @@ export default function MasterCopiesClient() {
               <select required value={copyTemplateId} onChange={(event) => setCopyTemplateId(event.target.value)} className="w-full rounded-lg border p-2">
                 <option value="">اختر قالباً</option>
                 {activeTemplates.map((template) => <option key={template.id} value={template.id}>{template.name}</option>)}
+              </select>
+            </label>
+            <label className="space-y-1 text-sm">
+              <span>باقة CRM للنسخة المستقلة</span>
+              <select value={copyCrmTier} onChange={(event) => { if (isStandaloneCrmTierId(event.target.value)) setCopyCrmTier(event.target.value); }} className="w-full rounded-lg border p-2">
+                <option value="growth">Growth — CRM أساسي</option>
+                <option value="pro">Pro — CRM متقدم</option>
+                <option value="enterprise">Enterprise — CRM مؤسسي</option>
               </select>
             </label>
             <label className="space-y-1 text-sm">
@@ -464,9 +493,9 @@ export default function MasterCopiesClient() {
         </div>
         {loading ? <p className="text-sm opacity-60">جاري التحميل…</p> : (
           <div className="overflow-x-auto rounded-xl border border-black/10">
-            <table className="w-full min-w-[900px] text-right text-sm">
+            <table className="w-full min-w-[1120px] text-right text-sm">
               <thead className="bg-black/[.04]">
-                <tr>{['الرقم التسلسلي','الشركة','واتساب','القالب','الحالة','المتابعة','آخر اتصال','إجراء'].map((title) => <th key={title} className="p-3">{title}</th>)}</tr>
+                <tr>{['الرقم التسلسلي','الشركة','واتساب','معرّف AutoFyon','القالب','باقة CRM','الحالة','المتابعة','آخر اتصال','إجراء'].map((title) => <th key={title} className="p-3">{title}</th>)}</tr>
               </thead>
               <tbody>
                 {data?.copies.map((copy) => (
@@ -474,7 +503,9 @@ export default function MasterCopiesClient() {
                     <td className="p-3 font-mono text-xs">{copy.serial}</td>
                     <td className="p-3">{copy.companyName}</td>
                     <td className="p-3" dir="ltr">{copy.phone}</td>
+                    <td className="p-3 font-mono text-xs">{copy.businessId || 'غير مربوط'}</td>
                     <td className="p-3">{copy.templateName}</td>
+                    <td className="p-3">{copy.crmTier.toUpperCase()}</td>
                     <td className="p-3">{statusLabel(copy.status)}</td>
                     <td className="p-3">{formatDate(copy.followUpAt)}</td>
                     <td className="p-3">{formatDate(copy.lastSeenAt)}</td>
@@ -484,7 +515,7 @@ export default function MasterCopiesClient() {
                     </td>
                   </tr>
                 ))}
-                {!data?.copies.length && <tr><td colSpan={8} className="p-6 text-center opacity-60">لا توجد نسخ مسجلة بعد.</td></tr>}
+                {!data?.copies.length && <tr><td colSpan={10} className="p-6 text-center opacity-60">لا توجد نسخ مسجلة بعد.</td></tr>}
               </tbody>
             </table>
           </div>

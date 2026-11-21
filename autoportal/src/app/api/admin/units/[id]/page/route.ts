@@ -8,8 +8,6 @@ import {
   type UnitPageLayoutState,
 } from '@/lib/site-pages';
 
-export const runtime = 'edge';
-
 async function loadUnit(id: string) {
   return queryOne<{ id: string; seller_business_id: string; overrides: string | null }>(
     'SELECT id, seller_business_id, overrides FROM units WHERE id = ?',

@@ -52,16 +52,23 @@ ${car.carUrl}`;
 /**
  * Dispatch post to webhooks (Make.com, Zapier, Telegram Bot, or Meta Graph API).
  */
-export async function dispatchSocialBroadcast(payload: CarBroadcastPayload): Promise<{ success: boolean; dispatchedTo: string[] }> {
+export async function dispatchSocialBroadcast(payload: CarBroadcastPayload): Promise<{
+  success: boolean;
+  dispatchedTo: string[];
+  failedProviders: string[];
+}> {
   const captions = generateSocialCaptions(payload);
   const dispatchedTo: string[] = [];
+  const failedProviders: string[] = [];
+  let configuredProviders = 0;
 
   // 1. Dispatch to Telegram Channel if BOT token configured
   const tgToken = process.env.TELEGRAM_BOT_TOKEN;
   const tgChatId = process.env.TELEGRAM_CHANNEL_ID;
   if (tgToken && tgChatId) {
+    configuredProviders++;
     try {
-      await fetch(`https://api.telegram.org/bot${tgToken}/sendMessage`, {
+      const response = await fetch(`https://api.telegram.org/bot${tgToken}/sendMessage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -70,17 +77,24 @@ export async function dispatchSocialBroadcast(payload: CarBroadcastPayload): Pro
           parse_mode: 'Markdown',
         }),
       });
-      dispatchedTo.push('telegram');
-    } catch (e) {
-      console.error('Telegram broadcast failed', e);
+      const result = await response.json() as { ok?: boolean };
+      if (!response.ok || result.ok !== true) {
+        failedProviders.push('telegram');
+      } else {
+        dispatchedTo.push('telegram');
+      }
+    } catch {
+      console.error('Telegram broadcast request failed.');
+      failedProviders.push('telegram');
     }
   }
 
   // 2. Dispatch to Make / Zapier Webhook for Facebook & Instagram automated posting
   const webhookUrl = process.env.SOCIAL_DISPATCH_WEBHOOK_URL;
   if (webhookUrl) {
+    configuredProviders++;
     try {
-      await fetch(webhookUrl, {
+      const response = await fetch(webhookUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -89,14 +103,20 @@ export async function dispatchSocialBroadcast(payload: CarBroadcastPayload): Pro
           timestamp: new Date().toISOString(),
         }),
       });
-      dispatchedTo.push('webhook_social_automation');
-    } catch (e) {
-      console.error('Webhook dispatch failed', e);
+      if (!response.ok) {
+        failedProviders.push('webhook_social_automation');
+      } else {
+        dispatchedTo.push('webhook_social_automation');
+      }
+    } catch {
+      console.error('Social automation webhook request failed.');
+      failedProviders.push('webhook_social_automation');
     }
   }
 
   return {
-    success: true,
-    dispatchedTo: dispatchedTo.length ? dispatchedTo : ['simulated_console_ready'],
+    success: configuredProviders > 0 && failedProviders.length === 0,
+    dispatchedTo,
+    failedProviders: configuredProviders ? failedProviders : ['no_provider_configured'],
   };
 }

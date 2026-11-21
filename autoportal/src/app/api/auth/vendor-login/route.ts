@@ -11,36 +11,48 @@
  *
  * Production delivery
  * -------------------
- *  Wire WHATSAPP_TOKEN / RESEND_API_KEY in wrangler secrets when ready.
- *  Until then the code is returned in the response body only in non-production.
+ *  OTP delivery uses the configured Meta WhatsApp Cloud API template.
  */
 import { NextRequest, NextResponse } from 'next/server';
 import { queryOne, batch } from '@/lib/db';
 import { createAdminSession } from '@/lib/admin-session';
+import { normalizeWhatsAppPhone, sendWhatsAppOtp } from '@/lib/whatsapp';
 
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
 function normalisePhone(raw: string): string {
-  return (raw || '').replace(/\D/g, '');
+  const digits = (raw || '').replace(/\D/g, '');
+  return normalizeWhatsAppPhone(digits, 'EG') || digits;
 }
 
-function vendorEmail(phone: string): string {
-  return `vendor_${phone}@autonegypt.local`;
+function vendorEmailCandidates(phone: string): string[] {
+  const internationalPhone = normalizeWhatsAppPhone(phone, 'EG');
+  const localPhone = internationalPhone.startsWith('20') ? `0${internationalPhone.slice(2)}` : '';
+  return [...new Set([phone, internationalPhone, localPhone].filter(Boolean).flatMap((value) => [
+    `vendor_${value}@autonegypt.local`,
+    `vendor_${value}@autofyon.local`,
+  ]))];
 }
 
-async function generateAndStoreOtp(phone: string): Promise<string> {
+async function generateAndStoreOtp(phone: string, sendCount: number): Promise<string> {
   const arr = new Uint32Array(1);
   crypto.getRandomValues(arr);
   const code = String(100000 + (arr[0] % 900000));
   const expiresAt = Math.floor(Date.now() / 1000) + 10 * 60; // 10 min
+  const now = Math.floor(Date.now() / 1000);
 
   await batch([
     {
-      sql: `INSERT INTO otp_codes (phone, code, expires_at)
-            VALUES (?, ?, ?)
-            ON CONFLICT(phone) DO UPDATE SET code = excluded.code, expires_at = excluded.expires_at`,
-      params: [phone, code, expiresAt],
+      sql: `INSERT INTO otp_codes (phone, code, expires_at, attempts, send_count, last_sent_at)
+            VALUES (?, ?, ?, 0, ?, ?)
+            ON CONFLICT(phone) DO UPDATE SET
+              code = excluded.code,
+              expires_at = excluded.expires_at,
+              attempts = 0,
+              send_count = excluded.send_count,
+              last_sent_at = excluded.last_sent_at`,
+      params: [phone, code, expiresAt, sendCount, now],
     },
   ]);
   return code;
@@ -48,14 +60,24 @@ async function generateAndStoreOtp(phone: string): Promise<string> {
 
 async function consumeOtp(phone: string, code: string): Promise<boolean> {
   const now = Math.floor(Date.now() / 1000);
-  const row = await queryOne<{ code: string; expires_at: number }>(
-    'SELECT code, expires_at FROM otp_codes WHERE phone = ?',
+  const row = await queryOne<{ code: string; expires_at: number; attempts: number }>(
+    'SELECT code, expires_at, attempts FROM otp_codes WHERE phone = ?',
     [phone],
   );
-  if (!row || row.expires_at <= now || row.code !== code) return false;
-  // Delete used code
-  await batch([{ sql: 'DELETE FROM otp_codes WHERE phone = ?', params: [phone] }]);
-  return true;
+  if (!row || row.expires_at <= now || row.attempts >= 5 || !row.code) return false;
+  if (row.code !== code) {
+    await batch([{
+      sql: 'UPDATE otp_codes SET attempts = attempts + 1 WHERE phone = ? AND attempts < 5',
+      params: [phone],
+    }]);
+    return false;
+  }
+  const consumed = await batch([{
+    sql: `UPDATE otp_codes SET code = '', expires_at = ?
+          WHERE phone = ? AND code = ? AND expires_at > ? AND attempts < 5`,
+    params: [now, phone, code, now],
+  }]);
+  return consumed[0]?.changes === 1;
 }
 
 // ── route handler ─────────────────────────────────────────────────────────────
@@ -73,10 +95,17 @@ export async function POST(req: NextRequest) {
     // ── ACTION: send_otp ───────────────────────────────────────────────────
     if (action === 'send_otp') {
       // Check that this phone has an active vendor account
-      const email = vendorEmail(phone);
+      const emails = vendorEmailCandidates(phone);
       const user = await queryOne<{ id: string }>(
-        'SELECT id FROM admin_users WHERE email = ? AND active = 1',
-        [email],
+        `SELECT u.id
+           FROM admin_users u
+           JOIN business_memberships m ON m.admin_user_id = u.id
+           JOIN businesses b ON b.id = m.business_id
+          WHERE lower(u.email) IN (?, ?) AND u.active = 1
+            AND m.status = 'active'
+            AND b.status = 'active' AND b.published = 1
+          LIMIT 1`,
+        emails,
       );
       if (!user) {
         return NextResponse.json(
@@ -85,20 +114,44 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      const generatedCode = await generateAndStoreOtp(phone);
+      const whatsappPhone = normalizeWhatsAppPhone(phone, 'EG');
+      if (!whatsappPhone) {
+        return NextResponse.json({ error: 'رقم الهاتف غير صالح لإرسال واتساب' }, { status: 400 });
+      }
 
-      // TODO: integrate WhatsApp / SMS / email delivery here when ready.
-      // e.g. await sendWhatsApp(phone, generatedCode);
+      const now = Math.floor(Date.now() / 1000);
+      const previous = await queryOne<{ send_count: number; last_sent_at: number }>(
+        'SELECT send_count, last_sent_at FROM otp_codes WHERE phone = ?',
+        [phone],
+      );
+      if (previous && now - previous.last_sent_at < 60) {
+        return NextResponse.json({ error: 'يرجى الانتظار دقيقة قبل طلب رمز جديد' }, { status: 429 });
+      }
+      if (previous && now - previous.last_sent_at < 24 * 60 * 60 && previous.send_count >= 5) {
+        return NextResponse.json({ error: 'تم بلوغ الحد اليومي لإرسال الرموز لهذا الرقم' }, { status: 429 });
+      }
+      const nextSendCount = previous && now - previous.last_sent_at < 24 * 60 * 60
+        ? previous.send_count + 1
+        : 1;
+      const generatedCode = await generateAndStoreOtp(phone, nextSendCount);
+      try {
+        await sendWhatsAppOtp(whatsappPhone, generatedCode);
+      } catch {
+        await batch([{
+          sql: 'UPDATE otp_codes SET code = \'\', expires_at = ?, attempts = 5 WHERE phone = ?',
+          params: [now, phone],
+        }]);
+        return NextResponse.json(
+          { error: 'تعذر إرسال رمز واتساب. يرجى المحاولة لاحقاً.' },
+          { status: 503 },
+        );
+      }
 
-      const responseBody: Record<string, unknown> = {
+      const responseBody = {
         ok: true,
         message: 'تم إرسال كود التحقق',
         expiresInSeconds: 600,
       };
-      // Expose code only in non-production for testing
-      if (process.env.NODE_ENV !== 'production') {
-        responseBody.demoOtp = generatedCode;
-      }
       return NextResponse.json(responseBody);
     }
 
@@ -116,17 +169,24 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      const email = vendorEmail(phone);
-      const user = await queryOne<{ id: string; role: string; scope_ids: string }>(
-        'SELECT id, role, scope_ids FROM admin_users WHERE email = ? AND active = 1',
-        [email],
+      const emails = vendorEmailCandidates(phone);
+      const user = await queryOne<{ id: string; email: string; role: string; scope_ids: string }>(
+        `SELECT u.id, u.email, u.role, u.scope_ids
+           FROM admin_users u
+           JOIN business_memberships m ON m.admin_user_id = u.id
+           JOIN businesses b ON b.id = m.business_id
+          WHERE lower(u.email) IN (?, ?) AND u.active = 1
+            AND m.status = 'active'
+            AND b.status = 'active' AND b.published = 1
+          LIMIT 1`,
+        emails,
       );
       if (!user) {
         return NextResponse.json({ error: 'الحساب غير نشط. تواصل مع الإدارة.' }, { status: 403 });
       }
 
       const expiresAt = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30; // 30 days
-      const sessionToken = await createAdminSession(email, expiresAt);
+      const sessionToken = await createAdminSession(user.email, expiresAt);
 
       const res = NextResponse.json({ ok: true, role: user.role });
       res.cookies.set('admin_session', sessionToken, {

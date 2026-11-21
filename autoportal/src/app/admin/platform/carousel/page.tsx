@@ -241,6 +241,12 @@ export default function PlatformCarouselAdminPage() {
 
         <div className="flex items-center gap-3">
           <Link
+            href="/admin/platform/announcements"
+            className="px-4 py-2.5 rounded-xl border border-red-500/30 text-xs font-bold text-red-300 hover:bg-red-500/10 transition"
+          >
+            إدارة إعلانات المعارض والأخبار ↗
+          </Link>
+          <Link
             href="/"
             target="_blank"
             className="px-4 py-2.5 rounded-xl border border-white/20 text-xs font-bold hover:bg-white/5 transition flex items-center gap-1.5"

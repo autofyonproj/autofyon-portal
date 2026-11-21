@@ -1522,6 +1522,14 @@ export async function loadMinisite(
     (sectionId && sections.find((s) => s.id === sectionId)) || sections[0] || null;
 
   const customData = parseJson<Record<string, Record<string, unknown>>>(business.custom_data, {});
+
+  // Enforce 30-day trial expiration: an expired trial is immediately blocked
+  if (customData._trial && typeof customData._trial === 'object') {
+    const trial = customData._trial as { is_trial?: boolean; expires_at?: string };
+    if (trial.is_trial && trial.expires_at && new Date(trial.expires_at) <= new Date()) {
+      return null;
+    }
+  }
   const brandRow = business.type_id === 'vehicle_brand'
     ? { custom_data: business.custom_data }
     : business.parent_business_id

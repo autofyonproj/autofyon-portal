@@ -628,7 +628,7 @@ table.erp-table td{
  <div id="clist"></div>
 </section>
 
-<!-- TAB 4: CRM LEADS & PIPELINE -->
+deploy <!-- TAB 4: CRM LEADS & PIPELINE -->
 <section id="crm" class="tab">
  <div class="card">
   <h2>👥 إضافة عميل محتمل جديد (New Lead)</h2>
@@ -639,16 +639,32 @@ table.erp-table td{
   <div class="g3">
    <div><label>السيارة المطلوبة</label><input id="lead_car" placeholder="مثال: كيا سبورتاج"></div>
    <div><label>الميزانية المتوقعة (ج.م)</label><input id="lead_budget" type="number" placeholder="850000"></div>
+   <div><label>مصدر العميل</label>
+    <select id="lead_source">
+     <option value="website">الموقع الإلكتروني</option>
+     <option value="whatsapp">واتساب</option>
+     <option value="facebook">فيسبوك / إنستغرام</option>
+     <option value="phone">اتصال هاتفي</option>
+     <option value="walk_in">زيارة المعرض</option>
+     <option value="referral">ترشيح</option>
+     <option value="other">مصدر آخر</option>
+    </select>
+   </div>
+  </div>
+  <div class="g2">
    <div>
     <label>مرحلة العميل الحالية</label>
     <select id="lead_stage">
      <option value="Lead">مهتم جديد (New Lead)</option>
+     <option value="Contacted">تم التواصل (Contacted)</option>
+     <option value="Qualified">عميل مؤهل (Qualified)</option>
      <option value="Visit">معاينة وزيارة بالمعرض (Visit)</option>
      <option value="Screening">فحص ائتماني وبنكي (Screening)</option>
      <option value="Won">تم التعاقد بنجاح (Won)</option>
      <option value="Lost">لم يتم التعاقد (Lost)</option>
     </select>
    </div>
+   <div><label>موعد المتابعة القادمة</label><input id="lead_next_follow_up" type="date"></div>
   </div>
   <div><label>ملاحظات واحتياجات العميل</label><input id="lead_notes" placeholder="ملاحظات المتابعة وتفضيلات التقسيط..."></div>
   <button onclick="addLead()">حفظ العميل في قمع المبيعات 👥</button>
@@ -656,6 +672,20 @@ table.erp-table td{
 
  <div class="card">
   <h2>📊 قمع المبيعات ومتابعة العملاء (Sales Pipeline)</h2>
+  <div id="leadSummary" class="g3"></div>
+  <div class="g2" style="margin:10px 0">
+   <input id="leadSearch" oninput="renderLeads()" placeholder="🔍 ابحث بالاسم أو الهاتف أو السيارة...">
+   <select id="leadFilterStage" onchange="renderLeads()">
+    <option value="">كل المراحل</option>
+    <option value="Lead">مهتم جديد</option>
+    <option value="Contacted">تم التواصل</option>
+    <option value="Qualified">عميل مؤهل</option>
+    <option value="Visit">معاينة</option>
+    <option value="Screening">فحص ائتماني</option>
+    <option value="Won">تم التعاقد</option>
+    <option value="Lost">لم يتم التعاقد</option>
+   </select>
+  </div>
   <div id="leadsList"></div>
  </div>
 
@@ -894,6 +924,19 @@ table.erp-table td{
   <button onclick="saveApiUrl()" class="sm blue" style="margin-top:6px">حفظ رابط السحابة</button>
   <div class="tip" id="syncmsg" style="margin-top:10px"></div>
   <button class="sec" onclick="initialSync(true)" style="margin-top:10px">مزامنة الآن 🔄</button>
+ </div>
+
+ <div class="card" style="border:2px solid var(--acc)">
+  <h2>🌐 مزامنة CRM مع صفحة AUTOFYON (اختياري)</h2>
+  <div class="mute" style="margin:6px 0">يعمل CRM داخل هذا البرنامج مستقلاً. تُزامن تحديثات الاستفسارات القادمة من صفحة AUTOFYON في الاتجاهين. العملاء المنشؤون داخل ERP فقط يبقون محليين. التعارضات تُعرض للمراجعة ولا تُستبدل بصمت.</div>
+  <label for="landingCrmToken">رمز الربط الصادر من لوحة CRM في صفحة AUTOFYON</label>
+  <input id="landingCrmToken" type="password" autocomplete="off" placeholder="afcrm_…">
+  <div class="g2" style="margin-top:8px">
+   <button class="sec" onclick="saveLandingCrmToken()">حفظ / تحديث الربط</button>
+   <button class="blue" id="landingCrmSyncBtn" onclick="syncLandingPageLeads()">مزامنة الاستفسارات والتحديثات</button>
+  </div>
+  <button class="sm del" onclick="disconnectLandingCrm()" style="margin-top:8px">فصل هذا الجهاز</button>
+  <div class="tip" id="landingCrmState" style="margin-top:10px">لا يوجد ربط على هذا الجهاز.</div>
  </div>
 
  <div class="card">
@@ -2713,45 +2756,213 @@ function deleteCar(id) {
 // -------------------------------------------------------------
 // CRM LEADS PIPELINE
 // -------------------------------------------------------------
+function erpStageToPageStatus(stage) {
+  return ({
+    Lead: 'new',
+    Contacted: 'contacted',
+    Qualified: 'qualified',
+    Screening: 'qualified',
+    Visit: 'visit_or_quote',
+    Won: 'won',
+    Lost: 'lost'
+  })[stage] || 'new';
+}
+
+function pageStatusToErpStage(status) {
+  return ({
+    new: 'Lead',
+    contacted: 'Contacted',
+    qualified: 'Qualified',
+    visit_or_quote: 'Visit',
+    won: 'Won',
+    lost: 'Lost'
+  })[status] || 'Lead';
+}
+
+function landingLocalChanges(lead) {
+  const baseline = lead.landingSyncBaseline;
+  if (!baseline) return null;
+  const changes = {};
+  const status = erpStageToPageStatus(lead.stage);
+  const nextFollowUpAt = lead.nextFollowUpAt || null;
+  const notes = lead.notes || '';
+  const archived = Boolean(lead.landingArchivedAt);
+  if (status !== baseline.status) changes.status = status;
+  if (nextFollowUpAt !== baseline.nextFollowUpAt) changes.nextFollowUpAt = nextFollowUpAt;
+  if (notes !== baseline.notes) changes.notes = notes;
+  if (archived !== Boolean(baseline.archivedAt)) changes.archived = archived;
+  return changes;
+}
+
+function mergeLandingActivities(lead, remoteActivities) {
+  if (!Array.isArray(remoteActivities)) return;
+  if (!Array.isArray(lead.activities)) lead.activities = [];
+  for (const activity of remoteActivities) {
+    if (!activity || typeof activity.id !== 'string') continue;
+    const externalId = typeof activity.external_id === 'string' ? activity.external_id : '';
+    const existing = lead.activities.find(item => externalId
+      ? item.externalId === externalId
+      : item.landingActivityId === activity.id);
+    if (existing) {
+      existing.synced = true;
+      continue;
+    }
+    lead.activities.push({
+      date: activity.created_at,
+      summary: activity.summary || '',
+      type: activity.activity_type || 'follow_up',
+      ...(externalId ? { externalId, synced: true } : { landingActivityId: activity.id, source: 'landing' })
+    });
+  }
+}
+
+function createLandingActivityId() {
+  if (crypto.randomUUID) return `erp-${crypto.randomUUID()}`;
+  return `erp-${[...crypto.getRandomValues(new Uint8Array(16))].map(byte => byte.toString(16).padStart(2, '0')).join('')}`;
+}
+
+function applyLandingRemoteLead(lead, remote) {
+  lead.stage = pageStatusToErpStage(remote.status);
+  lead.nextFollowUpAt = remote.next_follow_up_at || '';
+  lead.notes = remote.notes || '';
+  lead.landingInquiry = remote.inquiry || '';
+  lead.landingEmail = remote.email || '';
+  mergeLandingActivities(lead, remote.activities);
+  lead.carModel = remote.inquiry_for || lead.carModel || '';
+  lead.source = remote.source || lead.source || 'website';
+  lead.landingArchivedAt = remote.archived_at || '';
+  lead.landingSyncBaseline = {
+    status: remote.status,
+    nextFollowUpAt: remote.next_follow_up_at || null,
+    notes: remote.notes || '',
+    archivedAt: remote.archived_at || null,
+    revision: remote.sync_revision,
+    updatedAt: remote.updated_at
+  };
+  lead.landingSyncConflict = null;
+}
+
+function resolveLandingLeadConflict(id, choice) {
+  const lead = (db.leads || []).find(item => Number(item.id) === Number(id));
+  const remote = lead && lead.landingSyncConflict && lead.landingSyncConflict.remote;
+  if (!lead || !remote) return;
+  if (choice === 'remote') {
+    applyLandingRemoteLead(lead, remote);
+  } else if (choice === 'local') {
+    lead.landingSyncBaseline = {
+      status: remote.status,
+      nextFollowUpAt: remote.next_follow_up_at || null,
+      notes: remote.notes || '',
+      archivedAt: remote.archived_at || null,
+      revision: remote.sync_revision,
+      updatedAt: remote.updated_at
+    };
+    lead.landingSyncConflict = null;
+  } else {
+    return;
+  }
+  saveLocal();
+  renderLeads();
+}
+
 function renderLeads() {
   const div = $('leadsList');
   if (!div) return;
-  const list = db.leads || [];
+  const allLeads = (db.leads || []).filter(lead => !lead.landingArchivedAt);
+  const today = iso(new Date());
+  const openLeads = allLeads.filter(l => l.stage !== 'Won' && l.stage !== 'Lost');
+  const dueLeads = openLeads.filter(l => l.nextFollowUpAt && l.nextFollowUpAt <= today);
+  const summary = $('leadSummary');
+  if (summary) {
+    summary.innerHTML = `
+      <div class="card" style="margin:0;padding:10px"><strong>${openLeads.length}</strong><div class="mute">عملاء قيد المتابعة</div></div>
+      <div class="card" style="margin:0;padding:10px;border-color:${dueLeads.length ? '#d97706' : 'var(--line)'}"><strong>${dueLeads.length}</strong><div class="mute">متابعة مستحقة</div></div>
+      <div class="card" style="margin:0;padding:10px"><strong>${allLeads.filter(l => l.stage === 'Won').length}</strong><div class="mute">صفقات ناجحة</div></div>`;
+  }
+
+  const search = ($('leadSearch')?.value || '').trim().toLowerCase();
+  const stageFilter = $('leadFilterStage')?.value || '';
+  const list = allLeads.filter(l => {
+    const text = `${l.name || ''} ${l.phone || ''} ${l.carModel || ''}`.toLowerCase();
+    return (!search || text.includes(search)) && (!stageFilter || l.stage === stageFilter);
+  }).sort((a, b) => {
+    const aDue = a.stage !== 'Won' && a.stage !== 'Lost' && a.nextFollowUpAt && a.nextFollowUpAt <= today ? 0 : 1;
+    const bDue = b.stage !== 'Won' && b.stage !== 'Lost' && b.nextFollowUpAt && b.nextFollowUpAt <= today ? 0 : 1;
+    return aDue - bDue || String(b.date || '').localeCompare(String(a.date || ''));
+  });
 
   if (!list.length) {
-    div.innerHTML = '<div class="mute" style="text-align:center;padding:15px">لا يوجد عملاء محتملون حالياً.</div>';
+    div.innerHTML = '<div class="mute" style="text-align:center;padding:15px">لا توجد نتائج مطابقة.</div>';
     return;
   }
 
   const STAGE_NAMES = {
     Lead: 'مهتم جديد (Lead)',
+    Contacted: 'تم التواصل (Contacted)',
+    Qualified: 'عميل مؤهل (Qualified)',
     Visit: 'معاينة بالمعرض (Visit)',
     Screening: 'فحص ائتماني وبنكي (Screening)',
     Won: 'تم التعاقد (Won)',
     Lost: 'ملغي (Lost)'
   };
+  const SOURCE_NAMES = {
+    website: 'الموقع الإلكتروني',
+    whatsapp: 'واتساب',
+    facebook: 'فيسبوك / إنستغرام',
+    phone: 'اتصال هاتفي',
+    walk_in: 'زيارة المعرض',
+    referral: 'ترشيح',
+    other: 'مصدر آخر'
+  };
 
-  div.innerHTML = list.slice().reverse().map(l => `
-    <div class="card" style="margin:8px 0;padding:12px">
+  div.innerHTML = list.map(l => {
+    const activities = Array.isArray(l.activities) ? l.activities.slice().reverse().slice(0, 3) : [];
+    const isDue = l.stage !== 'Won' && l.stage !== 'Lost' && l.nextFollowUpAt && l.nextFollowUpAt <= today;
+    const followUpLabel = l.nextFollowUpAt
+      ? (isDue ? `متأخرة: ${l.nextFollowUpAt}` : `الموعد القادم: ${l.nextFollowUpAt}`)
+      : 'لم يُحدد موعد متابعة';
+    const followUpColor = isDue ? '#b45309' : 'var(--mute)';
+    return `
+    <div class="card" style="margin:8px 0;padding:12px;border-right:4px solid ${isDue ? '#d97706' : 'transparent'}">
       <div class="row" style="padding-top:0">
         <div>
           <span class="b" style="font-size:15px">${esc(l.name)}</span>
           <span class="mute">(${esc(l.phone)})</span>
         </div>
-        <select onchange="changeLeadStage(${l.id}, this.value)" style="width:auto;padding:4px 8px;font-size:11px">
+        <select onchange="changeLeadStage(${Number(l.id)}, this.value)" style="width:auto;padding:4px 8px;font-size:11px">
           ${Object.keys(STAGE_NAMES).map(k => `<option value="${k}" ${l.stage === k ? 'selected' : ''}>${STAGE_NAMES[k]}</option>`).join('')}
         </select>
       </div>
       <div class="mute" style="margin:4px 0">
         السيارة المطلوبة: <strong>${esc(l.carModel || '---')}</strong> | الميزانية: <strong>${fmt(l.budget || 0)} ج.م</strong>
       </div>
+      <div class="mute" style="margin:4px 0">
+        المصدر: <strong>${esc(SOURCE_NAMES[l.source] || l.source || 'غير محدد')}</strong>
+        <span style="margin-right:12px;color:${followUpColor};font-weight:bold">${esc(followUpLabel)}</span>
+      </div>
+      ${l.landingInquiry ? `<div style="font-size:12px;background:var(--bg);padding:6px 10px;border-radius:8px;margin:6px 0"><strong>استفسار صفحة AUTOFYON:</strong><br>${esc(l.landingInquiry)}${l.landingEmail ? `<br>البريد الإلكتروني: ${esc(l.landingEmail)}` : ''}</div>` : ''}
       ${l.notes ? `<div style="font-size:12px;background:var(--bg);padding:6px 10px;border-radius:8px;margin:6px 0">${esc(l.notes)}</div>` : ''}
+      ${activities.length ? `<div style="font-size:12px;margin:8px 0"><strong>آخر الأنشطة:</strong>${activities.map(a => `<div class="mute" style="padding:3px 0">${esc(a.date || '')} · ${esc(a.summary || '')}</div>`).join('')}</div>` : ''}
+      ${l.landingSyncConflict ? `<div style="background:#fff7ed;border:1px solid #fb923c;padding:9px;border-radius:8px;margin:8px 0">
+        <strong>تعارض مزامنة — راجع النسختين قبل المتابعة.</strong>
+        ${l.landingSyncConflict.remote ? `<div class="mute">مرحلة الصفحة: ${esc(l.landingSyncConflict.remote.status)} · آخر تحديث: ${esc(l.landingSyncConflict.remote.updated_at)}</div>
+        <button class="sm" onclick="resolveLandingLeadConflict(${Number(l.id)}, 'remote')">اعتماد نسخة صفحة AUTOFYON</button>
+        <button class="sm" onclick="resolveLandingLeadConflict(${Number(l.id)}, 'local')">الإبقاء على نسخة ERP ومزامنتها لاحقاً</button>` : '<div class="mute">لم يعد سجل الصفحة متاحاً. احتفظ بنسختك وراجع المالك.</div>'}
+      </div>` : ''}
+      <details style="margin:8px 0">
+        <summary style="cursor:pointer;font-size:12px;font-weight:bold">تسجيل متابعة / نتيجة تواصل</summary>
+        <div class="g2" style="margin-top:8px">
+          <input id="leadActivity_${Number(l.id)}" maxlength="300" placeholder="مثال: تم الاتصال، طلب عرض سعر...">
+          <input id="leadFollowUp_${Number(l.id)}" type="date" value="${esc(l.nextFollowUpAt || '')}">
+        </div>
+        <button class="sm" onclick="saveLeadFollowUp(${Number(l.id)})">حفظ النشاط والموعد</button>
+      </details>
       <div class="row" style="border:0;padding-bottom:0">
-        <button class="sm wa" onclick="sendWhatsApp('${l.phone}', 'مرحباً أستاذ ${esc(l.name)}، بخصوص استفساركم عن سيارة ${esc(l.carModel)} في معرض السيارات...')">📲 محادثة واتساب</button>
-        <button class="sm del" onclick="deleteLead(${l.id})">حذف العميل</button>
+        <button class="sm wa" onclick="contactLead(${Number(l.id)})">📲 محادثة واتساب</button>
+        <button class="sm del" onclick="deleteLead(${Number(l.id)})">${l.landingLeadId ? 'أرشفة العميل' : 'حذف العميل'}</button>
       </div>
     </div>
-  `).join('');
+  `}).join('');
 }
 
 function addLead() {
@@ -2759,7 +2970,9 @@ function addLead() {
   const phone = $('lead_phone').value.trim();
   const carModel = $('lead_car').value.trim();
   const budget = +$('lead_budget').value || 0;
+  const source = $('lead_source').value;
   const stage = $('lead_stage').value;
+  const nextFollowUpAt = $('lead_next_follow_up').value;
   const notes = $('lead_notes').value.trim();
 
   if (!name || !phone) {
@@ -2774,28 +2987,73 @@ function addLead() {
     phone,
     carModel,
     budget,
+    source,
     stage,
     notes,
+    nextFollowUpAt,
+    activities: [],
     date: iso(new Date()),
     docs: []
   });
 
   saveLocal();
-  ['lead_name', 'lead_phone', 'lead_car', 'lead_budget', 'lead_notes'].forEach(id => $(id).value = '');
+  ['lead_name', 'lead_phone', 'lead_car', 'lead_budget', 'lead_notes', 'lead_next_follow_up'].forEach(id => $(id).value = '');
   renderLeads();
   toast('تمت إضافة العميل لقمع المبيعات');
+}
+
+function contactLead(id) {
+  const lead = (db.leads || []).find(x => x.id === id);
+  if (!lead) return;
+  sendWhatsApp(lead.phone, `مرحباً أستاذ ${lead.name}، بخصوص استفساركم عن سيارة ${lead.carModel || 'المعروضة'} في معرض السيارات...`);
+}
+
+function saveLeadFollowUp(id) {
+  const lead = (db.leads || []).find(x => x.id === id);
+  if (!lead) return;
+  const activityInput = $(`leadActivity_${id}`);
+  const followUpInput = $(`leadFollowUp_${id}`);
+  const summary = activityInput.value.trim();
+  const nextFollowUpAt = followUpInput.value;
+  if (!summary && !nextFollowUpAt) {
+    toast('اكتب نتيجة المتابعة أو حدد موعداً قادماً');
+    return;
+  }
+  if (!Array.isArray(lead.activities)) lead.activities = [];
+  lead.activities.push({
+    date: new Date().toISOString(),
+    summary: summary || 'تم تحديد موعد للمتابعة'
+  });
+  lead.nextFollowUpAt = nextFollowUpAt;
+  saveLocal();
+  renderLeads();
+  toast('تم حفظ النشاط وموعد المتابعة');
 }
 
 function changeLeadStage(id, newStage) {
   const l = (db.leads || []).find(x => x.id === id);
   if (l) {
+    if (l.stage !== newStage) {
+      if (!Array.isArray(l.activities)) l.activities = [];
+      l.activities.push({date: new Date().toISOString(), summary: `تغيير المرحلة إلى ${newStage}`});
+    }
     l.stage = newStage;
     saveLocal();
+    renderLeads();
     toast('تم تحديث مرحلة العميل');
   }
 }
 
 function deleteLead(id) {
+  const linkedLead = (db.leads || []).find(x => Number(x.id) === Number(id));
+  if (linkedLead && linkedLead.landingLeadId) {
+    if (!confirm('أرشفة هذا العميل المرتبط بصفحة AUTOFYON؟ لن يُحذف نهائياً.')) return;
+    linkedLead.landingArchivedAt = linkedLead.landingArchivedAt || new Date().toISOString();
+    saveLocal();
+    renderLeads();
+    toast('تمت الأرشفة؛ ستُرسل إلى صفحة AUTOFYON عند المزامنة');
+    return;
+  }
   if (confirm('حذف هذا العميل من المتابعة؟')) {
     db.leads = (db.leads || []).filter(x => x.id !== id);
     saveLocal();
@@ -4048,6 +4306,8 @@ function fillSettings() {
   $('s_comp_addr').value = s.companyAddress || 'القاهرة - مصر';
   renderCompanyLogoPreview();
   $('apiUrlInput').value = getApiUrl();
+  $('landingCrmToken').value = getLandingCrmToken();
+  setLandingCrmState(getLandingCrmToken() ? 'الربط محفوظ على هذا الجهاز. استورد الاستفسارات عند الحاجة.' : 'لا يوجد ربط على هذا الجهاز.');
   $('myDevId').textContent = devId();
   $('actStatusBadge').textContent = activated() ? 'مفعل ومقترن ✅' : 'غير مفعل ⚠️';
   $('actStatusBadge').className = activated() ? 'badge badge-ok' : 'badge badge-warn';
@@ -4167,6 +4427,9 @@ $('imp').addEventListener('change', async e => {
 
 // Google Sheets Sync & Dual-Device Lock Logic
 const API_URL_KEY = 'showroom_api_url';
+const LANDING_CRM_TOKEN_KEY = 'showroom_landing_crm_token_v1';
+const LANDING_CRM_CURSOR_KEY = 'showroom_landing_crm_cursor_v2';
+const LANDING_CRM_API_URL = 'https://autofyon.com/api/standalone/crm/leads';
 const DEV_K = 'showroom_device_v4';
 const DEV_TYPE_K = 'showroom_device_type';
 const ACT_K = 'showroom_activated_v4';
@@ -4175,6 +4438,257 @@ const CLOUD_VERSION_K = 'showroom_cloud_version_v4';
 
 function getApiUrl() {
   return localStorage.getItem(API_URL_KEY) || '';
+}
+
+function getLandingCrmToken() {
+  return localStorage.getItem(LANDING_CRM_TOKEN_KEY) || '';
+}
+
+function setLandingCrmState(message, isError = false) {
+  const state = $('landingCrmState');
+  if (!state) return;
+  state.textContent = message;
+  state.style.color = isError ? 'var(--bad)' : 'var(--mute)';
+}
+
+function saveLandingCrmToken() {
+  const token = $('landingCrmToken').value.trim();
+  if (!/^afcrm_[a-f0-9]{64}$/.test(token)) {
+    setLandingCrmState('رمز الربط غير صالح. أنشئ رمزاً جديداً من لوحة صفحة AUTOFYON.', true);
+    return;
+  }
+  try {
+    if (getLandingCrmToken() !== token) localStorage.removeItem(LANDING_CRM_CURSOR_KEY);
+    localStorage.setItem(LANDING_CRM_TOKEN_KEY, token);
+    setLandingCrmState('تم حفظ الربط على هذا الجهاز. اضغط استيراد الاستفسارات الجديدة.');
+    toast('تم حفظ ربط صفحة AUTOFYON');
+  } catch (error) {
+    console.error('Unable to save landing CRM connection:', error);
+    setLandingCrmState('تعذر حفظ رمز الربط على هذا الجهاز.', true);
+  }
+}
+
+function disconnectLandingCrm() {
+  try {
+    localStorage.removeItem(LANDING_CRM_TOKEN_KEY);
+    localStorage.removeItem(LANDING_CRM_CURSOR_KEY);
+    $('landingCrmToken').value = '';
+    setLandingCrmState('تم فصل الربط عن هذا الجهاز. العملاء المستوردون سابقاً باقون في CRM.');
+  } catch (error) {
+    console.error('Unable to disconnect landing CRM:', error);
+    setLandingCrmState('تعذر فصل الربط عن هذا الجهاز.', true);
+  }
+}
+
+async function syncLandingPageLeads() {
+  const token = getLandingCrmToken();
+  if (!token) {
+    setLandingCrmState('أدخل رمز الربط واحفظه أولاً.', true);
+    return;
+  }
+  const button = $('landingCrmSyncBtn');
+  button.disabled = true;
+  let imported = 0;
+  let updated = 0;
+  let conflicts = 0;
+  let pages = 0;
+  try {
+    const pendingUpdates = (db.leads || [])
+      .filter(lead => lead.landingLeadId && lead.landingSyncBaseline && !lead.landingSyncConflict)
+      .map(lead => {
+        const changes = landingLocalChanges(lead) || {};
+        const pendingActivities = (lead.activities || [])
+          .filter(activity => !activity.landingActivityId && !activity.synced)
+          .filter(activity => typeof activity.summary === 'string' && activity.summary.trim())
+          .slice(0, 20)
+          .map(activity => {
+            if (!activity.externalId) activity.externalId = createLandingActivityId();
+            return {
+              externalId: activity.externalId,
+              type: activity.type || 'follow_up',
+              summary: activity.summary.trim()
+            };
+          });
+        if (pendingActivities.length) changes.activities = pendingActivities;
+        return {
+          lead,
+          changes,
+          activityIds: pendingActivities.map(activity => activity.externalId)
+        };
+      })
+      .filter(item => Object.keys(item.changes).length)
+      .map(item => ({
+        leadId: item.lead.landingLeadId,
+        baseRevision: item.lead.landingSyncBaseline.revision,
+        changes: item.changes,
+        localId: item.lead.id,
+        activityIds: item.activityIds
+      }));
+
+    for (let offset = 0; offset < pendingUpdates.length; offset += 20) {
+      const chunk = pendingUpdates.slice(offset, offset + 20);
+      const response = await fetch(LANDING_CRM_API_URL, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          updates: chunk.map(({ leadId, baseRevision, changes }) => ({ leadId, baseRevision, changes }))
+        }),
+        cache: 'no-store'
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || `تعذر إرسال تحديثات ERP (${response.status}).`);
+      if (!result || !Array.isArray(result.results)) throw new Error('استجابة تحديثات ERP غير صالحة.');
+      for (const syncResult of result.results) {
+        const pendingItem = chunk.find(item => item.leadId === syncResult.leadId);
+        const lead = pendingItem && pendingItem.localId;
+        const localLead = (db.leads || []).find(item => Number(item.id) === Number(lead));
+        if (!localLead) continue;
+        if (syncResult.status === 'updated' && syncResult.remote) {
+          applyLandingRemoteLead(localLead, syncResult.remote);
+          for (const activity of localLead.activities || []) {
+            if (pendingItem && pendingItem.activityIds.includes(activity.externalId)) activity.synced = true;
+          }
+          updated++;
+        } else if (syncResult.status === 'conflict') {
+          localLead.landingSyncConflict = { remote: syncResult.remote || null };
+          conflicts++;
+        } else if (syncResult.status === 'not_found') {
+          localLead.landingSyncConflict = { remote: null };
+          conflicts++;
+        } else {
+          throw new Error('حالة مزامنة غير معروفة من خادم AUTOFYON.');
+        }
+      }
+      if (!saveLocal()) throw new Error('تعذر حفظ نتيجة المزامنة على هذا الجهاز.');
+    }
+
+    let cursor = null;
+    try {
+      cursor = JSON.parse(localStorage.getItem(LANDING_CRM_CURSOR_KEY) || 'null');
+    } catch (error) {
+      console.error('Unable to read landing CRM cursor:', error);
+      throw new Error('تعذر قراءة نقطة المزامنة؛ افصل الربط وأعد إدخال الرمز للبدء من جديد.');
+    }
+
+    let firstPage = true;
+    while (true) {
+      const url = new URL(LANDING_CRM_API_URL);
+      if (cursor && typeof cursor.updatedAt === 'string' && typeof cursor.id === 'string') {
+        url.searchParams.set('afterUpdatedAt', cursor.updatedAt);
+        if (!firstPage) url.searchParams.set('afterId', cursor.id);
+      }
+      const response = await fetch(url.href, {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${token}` },
+        cache: 'no-store'
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || `تعذر استيراد استفسارات الصفحة (${response.status}).`);
+      if (!result || !Array.isArray(result.leads) || typeof result.hasMore !== 'boolean') {
+        throw new Error('استجابة خادم صفحة AUTOFYON غير صالحة.');
+      }
+
+      const importedIds = new Set((db.leads || []).map(lead => lead.landingLeadId).filter(Boolean));
+      for (const lead of result.leads) {
+        if (!lead || typeof lead.id !== 'string' || typeof lead.name !== 'string' ||
+            typeof lead.phone !== 'string' || typeof lead.inquiry !== 'string' ||
+            typeof lead.created_at !== 'string' || typeof lead.updated_at !== 'string' ||
+            !Number.isInteger(lead.sync_revision) || typeof lead.status !== 'string') {
+          throw new Error('توجد بيانات استفسار غير صالحة في استجابة الخادم.');
+        }
+        let localLead = importedIds.has(lead.id)
+          ? (db.leads || []).find(item => item.landingLeadId === lead.id)
+          : null;
+        if (!localLead) {
+          localLead = {
+            id: nid(db.leads),
+            landingLeadId: lead.id,
+            name: lead.name,
+            phone: lead.phone,
+            carModel: typeof lead.inquiry_for === 'string' ? lead.inquiry_for : '',
+            budget: 0,
+            source: lead.source || 'website',
+            stage: pageStatusToErpStage(lead.status),
+            notes: '',
+            nextFollowUpAt: '',
+            activities: [],
+            date: lead.created_at.slice(0, 10),
+            docs: []
+          };
+          db.leads.push(localLead);
+          importedIds.add(lead.id);
+          imported++;
+          applyLandingRemoteLead(localLead, lead);
+          continue;
+        }
+
+        if (!localLead.landingSyncBaseline) {
+          const legacyNotes = typeof localLead.notes === 'string' ? localLead.notes : '';
+          if (legacyNotes.startsWith('استفسار من صفحة AUTOFYON:\n')) localLead.notes = '';
+          localLead.landingInquiry = lead.inquiry || '';
+          localLead.landingEmail = lead.email || '';
+          const hasLegacyEdits = erpStageToPageStatus(localLead.stage) !== lead.status
+            || (localLead.nextFollowUpAt || null) !== (lead.next_follow_up_at || null)
+            || Boolean(localLead.notes);
+          localLead.landingSyncBaseline = {
+            status: lead.status,
+            nextFollowUpAt: lead.next_follow_up_at || null,
+            notes: lead.notes || '',
+            archivedAt: lead.archived_at || null,
+            revision: lead.sync_revision,
+            updatedAt: lead.updated_at
+          };
+          if (hasLegacyEdits) {
+            localLead.landingSyncConflict = { remote: lead };
+            conflicts++;
+          } else {
+            applyLandingRemoteLead(localLead, lead);
+          }
+          continue;
+        }
+
+        const localChanges = landingLocalChanges(localLead) || {};
+        if (localLead.landingSyncConflict) {
+          localLead.landingSyncConflict = { remote: lead };
+        } else if (Object.keys(localChanges).length &&
+                   localLead.landingSyncBaseline.revision !== lead.sync_revision) {
+          localLead.landingSyncConflict = { remote: lead };
+          conflicts++;
+        } else if (!Object.keys(localChanges).length) {
+          const revisionChanged = localLead.landingSyncBaseline.revision !== lead.sync_revision;
+          applyLandingRemoteLead(localLead, lead);
+          if (revisionChanged) updated++;
+        }
+      }
+
+      if (result.leads.length) {
+        const lastLead = result.leads[result.leads.length - 1];
+        const nextCursor = result.nextCursor && typeof result.nextCursor.updatedAt === 'string' && typeof result.nextCursor.id === 'string'
+          ? result.nextCursor
+          : {updatedAt: lastLead.updated_at, id: lastLead.id};
+        if (!saveLocal()) throw new Error('تعذر حفظ العملاء المستوردين على هذا الجهاز.');
+        localStorage.setItem(LANDING_CRM_CURSOR_KEY, JSON.stringify(nextCursor));
+        cursor = nextCursor;
+      }
+      firstPage = false;
+
+      pages++;
+      if (!result.hasMore) break;
+      if (!result.leads.length || pages >= 100) {
+        throw new Error('توقفت المزامنة عند حد الصفحات؛ أعد المحاولة لاستكمال الاستيراد.');
+      }
+    }
+    renderLeads();
+    setLandingCrmState(`اكتملت المزامنة: ${imported} جديد، ${updated} تحديث، ${conflicts} تعارض يحتاج مراجعة. عملاء ERP المحليون لم يُنشأ لهم سجل في AUTOFYON.`);
+  } catch (error) {
+    console.error('Landing-page CRM import failed:', error);
+    setLandingCrmState(error instanceof Error ? error.message : 'تعذر استيراد استفسارات صفحة AUTOFYON.', true);
+  } finally {
+    button.disabled = false;
+  }
 }
 
 function saveApiUrl() {

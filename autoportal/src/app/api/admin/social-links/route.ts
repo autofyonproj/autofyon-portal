@@ -3,8 +3,6 @@ import { requireBusinessAccess } from '@/lib/admin-auth';
 import { batch, queryOne, type Statement } from '@/lib/db';
 import { safeSocialUrl } from '@/lib/social-link-types';
 
-export const runtime = 'edge';
-
 interface LinkInput {
   platformKey?: unknown;
   label?: unknown;

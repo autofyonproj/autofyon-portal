@@ -62,6 +62,27 @@ export function canAccessBusiness(user: AdminUser, businessId: string): boolean 
   return user.scope_ids.includes('*') || user.scope_ids.includes(businessId);
 }
 
+/** Verify that a business is active and published before tenant operations. */
+export async function requireActiveBusiness(
+  request: Request,
+  businessId: string,
+): Promise<{ user: AdminUser } | Response> {
+  const auth = await requireBusinessAccess(request, businessId);
+  if (auth instanceof Response) return auth;
+
+  const business = await queryOne<{ status: string; published: number }>(
+    'SELECT status, published FROM businesses WHERE id = ?',
+    [businessId],
+  );
+  if (!business || business.status !== 'active' || business.published !== 1) {
+    return new Response(JSON.stringify({ error: 'dealer account is not active' }), {
+      status: 403,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+  return auth;
+}
+
 /** Convenience: load user + check business access in one call. */
 export async function requireBusinessAccess(
   request: Request,
@@ -77,6 +98,19 @@ export async function requireBusinessAccess(
     return new Response(JSON.stringify({ error: 'forbidden' }), {
       status: 403, headers: { 'Content-Type': 'application/json' },
     });
+  }
+  if (user.role === 'vendor') {
+    const membership = await queryOne<{ status: string }>(
+      `SELECT status FROM business_memberships
+        WHERE business_id = ? AND admin_user_id = ?`,
+      [businessId, user.id],
+    );
+    if (!membership || membership.status !== 'active') {
+      return new Response(JSON.stringify({ error: 'dealer membership is not active' }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
   }
   return { user };
 }

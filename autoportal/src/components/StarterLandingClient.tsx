@@ -125,8 +125,8 @@ export default function StarterLandingClient({ data, locale = 'ar' }: Props) {
 
   const waGreeting = encodeURIComponent(
     isAr
-      ? `مرحباً ${data.displayName}، أتواصل معكم بخصوص السيارات المعروضة في صفحتكم على منصة أوتوفاي أون (autofyon.com).`
-      : `Hello ${data.displayName}, I am contacting you regarding cars listed on your AutoFy On showroom page (autofyon.com).`,
+      ? `مرحباً ${data.displayName}، أتواصل معكم بخصوص السيارات المعروضة في صفحتكم على منصة أوتوفيون (autofyon.com).`
+      : `Hello ${data.displayName}, I am contacting you regarding cars listed on your AutoFyon showroom page (autofyon.com).`,
   );
   const waUrl = cleanWa ? `https://wa.me/${cleanWa.startsWith('0') ? '20' + cleanWa.slice(1) : cleanWa}?text=${waGreeting}` : '';
 
@@ -147,7 +147,7 @@ export default function StarterLandingClient({ data, locale = 'ar' }: Props) {
             </div>
             <div className="flex flex-col">
               <span className="font-black tracking-wider text-xs uppercase text-white">
-                أوتوفاي أون <span className="text-red-500 font-mono">AUTOFYON.com</span>
+                أوتوفيون <span className="text-red-500 font-mono">AUTOFYON.com</span>
               </span>
               <span className="text-[9px] text-neutral-400">
                 {isAr ? 'شبكة معارض السيارات المعتمدة في مصر' : 'Certified Egyptian Dealership Network'}
@@ -188,8 +188,8 @@ export default function StarterLandingClient({ data, locale = 'ar' }: Props) {
               </strong>{' '}
               —{' '}
               {isAr
-                ? 'تم تجهيز هذا الموقع واستوديو الميديا مانجر خصيصاً لمعرضكم على شبكة أوتوفاي أون.'
-                : 'This showroom landing page & Media Studio are prepared for your dealership on AutoFy On.'}
+                ? 'تم تجهيز هذا الموقع واستوديو الميديا مانجر خصيصاً لمعرضكم على شبكة أوتوفيون.'
+                : 'This showroom landing page & Media Studio are prepared for your dealership on AutoFyon.'}
             </p>
           </div>
           <button
@@ -311,7 +311,7 @@ export default function StarterLandingClient({ data, locale = 'ar' }: Props) {
                 <div className="space-y-4 relative z-10">
                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-600/20 border border-red-500/40 text-red-400 text-xs font-black tracking-wider uppercase">
                     <span>👑</span>
-                    <span>{isAr ? 'عضو شبكة أوتوفاي أون الرسمية' : 'AutoFy On Certified Partner'}</span>
+                    <span>{isAr ? 'عضو شبكة أوتوفيون الرسمية' : 'AutoFyon Certified Partner'}</span>
                   </div>
 
                   <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
@@ -321,8 +321,8 @@ export default function StarterLandingClient({ data, locale = 'ar' }: Props) {
                   <p className="text-sm sm:text-base text-neutral-300 max-w-2xl leading-relaxed">
                     {data.description ||
                       (isAr
-                        ? `معرض ${data.displayName} — صرح معتمد لتجارة واستبدال السيارات في مصر، يقدم أفضل عروض الكاش والتقسيط لعملائه مع باقة أوتوفاي أون الرقمية المتكاملة.`
-                        : `${data.displayName} — Premier Egyptian automotive dealership with digital showroom, verified inventory, and comprehensive auto financing options on AutoFy On.`)}
+                        ? `معرض ${data.displayName} — صرح معتمد لتجارة واستبدال السيارات في مصر، يقدم أفضل عروض الكاش والتقسيط لعملائه مع باقة أوتوفيون الرقمية المتكاملة.`
+                        : `${data.displayName} — Premier Egyptian automotive dealership with digital showroom, verified inventory, and comprehensive auto financing options on AutoFyon.`)}
                   </p>
                 </div>
 
@@ -354,7 +354,7 @@ export default function StarterLandingClient({ data, locale = 'ar' }: Props) {
                 {data.youtubeVideoId ? (
                   <iframe
                     src={`https://www.youtube-nocookie.com/embed/${data.youtubeVideoId}?autoplay=1&mute=0&rel=0`}
-                    title="AutoFy On Presentation"
+                    title="AutoFyon Presentation"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                     className="w-full h-full border-0"
@@ -380,7 +380,7 @@ export default function StarterLandingClient({ data, locale = 'ar' }: Props) {
               <div className="p-6 sm:p-8 space-y-5">
                 <div>
                   <h3 className="text-xl sm:text-2xl font-black text-white">
-                    {isAr ? 'ماذا يجني معرضكم عند الانضمام لشبكة أوتوفاي أون؟' : 'Why Partner With AutoFy On?'}
+                    {isAr ? 'ماذا يجني معرضكم عند الانضمام لشبكة أوتوفيون؟' : 'Why Partner With AutoFyon?'}
                   </h3>
                   <p className="text-xs text-neutral-400 mt-1">
                     {isAr
@@ -422,7 +422,7 @@ export default function StarterLandingClient({ data, locale = 'ar' }: Props) {
                     <p className="text-xs text-neutral-300 leading-relaxed">
                       {isAr
                         ? 'تثبيت معرضكم في صدارة نتائج البحث في دليل معارض السيارات المصرية أمام آلاف المشترين يومياً.'
-                        : 'Top placement in the Egyptian automotive directory with the official AutoFy On gold badge.'}
+                        : 'Top placement in the Egyptian automotive directory with the official AutoFyon gold badge.'}
                     </p>
                   </div>
 
@@ -457,7 +457,7 @@ export default function StarterLandingClient({ data, locale = 'ar' }: Props) {
           </div>
           <p className="text-xs text-neutral-400 max-w-md">
             {isAr
-              ? 'تتيح لك منصة أوتوفاي أون عرض سياراتك بكاروسيل صور عالي الدقة، حاسبة تقسيط، وزر استفسار مباشر.'
+              ? 'تتيح لك منصة أوتوفيون عرض سياراتك بكاروسيل صور عالي الدقة، حاسبة تقسيط، وزر استفسار مباشر.'
               : 'HD photo carousels, dynamic installment estimates, and direct buyer inquiries.'}
           </p>
         </div>
@@ -528,7 +528,7 @@ export default function StarterLandingClient({ data, locale = 'ar' }: Props) {
               <p className="text-xs text-neutral-400 mt-1">
                 {isAr
                   ? 'اربط حساباتك الرسمية على فيسبوك وتيك توك وإنستجرام لتظهر لجمهورك على autofyon.com'
-                  : 'Connect your official Facebook, TikTok, and Instagram handles to your AutoFy On page.'}
+                  : 'Connect your official Facebook, TikTok, and Instagram handles to your AutoFyon page.'}
               </p>
             </div>
 
@@ -562,7 +562,7 @@ export default function StarterLandingClient({ data, locale = 'ar' }: Props) {
                 📱 {isAr ? 'تطبيق الموبايل المجاني' : 'Free Mobile Tool'}
               </span>
               <h4 className="text-base font-bold text-white">
-                {isAr ? 'استوديو ميديا مانجر أوتوفاي أون لهواتف أندرويد وآيفون' : 'AutoFy On Mobile Media Manager Studio'}
+                {isAr ? 'استوديو ميديا مانجر أوتوفيون لهواتف أندرويد وآيفون' : 'AutoFyon Mobile Media Manager Studio'}
               </h4>
               <p className="text-xs text-neutral-300 max-w-xl">
                 {isAr

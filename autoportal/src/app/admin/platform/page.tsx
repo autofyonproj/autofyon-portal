@@ -299,6 +299,12 @@ export default async function PlatformAdminDashboard({
           Review vendor prospects &amp; free-offer targets ↗
         </Link>
         <Link
+          href="/admin/platform/vendor-onboarding"
+          className="inline-flex rounded-lg border border-violet-700/25 bg-violet-700/5 px-4 py-2 text-sm font-bold text-violet-900 hover:bg-violet-700/10"
+        >
+          Review dealer invitations &amp; registrations ↗
+        </Link>
+        <Link
           href="/admin/platform/custom-sites"
           className="inline-flex rounded-lg border border-violet-700/25 bg-violet-700/5 px-4 py-2 text-sm font-bold text-violet-800 hover:bg-violet-700/10"
         >

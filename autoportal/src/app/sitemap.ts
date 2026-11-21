@@ -35,12 +35,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const out: MetadataRoute.Sitemap = [];
 
-  // Static roots
-  for (const loc of ['ar', 'en'] as const) {
-    out.push({ url: `${BASE}${localePath(loc, [])}`, changeFrequency: 'daily', priority: 1.0 });
-    out.push({ url: `${BASE}${localePath(loc, ['cars'])}`, changeFrequency: 'hourly', priority: 0.9 });
-    out.push({ url: `${BASE}${localePath(loc, ['brands'])}`, changeFrequency: 'daily', priority: 0.8 });
-    out.push({ url: `${BASE}${localePath(loc, ['dealers'])}`, changeFrequency: 'daily', priority: 0.8 });
+  // Static roots with multilingual alternates
+  const staticRoutes = [
+    { segments: [], priority: 1.0, freq: 'daily' as const },
+    { segments: ['packages'], priority: 0.95, freq: 'daily' as const },
+    { segments: ['cars'], priority: 0.9, freq: 'hourly' as const },
+    { segments: ['dealers'], priority: 0.9, freq: 'daily' as const },
+    { segments: ['brands'], priority: 0.85, freq: 'daily' as const },
+    { segments: ['blog'], priority: 0.8, freq: 'daily' as const },
+    { segments: ['almostashar'], priority: 0.85, freq: 'weekly' as const },
+  ];
+
+  for (const route of staticRoutes) {
+    for (const loc of ['ar', 'en'] as const) {
+      out.push({
+        url: `${BASE}${localePath(loc, route.segments)}`,
+        changeFrequency: route.freq,
+        priority: route.priority,
+        alternates: {
+          languages: {
+            ar: `${BASE}${localePath('ar', route.segments)}`,
+            en: `${BASE}${localePath('en', route.segments)}`,
+          },
+        },
+      });
+    }
   }
 
   // Business minisites
@@ -51,12 +70,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         url: `${BASE}${localePath(loc, [b.slug])}`,
         lastModified,
         changeFrequency: 'weekly',
-        priority: 0.6,
+        priority: 0.7,
+        alternates: {
+          languages: {
+            ar: `${BASE}${localePath('ar', [b.slug])}`,
+            en: `${BASE}${localePath('en', [b.slug])}`,
+          },
+        },
       });
     }
   }
 
-  // Units
+  // Units (vehicles)
   for (const u of units) {
     const lastModified = u.updated_at ? new Date(u.updated_at) : undefined;
     for (const loc of ['ar', 'en'] as const) {
@@ -64,7 +89,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         url: `${BASE}${localePath(loc, [u.seller_slug, 'u', u.unit_slug])}`,
         lastModified,
         changeFrequency: 'daily',
-        priority: 0.8,
+        priority: 0.85,
+        alternates: {
+          languages: {
+            ar: `${BASE}${localePath('ar', [u.seller_slug, 'u', u.unit_slug])}`,
+            en: `${BASE}${localePath('en', [u.seller_slug, 'u', u.unit_slug])}`,
+          },
+        },
       });
     }
   }

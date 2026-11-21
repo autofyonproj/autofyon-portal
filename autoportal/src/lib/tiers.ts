@@ -20,10 +20,32 @@ export interface MinisiteTemplate {
   };
 }
 
+export type VendorTierId = 'free' | 'growth' | 'pro' | 'enterprise';
+
+export interface VendorCrmEntitlements {
+  pageConnected: true;
+  standalone: boolean;
+  maxPipelines: number | null;
+  customFields: boolean;
+  leadAssignment: boolean;
+  workflowAutomation: boolean;
+  multiBranch: boolean;
+  advancedReporting: boolean;
+}
+
+export interface VendorSocialEntitlements {
+  maxConnectedAccounts: number | null;
+  draftPacksPerMonth: number | null;
+  scheduledPostsPerMonth: number | null;
+  contentCalendar: boolean;
+  approvalWorkflow: boolean;
+  multiBranch: boolean;
+}
+
 export interface VendorTier {
-  id: 'free' | 'pro' | 'enterprise';
+  id: VendorTierId;
   name: { en: string; ar: string };
-  priceEgpMonthly: number;
+  priceEgpMonthly: number | null;
   maxActiveCars: number;
   maxHeroSlides: number;
   allowedSlideMediaTypes: ('image' | 'youtube' | 'video')[];
@@ -32,6 +54,8 @@ export interface VendorTier {
   canUseCustomDomain: boolean;
   leadDirectWhatsApp: boolean;
   prioritySearchBoost: number; // multiplier for marketplace search
+  crm: VendorCrmEntitlements;
+  social: VendorSocialEntitlements;
 }
 
 export const MINISITE_TEMPLATES: Record<string, MinisiteTemplate> = {
@@ -88,7 +112,7 @@ export const MINISITE_TEMPLATES: Record<string, MinisiteTemplate> = {
   },
 };
 
-export const VENDOR_TIERS: Record<string, VendorTier> = {
+export const VENDOR_TIERS: Record<VendorTierId, VendorTier> = {
   free: {
     id: 'free',
     name: { en: 'Free Starter', ar: 'العضوية المجانية' },
@@ -101,6 +125,55 @@ export const VENDOR_TIERS: Record<string, VendorTier> = {
     canUseCustomDomain: false,
     leadDirectWhatsApp: true,
     prioritySearchBoost: 1.0,
+    crm: {
+      pageConnected: true,
+      standalone: false,
+      maxPipelines: 1,
+      customFields: false,
+      leadAssignment: false,
+      workflowAutomation: false,
+      multiBranch: false,
+      advancedReporting: false,
+    },
+    social: {
+      maxConnectedAccounts: 0,
+      draftPacksPerMonth: 4,
+      scheduledPostsPerMonth: 0,
+      contentCalendar: false,
+      approvalWorkflow: false,
+      multiBranch: false,
+    },
+  },
+  growth: {
+    id: 'growth',
+    name: { en: 'Growth', ar: 'النمو' },
+    priceEgpMonthly: null,
+    maxActiveCars: 25,
+    maxHeroSlides: 6,
+    allowedSlideMediaTypes: ['image'],
+    allowedTemplates: ['template_standard_free', 'template_classical_luxury'],
+    badge: { en: 'Growing Showroom', ar: 'معرض نامٍ' },
+    canUseCustomDomain: false,
+    leadDirectWhatsApp: true,
+    prioritySearchBoost: 1.0,
+    crm: {
+      pageConnected: true,
+      standalone: true,
+      maxPipelines: 1,
+      customFields: false,
+      leadAssignment: false,
+      workflowAutomation: false,
+      multiBranch: false,
+      advancedReporting: false,
+    },
+    social: {
+      maxConnectedAccounts: 2,
+      draftPacksPerMonth: 20,
+      scheduledPostsPerMonth: 20,
+      contentCalendar: true,
+      approvalWorkflow: false,
+      multiBranch: false,
+    },
   },
   pro: {
     id: 'pro',
@@ -114,6 +187,24 @@ export const VENDOR_TIERS: Record<string, VendorTier> = {
     canUseCustomDomain: true,
     leadDirectWhatsApp: true,
     prioritySearchBoost: 2.5,
+    crm: {
+      pageConnected: true,
+      standalone: true,
+      maxPipelines: null,
+      customFields: true,
+      leadAssignment: true,
+      workflowAutomation: true,
+      multiBranch: false,
+      advancedReporting: true,
+    },
+    social: {
+      maxConnectedAccounts: 5,
+      draftPacksPerMonth: null,
+      scheduledPostsPerMonth: 100,
+      contentCalendar: true,
+      approvalWorkflow: true,
+      multiBranch: false,
+    },
   },
   enterprise: {
     id: 'enterprise',
@@ -127,28 +218,54 @@ export const VENDOR_TIERS: Record<string, VendorTier> = {
     canUseCustomDomain: true,
     leadDirectWhatsApp: true,
     prioritySearchBoost: 5.0,
+    crm: {
+      pageConnected: true,
+      standalone: true,
+      maxPipelines: null,
+      customFields: true,
+      leadAssignment: true,
+      workflowAutomation: true,
+      multiBranch: true,
+      advancedReporting: true,
+    },
+    social: {
+      maxConnectedAccounts: null,
+      draftPacksPerMonth: null,
+      scheduledPostsPerMonth: null,
+      contentCalendar: true,
+      approvalWorkflow: true,
+      multiBranch: true,
+    },
   },
 };
+
+export function isVendorTierId(value: unknown): value is VendorTierId {
+  return typeof value === 'string' && Object.prototype.hasOwnProperty.call(VENDOR_TIERS, value);
+}
+
+export function getVendorTier(tierId: string | null | undefined): VendorTier {
+  return tierId && isVendorTierId(tierId) ? VENDOR_TIERS[tierId] : VENDOR_TIERS.free;
+}
 
 /**
  * Checks whether a business with given tier has permission to use a specific template or feature.
  */
 export function canVendorUseTemplate(tierId: string, templateId: string): boolean {
-  const tier = VENDOR_TIERS[tierId] || VENDOR_TIERS.free;
+  const tier = getVendorTier(tierId);
   return tier.allowedTemplates.includes(templateId);
 }
 
 export function canVendorUseCustomDomain(tierId: string): boolean {
-  const tier = VENDOR_TIERS[tierId] || VENDOR_TIERS.free;
+  const tier = getVendorTier(tierId);
   return tier.canUseCustomDomain;
 }
 
 export function getVendorSlideLimit(tierId: string): number {
-  const tier = VENDOR_TIERS[tierId] || VENDOR_TIERS.free;
+  const tier = getVendorTier(tierId);
   return tier.maxHeroSlides;
 }
 
 export function canVendorUseSlideType(tierId: string, mediaType: 'image' | 'youtube' | 'video'): boolean {
-  const tier = VENDOR_TIERS[tierId] || VENDOR_TIERS.free;
+  const tier = getVendorTier(tierId);
   return tier.allowedSlideMediaTypes.includes(mediaType);
 }

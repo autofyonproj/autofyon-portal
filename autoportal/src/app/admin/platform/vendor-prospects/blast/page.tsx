@@ -1,24 +1,22 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import Link from 'next/link';
 
 const DEFAULT_TEMPLATE = `مرحباً يا أهل *{{name}}* 👋
 
-نحن من منصة *أوتوفاي أون (AutoFy On)*، المنصة الذكية لتجار ومعارض السيارات في مصر.
+نحن من منصة *أوتوفيون (AutoFyon)*، المنصة الذكية لتجار ومعارض السيارات في مصر.
 
-معرضكم الكريم مؤهل للحصول على *باقة أوتوفاي أون المجانية*:
-✅ صفحة تسويقية خاصة وموقع باسم معرضكم
-✅ استوديو ميديا مانجر لصناعة إعلانات سياراتكم مجاناً
-✅ توثيق معتمد وشارة ذهبية في دليل معارض مصر للسيارات
+نود دعوتكم لإكمال بيانات معرضكم وإنشاء صفحة تعريفية خاصة بكم:
+✅ تأكيد رقم واتساب المسجل
+✅ مراجعة بيانات المعرض ومعاينة الصفحة قبل النشر
+✅ لا تظهر الصفحة للعامة إلا بعد مراجعة الإدارة وموافقتكم على النشر
 
-معاينة موقع معرضكم المجهز مسبقاً:
-🌐 https://autofyon.com/p/{{slug}}
-
-للتفعيل المجاني الفوري واستلام لوحة التحكم:
+لبدء التسجيل الآمن:
 👇 {{inviteUrl}}
 
 يسعدنا خدمتكم دائماً 🙏
-فريق أوتوفاي أون AutoFy On — autofyon.com`;
+فريق أوتوفيون AutoFyon — autofyon.com`;
 
 const STATUSES = [
   { value: '', label: 'كل الحالات' },
@@ -30,7 +28,7 @@ const STATUSES = [
   { value: 'declined', label: 'رفض' },
 ];
 
-const VARS = ['{{name}}', '{{city}}', '{{slug}}', '{{inviteUrl}}', '{{phone}}'];
+const VARS = ['{{name}}', '{{city}}', '{{inviteUrl}}', '{{phone}}'];
 
 interface BlastResult {
   id: string;
@@ -39,13 +37,13 @@ interface BlastResult {
   city: string;
   whatsappUrl: string;
   message: string;
-  slug: string;
 }
 
 interface BlastResponse {
   ok: boolean;
   total: number;
-  landingPagesCreated: number;
+  skippedNoPhone: number;
+  skippedActiveApplications: number;
   results: BlastResult[];
 }
 
@@ -59,13 +57,12 @@ export default function WhatsAppBlastPage() {
   // Message
   const [template, setTemplate] = useState(DEFAULT_TEMPLATE);
   const [campaignRef, setCampaignRef] = useState('autofyon-blast-2026');
-  const [preCreate, setPreCreate] = useState(false);
-  const [markContacted, setMarkContacted] = useState(true);
+  const [markQueued, setMarkQueued] = useState(true);
 
   // State
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<BlastResult[] | null>(null);
-  const [summary, setSummary] = useState<{ total: number; landingPagesCreated: number } | null>(null);
+  const [summary, setSummary] = useState<{ total: number; skippedNoPhone: number; skippedActiveApplications: number } | null>(null);
   const [error, setError] = useState('');
   const [copiedId, setCopiedId] = useState('');
 
@@ -79,26 +76,31 @@ export default function WhatsAppBlastPage() {
     setResults(null);
     setSummary(null);
     try {
+      const targetLead = new URLSearchParams(window.location.search).get('lead');
       const res = await fetch('/api/admin/vendor-prospects/whatsapp-links', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           filters: {
-            status: filterStatus || undefined,
-            city: filterCity || undefined,
-            category: filterCategory || undefined,
-            country: filterCountry || undefined,
+            ids: targetLead ? [targetLead] : undefined,
+            status: targetLead ? undefined : filterStatus || undefined,
+            city: targetLead ? undefined : filterCity || undefined,
+            category: targetLead ? undefined : filterCategory || undefined,
+            country: targetLead ? undefined : filterCountry || undefined,
           },
           messageTemplate: template,
           campaignRef,
-          preCreateLandingPages: preCreate,
-          updateStatus: markContacted,
+          updateStatus: markQueued,
         }),
       });
       const data = await res.json() as BlastResponse;
       if (!res.ok) throw new Error(JSON.stringify(data));
       setResults(data.results);
-      setSummary({ total: data.total, landingPagesCreated: data.landingPagesCreated });
+      setSummary({
+        total: data.total,
+        skippedNoPhone: data.skippedNoPhone,
+        skippedActiveApplications: data.skippedActiveApplications,
+      });
     } catch (e) {
       setError(e instanceof Error ? e.message : 'فشل التوليد');
     } finally {
@@ -140,15 +142,15 @@ export default function WhatsAppBlastPage() {
   return (
     <div className="mx-auto max-w-7xl space-y-6 p-4" dir="rtl">
       <nav className="flex flex-wrap gap-2 text-xs opacity-60" dir="ltr">
-        <a href="/admin" className="hover:underline">Admin</a><span>/</span>
-        <a href="/admin/platform" className="hover:underline">Platform</a><span>/</span>
-        <a href="/admin/platform/vendor-prospects" className="hover:underline">Vendor Prospects</a><span>/</span>
+        <Link href="/admin" className="hover:underline">Admin</Link><span>/</span>
+        <Link href="/admin/platform" className="hover:underline">Platform</Link><span>/</span>
+        <Link href="/admin/platform/vendor-prospects" className="hover:underline">Vendor Prospects</Link><span>/</span>
         <span>WhatsApp Blast</span>
       </nav>
 
       <header className="border-b border-black/10 pb-4">
         <h1 className="text-2xl font-bold">📲 مركز إرسال WhatsApp للمعارض</h1>
-        <p className="mt-1 text-sm text-neutral-500">فلتر المعارض المستهدفة، خصص الرسالة، واحصل على روابط واتساب مباشرة لكل معرض</p>
+        <p className="mt-1 text-sm text-neutral-500">فلتر المعارض، أنشئ دعوات آمنة مرتبطة بأرقام CRM، ثم أرسلها يدوياً عبر واتساب</p>
       </header>
 
       <div className="grid gap-6 lg:grid-cols-2">
@@ -183,7 +185,7 @@ export default function WhatsAppBlastPage() {
           </div>
 
           <div className="rounded-lg bg-blue-50 border border-blue-200 p-3 text-sm">
-            💡 سيتم تطبيق الفلتر عند الضغط على &quot;توليد الروابط&quot; — الحد الأقصى 500 معرض في المرة الواحدة
+            💡 سيتم إنشاء دعوة فريدة صالحة 7 أيام لكل رقم صالح — الحد الأقصى 500 دعوة، ولا تُنشأ صفحة عامة قبل موافقة الإدارة
           </div>
         </section>
 
@@ -215,17 +217,13 @@ export default function WhatsAppBlastPage() {
           <label className="text-xs font-bold">
             كود الحملة (campaign ref)
             <input value={campaignRef} onChange={(e) => setCampaignRef(e.target.value)} dir="ltr" className="mt-1 w-full rounded border px-3 py-2 text-sm font-mono font-normal" placeholder="autofyon-blast-2026" />
-            <span className="text-[10px] text-neutral-400 font-normal">سيُضاف كـ ?ref= في رابط التسجيل</span>
+            <span className="text-[10px] text-neutral-400 font-normal">يُحفظ في سجل الدعوة ولا يُستخدم للتحقق من هوية المسجل</span>
           </label>
 
           <div className="flex flex-wrap gap-4 text-sm">
             <label className="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" checked={preCreate} onChange={(e) => setPreCreate(e.target.checked)} className="rounded" />
-              <span className="font-medium">إنشاء صفحة هبوط مسبقاً لكل معرض</span>
-            </label>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" checked={markContacted} onChange={(e) => setMarkContacted(e.target.checked)} className="rounded" />
-              <span className="font-medium">تحديث الحالة إلى &quot;تم التواصل&quot;</span>
+              <input type="checkbox" checked={markQueued} onChange={(e) => setMarkQueued(e.target.checked)} className="rounded" />
+              <span className="font-medium">وضع السجلات في قائمة انتظار التواصل (لم تُرسل رسالة بعد)</span>
             </label>
           </div>
         </section>
@@ -252,8 +250,9 @@ export default function WhatsAppBlastPage() {
             <div>
               <p className="font-bold text-green-800">✅ تم التوليد بنجاح!</p>
               <p className="text-sm text-green-700 mt-1">
-                <strong>{summary.total}</strong> رابط واتساب جاهز
-                {summary.landingPagesCreated > 0 && ` · ${summary.landingPagesCreated} صفحة هبوط تم إنشاؤها`}
+                <strong>{summary.total}</strong> دعوة مرتبطة برقم CRM جاهزة
+                {summary.skippedNoPhone > 0 && ` · تم تجاوز ${summary.skippedNoPhone} سجل لعدم وجود رقم صالح`}
+                {summary.skippedActiveApplications > 0 && ` · تم تجاوز ${summary.skippedActiveApplications} طلب قيد المراجعة أو معتمد`}
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -318,8 +317,8 @@ export default function WhatsAppBlastPage() {
       )}
 
       <div className="flex gap-3 pb-8">
-        <a href="/admin/platform/vendor-prospects" className="text-sm underline opacity-60 hover:opacity-100">← العودة لقائمة المتوقعين</a>
-        <a href="/admin/platform/vendor-prospects/import" className="text-sm underline opacity-60 hover:opacity-100">📥 استيراد معارض جديدة</a>
+        <Link href="/admin/platform/vendor-prospects" className="text-sm underline opacity-60 hover:opacity-100">← العودة لقائمة المتوقعين</Link>
+        <Link href="/admin/platform/vendor-prospects/import" className="text-sm underline opacity-60 hover:opacity-100">📥 استيراد معارض جديدة</Link>
       </div>
     </div>
   );

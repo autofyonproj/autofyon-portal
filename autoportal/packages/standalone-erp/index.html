@@ -369,14 +369,15 @@ table.erp-table td{
  <button class="top-nav-btn" data-t="creditflow" onclick="tab('creditflow')">📈 6. التدفق والسيولة</button>
  <button class="top-nav-btn" data-t="banks" onclick="tab('banks')">🏦 7. البنوك والتأمين</button>
  <button class="top-nav-btn" data-t="data" onclick="tab('data')">⚙️ 8. المزامنة والبيانات</button>
- <button class="top-nav-btn" data-t="marketorders" onclick="tab('marketorders');loadMarketOrders()">📲 9. طلبات السوق</button>
+ <button class="top-nav-btn" data-t="purchase" onclick="tab('purchase')">🛒 9. المشتريات</button>
+ <button class="top-nav-btn" data-t="marketorders" onclick="tab('marketorders');loadMarketOrders()">📲 10. طلبات السوق</button>
 </div>
 
 <main>
 <!-- TAB 1: NEW DEAL & YIELD ENGINE -->
 <section id="deal" class="tab on">
  <div class="card">
-  <h2>👤 1. بيانات العميل واختيار السيارة (CRM & Deal Engine)</h2>
+  <h2>المرحلة 4: بيع السيارة وإنشاء خطة الائتمان والأقساط</h2>
   
   <div style="background:var(--accs);padding:10px 12px;border-radius:12px;margin-bottom:12px">
    <label style="margin-top:0">🚗 اختيار سيارة من مخزون المعرض المتاح (تعبئة تلقائية):</label>
@@ -416,10 +417,22 @@ table.erp-table td{
    <div><label>المقدم المدفوع (ج.م)</label><input id="dp" type="number" inputmode="numeric" value="270000"></div>
    <div><label>المدة (أشهر)</label><input id="mo" type="number" inputmode="numeric" value="60"></div>
   </div>
+  <div class="g3">
+   <div><label>طريقة سداد البيع النقدي</label>
+    <select id="deal_cash_method"><option value="cash">نقداً بالخزينة</option><option value="bank">تحويل بنكي</option></select>
+   </div>
+   <div><label>طريقة تحصيل المقدم</label>
+    <select id="deal_down_payment_method"><option value="cash">نقداً بالخزينة</option><option value="bank">تحويل بنكي</option></select>
+   </div>
+   <div><label>طريقة تحصيل أقساط المعرض</label>
+    <select id="deal_installment_method"><option value="cash">نقداً بالخزينة</option><option value="bank">تحويل بنكي</option></select>
+   </div>
+  </div>
   <div class="g2" style="margin-top:10px">
    <button onclick="analyze()">⚡ فحص البنوك ومقارنة أرباح التقسيط</button>
    <button class="wa" onclick="sendWhatsAppQuote()">📲 إرسال عرض الأسعار واتساب</button>
   </div>
+  <button type="button" class="blue" onclick="saveContract('cash')">إتمام بيع نقدي وتسجيل وسيلة التحصيل</button>
  </div>
  <div id="res"></div>
 </section>
@@ -502,6 +515,7 @@ table.erp-table td{
      <option value="AGENCY">🏬 بالتوكيلات والوكالات</option>
      <option value="WITH_OWNER">👤 مع أصحابها الأصليين</option>
      <option value="Available" selected>المتاح للبيع فقط</option>
+     <option value="InTransit">في الطريق إلى المعرض</option>
      <option value="Reserved">محجوز</option>
      <option value="Sold">تم البيع</option>
     </select>
@@ -513,7 +527,7 @@ table.erp-table td{
 <!-- TAB 3: CONTRACTS & COLLECTIONS -->
 <section id="contracts" class="tab">
  <div class="card">
-  <h2>📋 سجل العقود والتحصيل الآلي للأقساط</h2>
+  <h2>المرحلة 4: متابعة عقد البيع والتحصيل والأقساط</h2>
   <div class="mute">متابعة تحصيل الأقساط الشهرية، تنبيهات التأخير، وإرسال إيصالات الواتساب.</div>
   <input id="contractSearch" oninput="renderContracts()" placeholder="🔍 ابحث باسم العميل أو رقم الهاتف..." style="margin-top:10px">
  </div>
@@ -523,7 +537,7 @@ table.erp-table td{
 <!-- TAB 4: CRM LEADS & PIPELINE -->
 <section id="crm" class="tab">
  <div class="card">
-  <h2>👥 إضافة عميل محتمل جديد (New Lead)</h2>
+  <h2>المرحلة 3: استقبال مكالمات المشترين ومتابعة العملاء المحتملين</h2>
   <div class="g2">
    <div><label>اسم العميل المهتم</label><input id="lead_name" placeholder="مثال: طارق كمال"></div>
    <div><label>رقم الهاتف</label><input id="lead_phone" inputmode="tel" placeholder="01xxxxxxxxx"></div>
@@ -535,6 +549,8 @@ table.erp-table td{
     <label>مرحلة العميل الحالية</label>
     <select id="lead_stage">
      <option value="Lead">مهتم جديد (New Lead)</option>
+    <option value="Contacted">تم التواصل (Contacted)</option>
+    <option value="Qualified">عميل مؤهل (Qualified)</option>
      <option value="Visit">معاينة وزيارة بالمعرض (Visit)</option>
      <option value="Screening">فحص ائتماني وبنكي (Screening)</option>
      <option value="Won">تم التعاقد بنجاح (Won)</option>
@@ -542,8 +558,27 @@ table.erp-table td{
     </select>
    </div>
   </div>
+  <div><label>ربط العميل بسيارة متاحة (اختياري)</label>
+   <select id="lead_inventory_car" onchange="setLeadCarFromInventory(this.value)">
+    <option value="">-- استفسار عام عن سيارة --</option>
+   </select>
+  </div>
+  <div><label>موعد المتابعة القادمة</label><input id="lead_next_follow_up" type="date"></div>
   <div><label>ملاحظات واحتياجات العميل</label><input id="lead_notes" placeholder="ملاحظات المتابعة وتفضيلات التقسيط..."></div>
   <button onclick="addLead()">حفظ العميل في قمع المبيعات 👥</button>
+ </div>
+
+ <div class="card" id="landingCrmConnectionCard" style="border:2px solid var(--acc)">
+  <h2>🌐 مزامنة CRM مع صفحة AUTOFYON</h2>
+  <div class="mute" style="margin:6px 0">استفسارات الصفحة وتحديثات العميل المرتبط تُزامن في الاتجاهين. العملاء المنشؤون داخل ERP فقط يبقون محليين، والتعارضات تحتاج مراجعة.</div>
+  <label for="landingCrmToken">رمز الربط الصادر من لوحة CRM في صفحة AUTOFYON</label>
+  <input id="landingCrmToken" type="password" autocomplete="off" placeholder="afcrm_…">
+  <div class="g2" style="margin-top:8px">
+   <button class="sec" onclick="saveLandingCrmToken()">حفظ / تحديث الربط</button>
+   <button class="blue" id="landingCrmSyncBtn" onclick="syncLandingPageLeads()">مزامنة الاستفسارات والتحديثات</button>
+  </div>
+  <button class="sm del" onclick="disconnectLandingCrm()" style="margin-top:8px">فصل هذا الجهاز</button>
+  <div class="tip" id="landingCrmState" style="margin-top:10px">لا يوجد ربط على هذا الجهاز.</div>
  </div>
 
  <div class="card">
@@ -654,6 +689,15 @@ table.erp-table td{
   <div class="mute">توليد القيود المحاسبية الآلية المزدوجة لكل عملية بيع أو تحصيل قسط:</div>
   <div id="journalEntriesList" style="margin-top:10px"></div>
  </div>
+ <div class="card" id="accountingDraftSyncCard">
+  <h2>🔄 استمرارية المحاسبة بين نسخ ERP</h2>
+  <div class="mute">أرسل العقود المحفوظة كمسودات مراجعة إلى نشاط AutoFyon المرتبط، أو استورد القيود التي اعتمدها المالك / المحاسب. لا يتم ترحيل أي عملية تلقائياً.</div>
+  <div class="g2" style="margin-top:10px">
+   <button class="blue" id="submitAccountingDraftsBtn" onclick="submitAccountingDrafts()">إرسال العقود المحفوظة للمراجعة</button>
+   <button class="sec" id="importAccountingDraftsBtn" onclick="importApprovedAccountingDrafts()">استيراد المسودات المعتمدة</button>
+  </div>
+  <div class="tip" id="accountingDraftSyncState" style="margin-top:10px">تتطلب المزامنة ترخيصاً نشطاً مرتبطاً بنشاط AutoFyon.</div>
+ </div>
 </section>
 
 <!-- TAB 6: CREDIT FLOW & CASH FLOW -->
@@ -662,7 +706,7 @@ table.erp-table td{
   <h2>📈 تحليل المحفظة الائتمانية والتدفق النقدي (Credit & Cash Flow)</h2>
   <div class="g4" style="margin:12px 0">
    <div class="stat-box">
-    <div class="lbl">إجمالي المحفظة الممولة</div>
+    <div class="lbl">إجمالي أقساط المعرض</div>
     <div class="num" id="cf_totalFin">0 ج.م</div>
    </div>
    <div class="stat-box">
@@ -670,7 +714,7 @@ table.erp-table td{
     <div class="num text-acc" id="cf_totalCollected">0 ج.م</div>
    </div>
    <div class="stat-box">
-    <div class="lbl">المتبقي للتحصيل في السوق</div>
+    <div class="lbl">المتبقي على عملاء المعرض</div>
     <div class="num text-warn" id="cf_totalRemaining">0 ج.م</div>
    </div>
    <div class="stat-box">
@@ -682,13 +726,32 @@ table.erp-table td{
 
  <div class="card">
   <h2>📅 جدول التدفقات النقدية الشهرية القادمة (Projected Cash Inflow)</h2>
-  <div class="mute">إجمالي الأقساط المجدول تحصيلها شهرياً بناءً على العقود النشطة:</div>
+  <div class="mute">يعرض أقساط المعرض فقط؛ أقساط جهة التمويل للمتابعة المرجعية ولا تدخل في تحصيل المعرض. تسوية الجهة مسجلة على بطاقة العقد:</div>
   <div id="monthlyInflowList" style="margin-top:10px"></div>
  </div>
 
  <div class="card">
-  <h2>🛡️ شركات التأمين وإدارة وثائق السيارات</h2>
+  <h2>🛡️ شركات التأمين</h2>
   <div id="insuranceList" style="margin-top:10px"></div>
+ </div>
+ <div class="card">
+  <h2>المرحلة 5: متابعة وثيقة التأمين والتجديد</h2>
+  <p class="mute">سجّل وثيقة التأمين المرتبطة بعقد البيع والسيارة. تظهر الوثائق المنتهية أو التي يقترب موعد تجديدها.</p>
+  <input id="policy_renewal_of" type="hidden">
+  <div class="g2">
+   <div><label>عقد البيع والعميل والسيارة *</label><select id="policy_contract"></select></div>
+   <div><label>شركة التأمين *</label><select id="policy_provider"></select></div>
+  </div>
+  <div class="g2">
+   <div><label>رقم الوثيقة *</label><input id="policy_number" maxlength="120"></div>
+   <div><label>قسط التأمين (ج.م) *</label><input id="policy_premium" type="number" min="0.01" step="0.01"></div>
+  </div>
+  <div class="g2">
+   <div><label>بداية التغطية *</label><input id="policy_start" type="date"></div>
+   <div><label>نهاية التغطية / موعد التجديد *</label><input id="policy_end" type="date"></div>
+  </div>
+  <button type="button" class="sec" onclick="saveInsurancePolicy()">حفظ وثيقة التأمين</button>
+  <div id="insurancePoliciesList" style="margin-top:12px"></div>
  </div>
 </section>
 
@@ -708,7 +771,7 @@ table.erp-table td{
   </div>
   <div class="g2">
    <div><label>أقصى مدة تقسيط (شهر)</label><input id="bm" type="number" inputmode="numeric" value="84"></div>
-   <div></div>
+   <div><label>معدل التمويل السنوي (مثال: 0.22)</label><input id="b_rate" type="number" step="0.001" inputmode="decimal" value="0.22"></div>
   </div>
   <button onclick="addBank()">حفظ البنك في النظام</button>
  </div>
@@ -932,7 +995,7 @@ table.erp-table td{
 
 </section>
 
-<!-- TAB 9: MARKET ORDERS & PURCHASE SYSTEM -->
+<!-- TAB 10: MARKET ORDERS -->
 <section id="marketorders" class="tab">
  <div class="card" style="border-right:4px solid var(--acc)">
   <h2>📲 طلبات الشراء والحجز الواردة من تطبيق السوق (Marketplace)</h2>
@@ -944,52 +1007,78 @@ table.erp-table td{
   </div>
   <div id="marketOrdersList" style="margin-top:14px"></div>
  </div>
+</section>
 
- <!-- PURCHASE SYSTEM CARD -->
- <div class="card" style="border-right:4px solid #1a73e8;margin-top:20px">
-  <h2>🛒 نظام شراء وتوريد مركبة جديدة للمخزون (Purchase System)</h2>
-  <div class="mute">تسجيل فاتورة شراء سيارة/مركبة جديدة من المورد أو المالك الأصلي وإضافتها فورياً للمخزون مع توليد القيد المحاسبي المزدوج وإشعار المالك.</div>
-  
-  <div class="g2" style="margin-top:10px">
-   <div><label>اسم المورد / البائع الأصلي *</label><input id="p_supplier" placeholder="مثال: شركة المنصور للسيارات / معرض النور"></div>
-   <div><label>رقم هاتف المورد</label><input id="p_supp_phone" inputmode="tel" placeholder="01xxxxxxxxx"></div>
-  </div>
-
+<!-- TAB 9: PURCHASES -->
+<section id="purchase" class="tab">
+ <div class="card">
+  <h2>المرحلة 1: تسجيل مكالمة مع بائع سيارة مستعملة</h2>
+  <p class="mute">سجّل اتصال البائع وعرضه وموعد المتابعة أولاً. عند الشراء، اربط سجل البائع بالمركبة لتظل الرحلة متصلة.</p>
   <div class="g3">
-   <div><label>نوع المركبة</label>
-    <select id="p_cat">
-     <option value="car">🚗 سيارة</option>
-     <option value="moto">🏍️ موتوسيكل</option>
-     <option value="scooter">🛵 سكوتر</option>
-     <option value="truck">🚛 شاحنة</option>
-    </select>
-   </div>
-   <div><label>الماركة (Brand) *</label><input id="p_brand" placeholder="مثال: Toyota"></div>
-   <div><label>الموديل (Model) *</label><input id="p_model" placeholder="مثال: Corolla"></div>
+   <div><label>اسم البائع *</label><input id="source_seller_name" maxlength="120" placeholder="اسم المالك أو المعرض"></div>
+   <div><label>هاتف البائع *</label><input id="source_seller_phone" maxlength="30" inputmode="tel"></div>
+   <div><label>المركبة المعروضة</label><input id="source_vehicle" maxlength="120" placeholder="الماركة والموديل والسنة"></div>
   </div>
-
   <div class="g3">
-   <div><label>سنة الصنع *</label><input id="p_year" type="number" inputmode="numeric" placeholder="2023"></div>
-   <div><label>اللون</label><input id="p_color" placeholder="أبيض"></div>
-   <div><label>رقم الشاسيه (VIN) *</label><input id="p_chassis" placeholder="رقم الشاسيه الفريد"></div>
+   <div><label>السعر المطلوب (ج.م)</label><input id="source_asking_price" type="number" min="0" step="0.01"></div>
+   <div><label>موعد معاودة الاتصال</label><input id="source_follow_up" type="date"></div>
+   <div><label>ملاحظات المكالمة</label><input id="source_call_notes" maxlength="300" placeholder="الحالة، الموقع، العرض..."></div>
   </div>
-
-  <div class="g3">
-   <div><label>سعر الشراء / التكلفة (ج.م) *</label><input id="p_cost" type="number" inputmode="numeric" placeholder="مثال: 550000"></div>
-   <div><label>سعر البيع المقترح بالمعرض (ج.م) *</label><input id="p_price" type="number" inputmode="numeric" placeholder="مثال: 650000"></div>
-   <div><label>طريقة سداد المشتريات *</label>
-    <select id="p_pay_method">
-     <option value="cash">نقداً من الخزينة (1010 - النقدية)</option>
-     <option value="bank">تحويل بنكي من حساب المعرض</option>
-     <option value="credit">آجل / على الحساب (2020 - الموردين)</option>
-    </select>
-   </div>
+  <button type="button" class="sec" onclick="addVehicleSourcingCall()">حفظ مكالمة البائع</button>
+  <div id="vehicleSourcingCallsList" style="margin-top:10px"></div>
+ </div>
+ <div class="card" id="purchaseSystemCard" style="border-right:4px solid #1a73e8">
+ <h2>المرحلة 2: شراء السيارة وتسجيل تكاليف وصولها</h2>
+ <div class="mute">سجّل الشراء وتكاليف النقل حتى الوصول. السيارة لا تصبح متاحة للبيع حتى تسجيل وصولها للمعرض.</div>
+ <label>ربط بمكالمة بائع مسجلة (اختياري)</label>
+ <select id="p_source_lead" onchange="selectVehicleSourcingCall(this.value)"><option value="">-- اختيار بائع مسجل --</option></select>
+ <div class="g2" style="margin-top:10px">
+  <div><label>اسم المورد / البائع الأصلي *</label><input id="p_supplier" placeholder="مثال: شركة المنصور للسيارات / معرض النور"></div>
+  <div><label>رقم هاتف المورد</label><input id="p_supp_phone" inputmode="tel" placeholder="01xxxxxxxxx"></div>
+ </div>
+ <div class="g3">
+  <div><label>نوع المركبة</label>
+   <select id="p_cat">
+    <option value="car">🚗 سيارة</option>
+    <option value="moto">🏍️ موتوسيكل</option>
+    <option value="scooter">🛵 سكوتر</option>
+    <option value="truck">🚛 شاحنة</option>
+   </select>
   </div>
-
-  <label>ملاحظات الشراء ومواصفات إضافية:</label>
-  <input id="p_notes" placeholder="حالة الفحص، الكماليات، الضمان...">
-
-  <button class="blue" style="margin-top:12px;width:100%;font-size:16px" onclick="executeCarPurchase()">🛒 تأكيد شراء المركبة وإضافتها للمخزون وترحيل القيد المحاسبي</button>
+  <div><label>الماركة (Brand) *</label><input id="p_brand" placeholder="مثال: Toyota"></div>
+  <div><label>الموديل (Model) *</label><input id="p_model" placeholder="مثال: Corolla"></div>
+ </div>
+ <div class="g3">
+  <div><label>سنة الصنع *</label><input id="p_year" type="number" inputmode="numeric" placeholder="2023"></div>
+  <div><label>اللون</label><input id="p_color" placeholder="أبيض"></div>
+  <div><label>رقم الشاسيه (VIN) *</label><input id="p_chassis" placeholder="رقم الشاسيه الفريد"></div>
+ </div>
+ <label>مرحلة وصول السيارة</label>
+ <select id="p_arrival_status">
+  <option value="in_transit" selected>تم الشراء، السيارة في الطريق إلى المعرض</option>
+  <option value="arrived">وصلت بالفعل إلى المعرض</option>
+ </select>
+ <div class="g3">
+  <div><label>سعر السيارة قبل المصروفات (ج.م) *</label><input id="p_cost" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="مثال: 550000" oninput="updatePurchaseCostSummary()"></div>
+  <div><label>سعر البيع المقترح بالمعرض (ج.م) *</label><input id="p_price" type="number" inputmode="numeric" placeholder="مثال: 650000"></div>
+  <div><label>طريقة سداد المشتريات *</label>
+   <select id="p_pay_method">
+    <option value="cash">نقداً من الخزينة (1010 - النقدية)</option>
+    <option value="bank">تحويل بنكي من حساب المعرض</option>
+    <option value="credit">آجل / على الحساب (2020 - الموردين)</option>
+   </select>
+  </div>
+ </div>
+ <div class="card" style="margin-top:14px">
+  <h3 style="margin-top:0">تكاليف إضافية مرتبطة بالشراء (اختياري)</h3>
+  <p class="mute">أضف النقل أو الوقود أو الزيت أو أجر السائق أو أي بند آخر. لكل بند اختر إضافته إلى تكلفة مخزون السيارة أو تسجيله مصروفاً، وحدد طريقة سداده.</p>
+  <div id="p_additional_costs"></div>
+  <button type="button" class="sec" onclick="addPurchaseCostRow()">＋ إضافة بند تكلفة</button>
+  <div id="p_cost_summary" class="ok" role="status">أدخل سعر السيارة وأي تكاليف إضافية لعرض الإجمالي.</div>
+ </div>
+ <label>ملاحظات الشراء ومواصفات إضافية:</label>
+ <input id="p_notes" placeholder="حالة الفحص، الكماليات، الضمان...">
+ <button class="blue" style="margin-top:12px;width:100%;font-size:16px" onclick="executeCarPurchase()">تأكيد شراء المركبة وإضافتها للمخزون وترحيل القيد المحاسبي</button>
  </div>
 </section>
 </main>
@@ -1003,6 +1092,7 @@ table.erp-table td{
  <button data-t="creditflow" onclick="tab('creditflow')">📈 التدفق</button>
  <button data-t="banks" onclick="tab('banks')">🏦 البنوك</button>
  <button data-t="data" onclick="tab('data')">⚙️ المزامنة</button>
+ <button data-t="purchase" onclick="tab('purchase')">🛒 المشتريات</button>
  <button data-t="marketorders" onclick="tab('marketorders');loadMarketOrders()">📲 طلبات السوق</button>
 </nav>
 
@@ -1100,6 +1190,7 @@ table.erp-table td{
     <li><strong>4010 - إيرادات مبيعات سيارات المعرض:</strong> قيمة بيع سيارة ملك المعرض.</li>
     <li><strong>4030 - إيرادات عمولات ووساطة:</strong> عمولة المعرض عند بيع سيارة بالوساطة/الأمانة.</li>
     <li><strong>5010 - تكلفة مبيعات السيارات (COGS):</strong> التكلفة الشرائية الأصلية للسيارة المباعة.</li>
+    <li><strong>5090 - مصروفات شراء وتجهيز المركبات:</strong> بنود الشراء الإضافية التي اختير تسجيلها كمصروف بدلاً من إضافتها إلى المخزون.</li>
    </ul>
 
    <h3 style="color:#0f6b5c;border-bottom:1px solid var(--line);padding-bottom:6px;margin-top:18px">🚗 2. أمثلة عملية توضيحية من واقع سوق السيارات</h3>
@@ -1112,6 +1203,7 @@ table.erp-table td{
      &nbsp;&nbsp;&nbsp;&nbsp;إلى حـ/ 1010 - النقدية بالخزينة: 500,000 ج.م (دائن - خرجت النقدية)
     </div>
     <em>النتيجة: رأس مالك ثابت، تحولت النقدية إلى أصل بضاعة (سيارة في المعرض).</em>
+    <p class="mute">يمكن إضافة النقل أو الوقود أو الزيت أو أجر السائق كبند مستقل. اختر لكل بند: إضافته إلى تكلفة المخزون (1040)، أو تسجيله كمصروف (5090). عند الرسملة تدخل التكلفة ضمن تكلفة السيارة عند بيعها؛ وعند المصروف لا تضاف إلى قيمة المخزون. لكل بند طريقة سداد مستقلة.</p>
    </div>
 
    <div style="background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:12px">
@@ -1334,10 +1426,10 @@ function installPwa() {
 
 const STORAGE_KEY = 'showroom_db_v4';
 const DEF_BANKS = [
-  {id:1, name:'البنك الأهلي المصري (NBE)', minSalary:3000, maxDBR:.50, sectors:'Government,Private_Approved,Business_Owner', minDPNew:.10, minDPUsed:.30, maxMonths:84, commission:.025},
-  {id:2, name:'بنك مصر (Banque Misr)', minSalary:2500, maxDBR:.50, sectors:'Government,Private_Approved,Private_Unapproved,Business_Owner', minDPNew:.15, minDPUsed:.40, maxMonths:96, commission:.030},
-  {id:3, name:'البنك التجاري الدولي (CIB)', minSalary:5000, maxDBR:.40, sectors:'Government,Private_Approved,Business_Owner', minDPNew:.20, minDPUsed:.50, maxMonths:60, commission:.020},
-  {id:4, name:'بنك QNB الأهلي', minSalary:4000, maxDBR:.50, sectors:'Government,Private_Approved,Business_Owner', minDPNew:.10, minDPUsed:.30, maxMonths:72, commission:.028}
+  {id:1, name:'البنك الأهلي المصري (NBE)', minSalary:3000, maxDBR:.50, sectors:'Government,Private_Approved,Business_Owner', minDPNew:.10, minDPUsed:.30, maxMonths:84, annualRate:.22, commission:.025},
+  {id:2, name:'بنك مصر (Banque Misr)', minSalary:2500, maxDBR:.50, sectors:'Government,Private_Approved,Private_Unapproved,Business_Owner', minDPNew:.15, minDPUsed:.40, maxMonths:96, annualRate:.22, commission:.030},
+  {id:3, name:'البنك التجاري الدولي (CIB)', minSalary:5000, maxDBR:.40, sectors:'Government,Private_Approved,Business_Owner', minDPNew:.20, minDPUsed:.50, maxMonths:60, annualRate:.22, commission:.020},
+  {id:4, name:'بنك QNB الأهلي', minSalary:4000, maxDBR:.50, sectors:'Government,Private_Approved,Business_Owner', minDPNew:.10, minDPUsed:.30, maxMonths:72, annualRate:.22, commission:.028}
 ];
 const DEF_INSURANCE = [
   {id:1, name:'شركة مصر للتأمين', rate:0.022, coverage:'تأمين شامل ضد الحوادث، الحريق، والسطو مع تحمل 0%'},
@@ -1358,9 +1450,11 @@ const DEF_SET = {
   companyAddress: 'القاهرة - مصر'
 };
 
-let db = {banks:[], insurance:[], cars:[], leads:[], customers:[], contracts:[], journal:[], settings:{...DEF_SET}};
+let db = {banks:[], insurance:[], insurancePolicies:[], vehicleSourcingCalls:[], cars:[], leads:[], customers:[], contracts:[], journal:[], settings:{...DEF_SET}};
 let lastAnalysis = null;
 let selectedCarObj = null;
+let pendingCrmScanPages = {};
+let crmDocumentKeysDirty = false;
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s??'').replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -1414,7 +1508,12 @@ ${getCompanySign()}`;
 
 function sendWhatsAppReminder(cid, n, force) {
   const c = db.contracts.find(x => x.id === cid);
-  const i = c.installments.find(x => x.n === n);
+  if (!c || contractInstallmentOwner(c) !== 'dealer') {
+    toast('تذكيرات العميل متاحة فقط لأقساط المعرض');
+    return;
+  }
+  const i = (c.installments || []).find(x => x.n === n);
+  if (!i || i.paid) return;
   if (i.whatsappSent && !force) {
     if (!confirm(`تنبيه لمنع التكرار:\nتم إرسال تذكير لهذا القسط مسبقاً بتاريخ (${i.whatsappSentDate}).\nهل تريد إعادة الإرسال مرة أخرى؟`)) {
       return;
@@ -1437,7 +1536,12 @@ ${getCompanySign()}`;
 
 function sendWhatsAppOverdue(cid, n, days, force) {
   const c = db.contracts.find(x => x.id === cid);
-  const i = c.installments.find(x => x.n === n);
+  if (!c || contractInstallmentOwner(c) !== 'dealer') {
+    toast('إنذارات التحصيل متاحة فقط لأقساط المعرض');
+    return;
+  }
+  const i = (c.installments || []).find(x => x.n === n);
+  if (!i || i.paid) return;
   if (i.whatsappOverdueSent && !force) {
     if (!confirm(`تنبيه لمنع التكرار:\nتم إرسال إنذار تأخير لهذا القسط مسبقاً بتاريخ (${i.whatsappOverdueSentDate}).\nهل تريد إعادة الإرسال؟`)) {
       return;
@@ -1459,10 +1563,13 @@ ${getCompanySign()}`;
 
 function sendWhatsAppReceipt(cid, n) {
   const c = db.contracts.find(x => x.id === cid);
-  const i = c.installments.find(x => x.n === n);
+  if (!c || contractInstallmentOwner(c) !== 'dealer') return;
+  const i = (c.installments || []).find(x => x.n === n);
+  if (!i || !i.paid) return;
   const comp = db.settings.companyName || 'معرض السيارات';
-  const paidCount = c.installments.filter(x => x.paid).length;
-  const remainingCount = c.installments.length - paidCount;
+  const installments = c.installments || [];
+  const paidCount = installments.filter(x => x.paid).length;
+  const remainingCount = installments.length - paidCount;
 
   const msg = `✅ إيصال استلام وسداد قسط - ${comp}
 عزيزي العميل ${c.customerName}،
@@ -1491,6 +1598,7 @@ function renderBulkTargets() {
 
   if (type === 'overdue') {
     db.contracts.forEach(c => {
+      if (contractInstallmentOwner(c) !== 'dealer') return;
       (c.installments || []).forEach(i => {
         if (!i.paid && i.due < today) {
           const daysLate = Math.floor((new Date() - new Date(i.due)) / (1000 * 60 * 60 * 24));
@@ -1510,6 +1618,7 @@ function renderBulkTargets() {
   } else if (type === 'upcoming') {
     const curMonth = today.substring(0, 7);
     db.contracts.forEach(c => {
+      if (contractInstallmentOwner(c) !== 'dealer') return;
       (c.installments || []).forEach(i => {
         if (!i.paid && (i.due || '').startsWith(curMonth)) {
           targets.push({
@@ -1740,6 +1849,12 @@ function licenseFeatureEnabled(feature) {
   return !features || typeof features[feature] !== 'boolean' || features[feature];
 }
 
+function licenseCanUseStandaloneCrm() {
+  const tier = window.SHOWROOM_LICENSE && window.SHOWROOM_LICENSE.crmTier;
+  return licenseFeatureEnabled('crm') &&
+    (!tier || ['growth', 'pro', 'enterprise'].includes(tier));
+}
+
 function configureFeatureEntitlements() {
   document.querySelectorAll('button[data-t], a[data-t]').forEach((element) => {
     const feature = LICENSE_TAB_FEATURES[element.dataset.t];
@@ -1757,6 +1872,12 @@ function configureFeatureEntitlements() {
       if (card) card.hidden = !licenseFeatureEnabled('cloud_sync');
     }
   });
+  const landingCrmCard = $('landingCrmConnectionCard');
+  if (landingCrmCard) landingCrmCard.hidden = !licenseCanUseStandaloneCrm();
+  const accountingDraftSyncCard = $('accountingDraftSyncCard');
+  if (accountingDraftSyncCard) {
+    accountingDraftSyncCard.hidden = !licenseFeatureEnabled('accounting') || !licenseFeatureEnabled('cloud_sync');
+  }
 }
 
 function canManageMasterFeatures() {
@@ -1787,9 +1908,12 @@ async function shareZipPackage() {
 
 function sendWhatsAppReceipt(cid, n) {
   const c = db.contracts.find(x => x.id === cid);
-  const i = c.installments.find(x => x.n === n);
-  const paidCount = c.installments.filter(x => x.paid).length;
-  const remainingCount = c.installments.length - paidCount;
+  if (!c || contractInstallmentOwner(c) !== 'dealer') return;
+  const installments = c.installments || [];
+  const i = installments.find(x => x.n === n);
+  if (!i || !i.paid) return;
+  const paidCount = installments.filter(x => x.paid).length;
+  const remainingCount = installments.length - paidCount;
 
   const msg = `✅ إيصال استلام وسداد قسط - معرض السيارات
 عزيزي العميل ${c.customerName}،
@@ -1810,6 +1934,8 @@ function loadLocal() {
       db = JSON.parse(raw);
       db.settings = {...DEF_SET, ...db.settings};
       if (!db.insurance) db.insurance = JSON.parse(JSON.stringify(DEF_INSURANCE));
+      if (!Array.isArray(db.insurancePolicies)) db.insurancePolicies = [];
+      if (!Array.isArray(db.vehicleSourcingCalls)) db.vehicleSourcingCalls = [];
       if (!db.cars) db.cars = JSON.parse(JSON.stringify(DEF_CARS));
       if (!db.leads) db.leads = JSON.parse(JSON.stringify(DEF_LEADS));
       if (!db.journal) db.journal = [];
@@ -1829,6 +1955,8 @@ function loadLocal() {
 function seedDemoData() {
   db.banks = JSON.parse(JSON.stringify(DEF_BANKS));
   db.insurance = JSON.parse(JSON.stringify(DEF_INSURANCE));
+  db.insurancePolicies = [];
+  db.vehicleSourcingCalls = [];
   db.cars = JSON.parse(JSON.stringify(DEF_CARS));
   db.leads = JSON.parse(JSON.stringify(DEF_LEADS));
 
@@ -1943,6 +2071,7 @@ function tab(t) {
   if (t === 'banks') renderBanks();
   if (t === 'data') fillSettings();
   if (t === 'marketorders') loadMarketOrders();
+  if (t === 'purchase') renderVehicleSourcingCalls();
   stat();
   window.scrollTo(0, 0);
 }
@@ -1988,7 +2117,7 @@ function renderCarSelectDropdown() {
   if (!sel) return;
   const avail = (db.cars || []).filter(c => c.status === 'Available');
   sel.innerHTML = '<option value="">-- إدخال يدوي حر للسيارة --</option>' + 
-    avail.map(c => `<option value="${c.id}">${esc(c.brand)} ${esc(c.model)} (${c.year}) - ${fmt(c.price)} ج.م [شاسيه: ${esc(c.chassis || '---')}]</option>`).join('');
+    avail.map(c => `<option value="${c.id}">${esc(c.brand)} ${esc(c.model)} (${c.year}) - ${fmt(c.price)} ج.م [شاسيه: ${esc(c.chassis || c.chassisNo || '---')}]</option>`).join('');
 }
 
 function onCarSelected(carId) {
@@ -2017,23 +2146,33 @@ function analyze() {
   const dp = +$('dp').value || 0;
   const mo = +$('mo').value || 12;
 
+  if (!Number.isFinite(price) || price <= 0 || !Number.isFinite(dp) || dp < 0 || dp >= price ||
+      !Number.isInteger(mo) || mo < 1 || mo > 120 || !Number.isFinite(inc) || inc <= 0 ||
+      !Number.isFinite(debt) || debt < 0) {
+    toast('تحقق من سعر السيارة والمقدم والدخل والمدة قبل مقارنة التمويل');
+    return;
+  }
+
   const fin = price - dp;
   const ratio = price ? dp / price : 0;
-  const inst = pmt(fin, s.bank, mo);
 
   const ok = [], bad = [];
   db.banks.forEach(b => {
+    const annualRate = typeof b.annualRate === 'number' && Number.isFinite(b.annualRate)
+      ? b.annualRate
+      : s.bank;
+    const bankMonthly = pmt(fin, annualRate, mo);
     const reasons = [];
     if (inc < b.minSalary) reasons.push(`الراتب أقل من الحد الأدنى (${fmt(b.minSalary)} ج.م)`);
     if (!String(b.sectors).split(',').includes(sec)) reasons.push('القطاع غير معتمد لدى البنك');
     const need = cond === 'New' ? b.minDPNew : b.minDPUsed;
     if (ratio < need) reasons.push(`المقدم أقل من المسموح (${Math.round(need * 100)}%)`);
     if (mo > b.maxMonths) reasons.push(`المدة أكثر من الحد الأقصى (${b.maxMonths} شهر)`);
-    const dbr = (inst + debt) / (inc || 1);
+    const dbr = (bankMonthly + debt) / inc;
     if (dbr > b.maxDBR) reasons.push(`عبء الدين (${Math.round(dbr * 100)}%) يتجاوز سقف البنك (${Math.round(b.maxDBR * 100)}%)`);
     
     if (reasons.length) bad.push({b, reasons});
-    else ok.push(b);
+    else ok.push({...b, annualRate, quoteMonthly: bankMonthly, quoteDBR: dbr});
   });
 
   const gross = price * (1 - s.cost);
@@ -2044,11 +2183,18 @@ function analyze() {
   const direct = gross + totalInt + s.fee - fin * s.pd * s.lgd - fin * s.cap * (mo / 24);
   const diff = direct - bankProfit;
 
-  lastAnalysis = {fin, mo, monthly, price, dp, bank: best};
+  lastAnalysis = {
+    fin, mo, monthly, price, dp, bank: best,
+    eligibleBankIds: ok.map(bank => bank.id),
+    condition: cond,
+    income: inc,
+    debt,
+    sector: sec
+  };
 
   let h = `<div class="card"><h2>🏦 نتائج مطابقة سياسات البنوك المصرية</h2>`;
   h += ok.length 
-    ? ok.map(b => `<div class="ok"><span class="b">✅ ${esc(b.name)}</span><br><span class="mute">عمولة المعرض: ${(b.commission * 100).toFixed(1)}% | أقصى DBR: ${Math.round(b.maxDBR * 100)}%</span></div>`).join('')
+    ? ok.map(b => `<div class="ok"><span class="b">✅ ${esc(b.name)}</span><br><span class="mute">معدل سنوي: ${(b.annualRate * 100).toFixed(1)}% · قسط تقريبي للجهة: ${fmt(b.quoteMonthly)} ج.م · عمولة المعرض: ${(b.commission * 100).toFixed(1)}% · DBR: ${Math.round(b.quoteDBR * 100)}%</span><button type="button" class="sm sec" onclick="saveContract('bank', ${Number(b.id)})">اختيار ${esc(b.name)} ومتابعة التمويل</button></div>`).join('')
     : '<div class="no">❌ لا توجد بنوك مطابقة لشروط العميل الحالية.</div>';
   
   h += bad.map(x => `<div class="no"><span class="b">❌ ${esc(x.b.name)}</span>: ${x.reasons.map(esc).join(' | ')}</div>`).join('') + `</div>`;
@@ -2056,23 +2202,83 @@ function analyze() {
   h += `<div class="card"><h2>📊 مقارنة الأرباح والتوصية المالية (Yield Engine)</h2>
   <div class="row"><span>ربح التمويل البنكي المتوقع:</span><span class="b text-blue">${fmt(bankProfit)} ج.م</span></div>
   <div class="row"><span>صافي ربح التقسيط المباشر للمعرض:</span><span class="b">${fmt(direct)} ج.م</span></div>
-  <div class="row"><span>القسط الشهري للتقسيط المباشر:</span><span class="b">${fmt(monthly)} ج.م</span></div>
+  <div class="row"><span>قسط خطة المعرض التقديري:</span><span class="b">${fmt(monthly)} ج.م</span></div>
   <div class="tip">💡 التوصية الاستثمارية: ${diff > 0 ? 'التقسيط المباشر أربح للمعرض بمبلغ' : 'التمويل البنكي أضمن لسيولة المعرض بمبلغ'} ${fmt(Math.abs(diff))} ج.م</div>
-  <div class="g2" style="margin-top:10px">
-   <button onclick="saveContract('direct')">اعتماد كتقسيط مباشر وتوليد القيود 📑</button>
-   ${best ? `<button class="sec" onclick="saveContract('bank')">اعتماد كتمويل بنكي (${esc(best.name)}) 🏦</button>` : ''}
-  </div>
+  <button type="button" onclick="saveContract('direct')">اعتماد خطة تقسيط المعرض وتوليد جدول التحصيل 📑</button>
  </div>`;
 
   $('res').innerHTML = h;
 }
 
-function saveContract(type) {
+function receiptAccount(paymentMethod) {
+  if (paymentMethod === 'cash') return '1010 - النقدية بالخزينة';
+  if (paymentMethod === 'bank') return '1015 - الحسابات البنكية للمنشأة';
+  throw new Error('طريقة التحصيل غير صالحة.');
+}
+
+function contractInstallmentOwner(contract) {
+  if (['none', 'dealer', 'finance'].includes(contract.installmentOwner)) return contract.installmentOwner;
+  const type = String(contract.type || '');
+  if (contract.financeOrgId || contract.financeOrgName || /تمويل|بنك|finance|bank/i.test(type)) return 'finance';
+  return Array.isArray(contract.installments) && contract.installments.length ? 'dealer' : 'none';
+}
+
+function saveContract(type, bankId) {
   const name = $('cn').value.trim();
   if (!name) { toast('اكتب اسم العميل'); return; }
-  if (!lastAnalysis) return;
 
+  if (type === 'cash') {
+    const price = Number($('price').value);
+    if (!Number.isFinite(price) || price <= 0 ||
+        !['cash', 'bank'].includes($('deal_cash_method').value)) {
+      toast('تحقق من سعر السيارة وطريقة التحصيل النقدي');
+      return;
+    }
+    lastAnalysis = {
+      fin: 0, mo: 0, monthly: 0, price, dp: price, bank: null, eligibleBankIds: []
+    };
+  } else {
+    if (!lastAnalysis) {
+      toast('افحص التمويل أولاً قبل اعتماد خطة التقسيط');
+      return;
+    }
+    const unchangedAnalysis = Number($('price').value) === lastAnalysis.price &&
+      Number($('dp').value) === lastAnalysis.dp &&
+      Number($('mo').value) === lastAnalysis.mo &&
+      $('cond').value === lastAnalysis.condition &&
+      Number($('inc').value) === lastAnalysis.income &&
+      Number($('debt').value || 0) === lastAnalysis.debt &&
+      $('sec').value === lastAnalysis.sector;
+    if (!unchangedAnalysis) {
+      toast('تغيرت بيانات العميل أو السيارة؛ أعد فحص التمويل قبل الاعتماد');
+      return;
+    }
+  }
+  if (type !== 'cash' && type !== 'direct' && type !== 'bank') {
+    toast('نوع البيع غير صالح');
+    return;
+  }
+
+  const bank = type === 'bank'
+    ? (db.banks || []).find(item => Number(item.id) === Number(bankId || (lastAnalysis.bank && lastAnalysis.bank.id)))
+    : null;
+  if (type === 'bank' &&
+      (!bank || !(lastAnalysis.eligibleBankIds || []).some(id => Number(id) === Number(bank.id)))) {
+    toast('الجهة التمويلية غير مؤهلة وفق نتائج الفحص الأخيرة');
+    return;
+  }
+  const downPaymentMethod = $('deal_down_payment_method').value;
+  const installmentMethod = $('deal_installment_method').value;
+  if (type !== 'cash' &&
+      (!['cash', 'bank'].includes(downPaymentMethod) ||
+       type === 'direct' && !['cash', 'bank'].includes(installmentMethod))) {
+    toast('اختر طريقة صحيحة لتحصيل المقدم والأقساط');
+    return;
+  }
+
+  const soldCar = selectedCarObj;
   let cust = db.customers.find(c => c.name === name && c.phone === $('cp').value.trim());
+  const isNewCustomer = !cust;
   if (!cust) {
     cust = {
       id: nid(db.customers),
@@ -2084,93 +2290,216 @@ function saveContract(type) {
     db.customers.push(cust);
   }
 
-  const start = new Date(), ins = [];
-  const monthly = type === 'direct' ? Math.round(lastAnalysis.monthly) : Math.round(pmt(lastAnalysis.fin, db.settings.bank, lastAnalysis.mo));
-  
-  for (let i = 1; i <= lastAnalysis.mo; i++) {
-    ins.push({
-      n: i,
-      due: iso(addMonths(start, i)),
-      amount: monthly,
-      paid: false,
-      paidDate: ''
-    });
+  const start = new Date();
+  const journalStart = db.journal.length;
+  const selectedCarBeforeSave = selectedCarObj;
+  const stockCar = soldCar ? db.cars.find(car => car.id === soldCar.id) : null;
+  const stockCarBeforeSave = stockCar ? {
+    status: stockCar.status,
+    soldContractId: stockCar.soldContractId,
+    soldAt: stockCar.soldAt
+  } : null;
+  const collectionOwner = type === 'cash' ? 'none' : type === 'bank' ? 'finance' : 'dealer';
+  const financeAnnualRate = bank
+    ? (typeof bank.annualRate === 'number' && Number.isFinite(bank.annualRate)
+      ? bank.annualRate
+      : db.settings.bank)
+    : 0;
+  const monthly = type === 'cash'
+    ? 0
+    : type === 'direct'
+      ? Math.round(lastAnalysis.monthly)
+      : Math.round(pmt(lastAnalysis.fin, financeAnnualRate, lastAnalysis.mo));
+  const installments = [];
+  if (type !== 'cash') {
+    for (let i = 1; i <= lastAnalysis.mo; i++) {
+      installments.push({
+        n: i,
+        due: iso(addMonths(start, i)),
+        amount: monthly,
+        payer: collectionOwner,
+        estimated: collectionOwner === 'finance',
+        paid: false,
+        paidDate: ''
+      });
+    }
   }
 
   const contractId = nid(db.contracts);
+  const financeCommission = bank ? Math.round(lastAnalysis.fin * bank.commission) : 0;
+  const financeSettlementAmount = bank ? lastAnalysis.fin + financeCommission : 0;
+  const contractType = type === 'cash'
+    ? 'بيع نقدي'
+    : type === 'direct'
+      ? 'تقسيط مباشر من المعرض'
+      : `تمويل خارجي - ${bank.name}`;
   const newContract = {
     id: contractId,
+    crmDocumentKey: crypto.randomUUID(),
     customerId: cust.id,
     customerName: name,
     customerPhone: cust.phone,
     carCondition: $('cond').value,
-    carModel: selectedCarObj ? `${selectedCarObj.brand} ${selectedCarObj.model} (${selectedCarObj.year})` : 'سيارة معتمدة',
-    carChassis: selectedCarObj ? selectedCarObj.chassis : '---',
+    carId: soldCar ? soldCar.id : null,
+    carCost: soldCar ? Number(soldCar.cost || 0) : 0,
+    carModel: soldCar ? `${soldCar.brand} ${soldCar.model} (${soldCar.year})` : 'سيارة معتمدة',
+    carChassis: soldCar ? (soldCar.chassisNo || soldCar.chassis || '---') : '---',
     price: lastAnalysis.price,
     downPayment: lastAnalysis.dp,
-    months: lastAnalysis.mo,
-    type: type === 'direct' ? 'تقسيط مباشر' : (lastAnalysis.bank ? lastAnalysis.bank.name : 'تمويل بنكي'),
+    months: type === 'cash' ? 0 : lastAnalysis.mo,
+    type: contractType,
+    paymentType: type,
+    installmentOwner: collectionOwner,
     monthly,
+    collectionMethod: type === 'direct' ? installmentMethod : '',
+    downPaymentMethod: type === 'cash' ? $('deal_cash_method').value : downPaymentMethod,
+    dealerPolicyRate: type === 'direct' ? db.settings.rate : null,
+    dealerPolicyMethod: type === 'direct' ? db.settings.method : '',
+    dealerPolicyFee: type === 'direct' ? db.settings.fee : 0,
+    financeOrgId: bank ? bank.id : null,
+    financeOrgName: bank ? bank.name : '',
+    financeAnnualRate,
+    financeCommission,
+    financeSettlementAmount,
+    financeSettlementReceivedAmount: 0,
+    financeSettlementStatus: bank ? 'pending' : 'not_applicable',
+    financeAgreementReference: '',
+    financeSettlementMethod: '',
+    financeScheduleEstimated: Boolean(bank),
     date: iso(start),
-    installments: ins
+    installments
   };
 
   db.contracts.push(newContract);
-
-  // If car was from inventory, mark it as Sold
-  if (selectedCarObj) {
-    const cObj = db.cars.find(c => c.id === selectedCarObj.id);
-    if (cObj) cObj.status = 'Sold';
+  if (soldCar) {
+    const cObj = db.cars.find(c => c.id === soldCar.id);
+    if (cObj) {
+      cObj.status = 'Sold';
+      cObj.soldContractId = contractId;
+      cObj.soldAt = iso(start);
+    }
     selectedCarObj = null;
   }
 
-  // AUTOMATED GENERAL LEDGER JOURNAL ENTRIES
-  if (type === 'direct') {
+  if (type === 'cash') {
     db.journal.push({
       id: nid(db.journal),
       date: iso(start),
-      contractId: contractId,
-      desc: `استلام مقدم سيارة نقداً - عميل: ${name}`,
-      debitAccount: '1010 - النقدية والبنوك',
+      contractId,
+      desc: `بيع نقدي للسيارة - عميل: ${name}`,
+      debitAccount: receiptAccount(newContract.downPaymentMethod),
+      creditAccount: '4010 - إيرادات مبيعات السيارات',
+      amount: lastAnalysis.price
+    });
+  } else if (type === 'direct') {
+    db.journal.push({
+      id: nid(db.journal),
+      date: iso(start),
+      contractId,
+      desc: `استلام مقدم تقسيط من المعرض - عميل: ${name}`,
+      debitAccount: receiptAccount(downPaymentMethod),
       creditAccount: '4010 - إيرادات مبيعات السيارات',
       amount: lastAnalysis.dp
     });
-    const financedTotal = monthly * lastAnalysis.mo;
     db.journal.push({
       id: nid(db.journal),
       date: iso(start),
-      contractId: contractId,
-      desc: `إثبات مديونية تقسيط مباشر شامل الفوائد - عميل: ${name}`,
+      contractId,
+      desc: `إثبات مديونية خطة تقسيط المعرض - عميل: ${name}`,
       debitAccount: '1020 - مديونيات التقسيط المباشر',
       creditAccount: '4020 - إيرادات فوائد ومصاريف التقسيط',
-      amount: financedTotal
+      amount: monthly * lastAnalysis.mo
     });
   } else {
     db.journal.push({
       id: nid(db.journal),
       date: iso(start),
-      contractId: contractId,
-      desc: `استلام مقدم بيع تمويل بنكي - عميل: ${name}`,
-      debitAccount: '1010 - النقدية والبنوك',
+      contractId,
+      desc: `استلام مقدم بيع بتمويل ${bank.name} - عميل: ${name}`,
+      debitAccount: receiptAccount(downPaymentMethod),
       creditAccount: '4010 - إيرادات مبيعات السيارات',
       amount: lastAnalysis.dp
     });
-    if (lastAnalysis.bank) {
-      const commAmount = Math.round(lastAnalysis.fin * lastAnalysis.bank.commission);
+    db.journal.push({
+      id: nid(db.journal),
+      date: iso(start),
+      contractId,
+      desc: `إثبات مستحقات أصل التمويل لدى ${bank.name}`,
+      debitAccount: '1055 - مستحقات شركات التمويل',
+      creditAccount: '4010 - إيرادات مبيعات السيارات',
+      amount: lastAnalysis.fin
+    });
+    if (financeCommission > 0) {
       db.journal.push({
         id: nid(db.journal),
         date: iso(start),
-        contractId: contractId,
-        desc: `استحقاق عمولة معرض من بنك (${lastAnalysis.bank.name})`,
-        debitAccount: '1010 - النقدية والبنوك',
-        creditAccount: '4010 - إيرادات مبيعات السيارات',
-        amount: commAmount
+        contractId,
+        desc: `عمولة مستحقة من جهة التمويل ${bank.name}`,
+        debitAccount: '1055 - مستحقات شركات التمويل',
+        creditAccount: '4020 - إيرادات فوائد ومصاريف التقسيط',
+        amount: financeCommission
       });
     }
   }
 
-  saveLocal();
-  toast('تم حفظ العقد وتوليد قيود الأستاذ العام بنجاح');
+  if (soldCar && soldCar.isOurStock !== false && Number.isFinite(Number(soldCar.cost)) && Number(soldCar.cost) > 0) {
+    db.journal.push({
+      id: nid(db.journal),
+      date: iso(start),
+      contractId,
+      sourceEntityId: soldCar.id,
+      desc: `إثبات تكلفة السيارة المباعة وخروجها من المخزون - العقد #${contractId}`,
+      debitAccount: '5010 - تكلفة المركبات المباعة (COGS)',
+      creditAccount: '1040 - مخزون المركبات',
+      amount: Number(soldCar.cost)
+    });
+  }
+
+  const buyerLead = (db.leads || []).find(lead =>
+    lead.phone === cust.phone &&
+    (!lead.carId || !soldCar || Number(lead.carId) === Number(soldCar.id)) &&
+    lead.stage !== 'Won' && lead.stage !== 'Lost');
+  const buyerLeadBeforeSave = buyerLead ? {
+    stage: buyerLead.stage,
+    contractId: buyerLead.contractId,
+    activities: Array.isArray(buyerLead.activities) ? buyerLead.activities.slice() : buyerLead.activities
+  } : null;
+  if (buyerLead) {
+    buyerLead.stage = 'Won';
+    buyerLead.contractId = contractId;
+    if (!Array.isArray(buyerLead.activities)) buyerLead.activities = [];
+    buyerLead.activities.push({
+      date: new Date().toISOString(),
+      summary: `تم إتمام البيع وربطه بالعقد #${contractId}`
+    });
+  }
+
+  if (!saveLocal()) {
+    db.contracts.pop();
+    db.journal.splice(journalStart);
+    if (isNewCustomer) db.customers = db.customers.filter(customer => customer !== cust);
+    if (stockCar && stockCarBeforeSave) {
+      stockCar.status = stockCarBeforeSave.status;
+      if (stockCarBeforeSave.soldContractId == null) delete stockCar.soldContractId;
+      else stockCar.soldContractId = stockCarBeforeSave.soldContractId;
+      if (stockCarBeforeSave.soldAt == null) delete stockCar.soldAt;
+      else stockCar.soldAt = stockCarBeforeSave.soldAt;
+    }
+    if (buyerLead && buyerLeadBeforeSave) {
+      buyerLead.stage = buyerLeadBeforeSave.stage;
+      if (buyerLeadBeforeSave.contractId == null) delete buyerLead.contractId;
+      else buyerLead.contractId = buyerLeadBeforeSave.contractId;
+      if (buyerLeadBeforeSave.activities == null) delete buyerLead.activities;
+      else buyerLead.activities = buyerLeadBeforeSave.activities;
+    }
+    selectedCarObj = selectedCarBeforeSave;
+    return;
+  }
+  toast(type === 'cash'
+    ? 'تم تسجيل البيع النقدي وتكلفة السيارة'
+    : type === 'bank'
+      ? 'تم تسجيل التمويل الخارجي وجدول أقساط الجهة ومستحقات تسويتها'
+      : 'تم حفظ خطة أقساط المعرض وجدول التحصيل');
   tab('contracts');
 }
 
@@ -2203,8 +2532,9 @@ function renderCars() {
   listDiv.innerHTML = list.map(c => {
     const isAvail = c.status === 'Available';
     const isSold = c.status === 'Sold';
+    const isInTransit = c.status === 'InTransit';
     const badgeClass = isAvail ? 'badge-ok' : isSold ? 'badge-bad' : 'badge-warn';
-    const statusText = isAvail ? 'متاحة للبيع ✅' : isSold ? 'تم البيع ❌' : 'محجوزة ⏳';
+    const statusText = isAvail ? 'متاحة للبيع ✅' : isSold ? 'تم البيع ❌' : isInTransit ? 'في الطريق للمعرض 🚚' : 'محجوزة ⏳';
 
     const isOur = c.isOurStock !== false;
     const stockBadge = isOur 
@@ -2236,16 +2566,93 @@ function renderCars() {
           <div style="font-size:11px;color:#555">
             <span>شاسيه: <strong>${esc(c.chassis || c.chassisNo || '---')}</strong></span> | 
             <span>موتور: <strong>${esc(c.engine || '---')}</strong></span>
+            ${isInTransit ? ` | <span>تكاليف الوصول مسجلة حتى الآن: <strong>${fmt(c.purchaseTotalAmount || c.cost || 0)} ج.م</strong></span>` : ''}
+            ${isAvail && c.arrivalDate ? ` | <span>تاريخ الوصول: <strong>${esc(c.arrivalDate)}</strong></span>` : ''}
             ${!isOur ? ` | <span style="color:#d35400">المالك الفعلي: <strong>${esc(c.ownerName || 'خارجي')}</strong> ${c.ownerPhone ? `(📞 ${esc(c.ownerPhone)})` : ''}</span>` : ''}
           </div>
+          ${isInTransit ? `<details style="margin-top:8px">
+            <summary style="cursor:pointer;font-size:12px;font-weight:700">إضافة تكلفة نقل / وصول</summary>
+            <div class="g3">
+              <div><label>وصف التكلفة</label><input id="arrivalCostDesc_${Number(c.id)}" maxlength="120" placeholder="وقود، زيت، أجر سائق..."></div>
+              <div><label>المبلغ (ج.م)</label><input id="arrivalCostAmount_${Number(c.id)}" type="number" min="0.01" step="0.01"></div>
+              <div><label>المعالجة</label><select id="arrivalCostTreatment_${Number(c.id)}"><option value="inventory">إضافة للمخزون</option><option value="expense">مصروف 5090</option></select></div>
+            </div>
+            <div class="g2">
+              <div><label>طريقة السداد</label><select id="arrivalCostPayment_${Number(c.id)}"><option value="cash">نقداً</option><option value="bank">تحويل بنكي</option><option value="credit">آجل</option></select></div>
+              <div style="display:flex;align-items:end"><button type="button" class="sm" onclick="addVehicleTransitCost(${Number(c.id)})">حفظ التكلفة</button></div>
+            </div>
+          </details>` : ''}
         </div>
         <div style="text-align:left;display:flex;flex-direction:column;gap:5px;align-items:flex-end">
           <span class="badge ${badgeClass}">${statusText}</span>
+          ${isInTransit ? `<button type="button" class="sm" onclick="markVehicleArrived(${Number(c.id)})">تسجيل وصول السيارة</button>` : ''}
           ${isAvail ? `<button class="sm del" onclick="deleteCar(${c.id})">حذف</button>` : ''}
         </div>
       </div>
     `;
   }).join('');
+}
+
+function markVehicleArrived(id) {
+  const car = (db.cars || []).find(item => Number(item.id) === Number(id));
+  if (!car || car.status !== 'InTransit') return;
+  const previousStatus = car.status;
+  const previousArrivalDate = car.arrivalDate || '';
+  car.status = 'Available';
+  car.arrivalDate = iso(new Date());
+  if (!saveLocal()) {
+    car.status = previousStatus;
+    car.arrivalDate = previousArrivalDate;
+    return;
+  }
+  stat();
+  renderCars();
+  renderCarSelectDropdown();
+  renderLeadCarOptions();
+  toast('تم تسجيل وصول السيارة وأصبحت متاحة للبيع');
+}
+
+function addVehicleTransitCost(id) {
+  const car = (db.cars || []).find(item => Number(item.id) === Number(id));
+  if (!car || car.status !== 'InTransit' || !car.purchaseTransactionId) return;
+  const description = $(`arrivalCostDesc_${id}`).value.trim();
+  const amount = Number($(`arrivalCostAmount_${id}`).value);
+  const treatment = $(`arrivalCostTreatment_${id}`).value;
+  const paymentMethod = $(`arrivalCostPayment_${id}`).value;
+  if (!description || description.length > 120 || !Number.isFinite(amount) || amount <= 0 ||
+      amount > 1_000_000_000_000 || !['inventory', 'expense'].includes(treatment) ||
+      !['cash', 'bank', 'credit'].includes(paymentMethod)) {
+    toast('تحقق من وصف ومبلغ ومعالجة تكلفة الوصول');
+    return;
+  }
+  if (!Array.isArray(car.purchaseAdditionalCosts)) car.purchaseAdditionalCosts = [];
+  const priorInventoryCost = Number(car.cost || 0);
+  const priorTotal = Number(car.purchaseTotalAmount || car.purchaseBaseCost || priorInventoryCost);
+  const costItem = { id: createAccountingSyncId(), description, amount, treatment, paymentMethod };
+  car.purchaseAdditionalCosts.push(costItem);
+  car.purchaseTotalAmount = priorTotal + amount;
+  if (treatment === 'inventory') car.cost = priorInventoryCost + amount;
+  const journalEntry = {
+    id: nid(db.journal),
+    date: iso(new Date()),
+    desc: `تكلفة وصول إضافية (${treatment === 'inventory' ? 'مضافة للمخزون' : 'مصروف شراء وتجهيز'}): ${description}`,
+    debitAccount: treatment === 'inventory' ? '1040 - مخزون المركبات' : PURCHASE_EXPENSE_ACCOUNT,
+    creditAccount: purchaseCreditAccount(paymentMethod),
+    amount,
+    sourceEntityId: car.id,
+    purchaseTransactionId: car.purchaseTransactionId
+  };
+  db.journal.push(journalEntry);
+  if (!saveLocal()) {
+    db.journal.pop();
+    car.purchaseAdditionalCosts.pop();
+    car.cost = priorInventoryCost;
+    car.purchaseTotalAmount = priorTotal;
+    return;
+  }
+  renderCars();
+  renderGeneralLedger();
+  toast('تم حفظ تكلفة الوصول وربطها بقيود شراء السيارة');
 }
 
 function addCarToInventory() {
@@ -2320,10 +2727,1097 @@ function deleteCar(id) {
 // -------------------------------------------------------------
 // CRM LEADS PIPELINE
 // -------------------------------------------------------------
+const LANDING_CRM_TOKEN_KEY = 'showroom_landing_crm_token_v1';
+const LANDING_CRM_CURSOR_KEY = 'showroom_landing_crm_cursor_v2';
+const LANDING_CRM_API_URL = 'https://autofyon.com/api/standalone/crm/leads';
+const ACCOUNTING_DRAFTS_API_URL = 'https://autofyon.com/api/standalone/accounting/drafts';
+
+function setAccountingDraftSyncState(message, isError = false) {
+  const state = $('accountingDraftSyncState');
+  if (!state) return;
+  state.textContent = message;
+  state.style.color = isError ? 'var(--bad)' : 'var(--mute)';
+}
+
+function accountingSyncCredentials() {
+  const license = window.SHOWROOM_LICENSE;
+  if (!license || typeof license.serial !== 'string' ||
+      typeof license.clientTrackingToken !== 'string' ||
+      !/^[a-f0-9]{64}$/.test(license.clientTrackingToken)) {
+    throw new Error('إعدادات المزامنة المحاسبية غير موجودة في الترخيص.');
+  }
+  if (license.activationStatus !== 'active') {
+    throw new Error('يلزم ترخيص ERP نشط قبل مزامنة القيود.');
+  }
+  if (!license.features || license.features.accounting !== true || license.features.cloud_sync !== true) {
+    throw new Error('تتطلب مزامنة القيود تفعيل المحاسبة والمزامنة السحابية في الترخيص.');
+  }
+  return {
+    serial: license.serial,
+    clientTrackingToken: license.clientTrackingToken
+  };
+}
+
+function createAccountingSyncId() {
+  if (crypto.randomUUID) return crypto.randomUUID();
+  return [...crypto.getRandomValues(new Uint8Array(16))]
+    .map(byte => byte.toString(16).padStart(2, '0')).join('');
+}
+
+async function postAccountingDraftRequest(body) {
+  const response = await fetch(ACCOUNTING_DRAFTS_API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+    cache: 'no-store'
+  });
+  let result;
+  try {
+    result = await response.json();
+  } catch {
+    throw new Error('استجابة خادم مزامنة المحاسبة غير صالحة.');
+  }
+  if (!response.ok) throw new Error(result.error || `تعذر مزامنة المحاسبة (${response.status}).`);
+  return result;
+}
+
+function buildAccountingDraft(contract, licenseSerial) {
+  const entries = (db.journal || []).filter(entry => String(entry.contractId) === String(contract.id));
+  if (!entries.length) throw new Error(`العقد ${contract.id} لا يحتوي على قيود يومية؛ لم يُرسل.`);
+  const sourceCustomerId = contract.customerId == null
+    ? String(contract.customerPhone || '')
+    : String(contract.customerId);
+  if (!sourceCustomerId || !contract.customerName) {
+    throw new Error(`العقد ${contract.id} لا يحتوي على هوية عميل مكتملة؛ لم يُرسل.`);
+  }
+  if (!contract.cloudAccountingRecordId) contract.cloudAccountingRecordId = createAccountingSyncId();
+  return {
+    sourceRecordId: `${licenseSerial}:sale:${contract.cloudAccountingRecordId}`,
+    type: 'sale',
+    state: 'finalized',
+    occurredAt: String(contract.date || ''),
+    currency: 'EGP',
+    amount: Number(contract.price),
+    description: `بيع ${String(contract.carModel || 'مركبة').slice(0, 350)}`,
+    details: {
+      reference: String(contract.id),
+      vehicle: String(contract.carModel || ''),
+      chassis: String(contract.carChassis || ''),
+      terms: `${String(contract.type || '')} · مقدم ${Number(contract.downPayment || 0)} · ${Number(contract.months || 0)} شهر · قسط ${Number(contract.monthly || 0)}`
+    },
+    counterparty: {
+      sourceId: sourceCustomerId,
+      name: String(contract.customerName).slice(0, 120),
+      phone: String(contract.customerPhone || '').slice(0, 30)
+    },
+    journalEntries: entries.map(entry => ({
+      sourceEntryId: String(entry.id),
+      date: String(entry.date || contract.date || '').slice(0, 10),
+      description: String(entry.desc || '').slice(0, 500),
+      debitAccount: String(entry.debitAccount || '').slice(0, 120),
+      creditAccount: String(entry.creditAccount || '').slice(0, 120),
+      amount: Number(entry.amount)
+    }))
+  };
+}
+
+function buildPurchaseAccountingDraft(car, licenseSerial) {
+  if (car.status === 'InTransit') {
+    throw new Error(`السيارة ${car.id} لم تصل إلى المعرض بعد؛ لا تُرسل تكاليفها قبل تسجيل الوصول.`);
+  }
+  const entries = (db.journal || []).filter(entry =>
+    String(entry.sourceEntityId) === String(car.id) &&
+    String(entry.purchaseTransactionId) === String(car.purchaseTransactionId));
+  if (!entries.some(entry => String(entry.debitAccount || '').startsWith('1040'))) {
+    throw new Error(`عملية شراء المركبة ${car.id} لا تحتوي على قيد مخزون؛ لم تُرسل.`);
+  }
+  const supplier = String(car.supplier || car.ownerName || '').trim();
+  if (!supplier) throw new Error(`عملية شراء المركبة ${car.id} لا تحتوي على مورد؛ لم تُرسل.`);
+  if (!car.cloudAccountingRecordId) car.cloudAccountingRecordId = createAccountingSyncId();
+  const additionalCosts = Array.isArray(car.purchaseAdditionalCosts) ? car.purchaseAdditionalCosts : [];
+  const totalAmount = Number(car.purchaseTotalAmount == null
+    ? (car.purchaseBaseCost == null ? car.cost : car.purchaseBaseCost)
+    : car.purchaseTotalAmount);
+  return {
+    sourceRecordId: `${licenseSerial}:purchase:${car.cloudAccountingRecordId}`,
+    type: 'purchase',
+    state: 'finalized',
+    occurredAt: String(car.dateAdded || ''),
+    currency: 'EGP',
+    amount: totalAmount,
+    description: `شراء ${String(car.brand || '')} ${String(car.model || '')}`.trim(),
+    details: {
+      reference: String(car.purchaseTransactionId || car.id),
+      vehicle: `${String(car.brand || '')} ${String(car.model || '')} (${String(car.year || '')})`.slice(0, 250),
+      chassis: String(car.chassisNo || car.chassis || '').slice(0, 120),
+      terms: [
+        `سداد السيارة: ${String(car.purchasePayMethod || '')}`,
+        ...additionalCosts.map(item =>
+          `${String(item.description || '').slice(0, 100)} (${item.treatment === 'expense' ? 'مصروف' : 'مخزون'}): ${Number(item.amount)}`)
+      ].join('؛ ').slice(0, 500)
+    },
+    counterparty: {
+      sourceId: String(car.purchaseSupplierSyncId || car.supplierPhone || car.id),
+      name: supplier.slice(0, 120),
+      phone: String(car.supplierPhone || '').slice(0, 30)
+    },
+    journalEntries: entries.map(entry => ({
+      sourceEntryId: String(entry.id),
+      date: String(entry.date || car.dateAdded || '').slice(0, 10),
+      description: String(entry.desc || '').slice(0, 500),
+      debitAccount: String(entry.debitAccount || '').slice(0, 120),
+      creditAccount: String(entry.creditAccount || '').slice(0, 120),
+      amount: Number(entry.amount)
+    }))
+  };
+}
+
+async function submitAccountingDrafts() {
+  const button = $('submitAccountingDraftsBtn');
+  button.disabled = true;
+  try {
+    const credentials = accountingSyncCredentials();
+    const purchaseSyncEnabled = window.SHOWROOM_LICENSE.features.purchasing === true;
+    const pending = [
+      ...(db.contracts || [])
+        .filter(contract => !contract.cloudAccountingDraftId)
+        .map(record => ({ type: 'sale', record })),
+      ...(purchaseSyncEnabled
+        ? (db.cars || [])
+          .filter(car => car.purchaseTransactionId && car.status !== 'InTransit' && !car.cloudAccountingDraftId)
+          .map(record => ({ type: 'purchase', record }))
+        : [])
+    ];
+    if (!pending.length) {
+      const unlicensedPurchases = (db.cars || []).some(car =>
+        car.purchaseTransactionId && car.status !== 'InTransit' && !car.cloudAccountingDraftId);
+      const purchasesInTransit = (db.cars || []).some(car =>
+        car.purchaseTransactionId && car.status === 'InTransit' && !car.cloudAccountingDraftId);
+      setAccountingDraftSyncState(unlicensedPurchases
+        ? 'المشتريات غير مفعلة في ترخيص ERP؛ لم يتم إرسالها.'
+        : purchasesInTransit
+          ? 'توجد سيارات في الطريق؛ سجّل وصولها وأكمل تكاليفها قبل إرسال مسودة الشراء.'
+          : 'لا توجد عمليات جديدة للإرسال للمراجعة.');
+      return;
+    }
+
+    const assignments = pending.map(({ record }) => ({
+      record,
+      previousId: record.cloudAccountingRecordId
+    }));
+    let records;
+    try {
+      records = pending.map(item => item.type === 'sale'
+        ? buildAccountingDraft(item.record, credentials.serial)
+        : buildPurchaseAccountingDraft(item.record, credentials.serial));
+    } catch (error) {
+      assignments.forEach(({ record, previousId }) => {
+        if (previousId) record.cloudAccountingRecordId = previousId;
+        else delete record.cloudAccountingRecordId;
+      });
+      throw error;
+    }
+    if (assignments.length && !saveLocal()) {
+      assignments.forEach(({ record, previousId }) => {
+        if (previousId) record.cloudAccountingRecordId = previousId;
+        else delete record.cloudAccountingRecordId;
+      });
+      throw new Error('تعذر حفظ معرّفات المزامنة على هذا الجهاز.');
+    }
+
+    let submitted = 0;
+    for (let offset = 0; offset < records.length; offset += 25) {
+      const chunk = records.slice(offset, offset + 25);
+      const result = await postAccountingDraftRequest({ ...credentials, records: chunk });
+      if (!Array.isArray(result.results) || result.results.length !== chunk.length) {
+        throw new Error('استجابة خادم مسودات المحاسبة غير مكتملة.');
+      }
+      for (const item of result.results) {
+        const pendingItem = pending.find(candidate => {
+          const recordId = candidate.type === 'sale'
+            ? `${credentials.serial}:sale:${candidate.record.cloudAccountingRecordId}`
+            : `${credentials.serial}:purchase:${candidate.record.cloudAccountingRecordId}`;
+          return recordId === item.sourceRecordId;
+        });
+        if (!pendingItem) throw new Error('تعذر مطابقة نتيجة المزامنة مع العملية المحلية.');
+        if ((item.status !== 'submitted' && item.status !== 'duplicate') || typeof item.draftId !== 'string') {
+          throw new Error(item.status === 'conflict'
+            ? `تعارض في سجل ${item.sourceRecordId}؛ لم يتم استبدال النسخة الموجودة.`
+            : 'أعاد الخادم حالة غير معروفة لمسودة المحاسبة.');
+        }
+        pendingItem.record.cloudAccountingDraftId = item.draftId;
+        pendingItem.record.cloudAccountingDraftStatus = item.reviewStatus || 'pending_review';
+        submitted++;
+      }
+      if (!saveLocal()) throw new Error('تعذر حفظ حالة إرسال العقود على هذا الجهاز.');
+    }
+    setAccountingDraftSyncState(`تم إرسال ${submitted} عقداً كمسودات مراجعة؛ لم تُرحّل القيود تلقائياً.`);
+  } catch (error) {
+    console.error('Standalone accounting draft submission failed:', error);
+    setAccountingDraftSyncState(error instanceof Error ? error.message : 'تعذر إرسال مسودات المحاسبة.', true);
+  } finally {
+    button.disabled = false;
+  }
+}
+
+async function importApprovedAccountingDrafts() {
+  const button = $('importAccountingDraftsBtn');
+  button.disabled = true;
+  try {
+    const credentials = accountingSyncCredentials();
+    if (!Array.isArray(db.accountingDraftImports)) db.accountingDraftImports = [];
+    if (!Array.isArray(db.journal)) db.journal = [];
+    if (!Array.isArray(db.customers)) db.customers = [];
+    const importedIds = new Set(db.accountingDraftImports.map(item => item.draftId));
+    let cursor = null;
+    let imported = 0;
+    let pages = 0;
+
+    while (true) {
+      const url = new URL(ACCOUNTING_DRAFTS_API_URL);
+      if (cursor) {
+        url.searchParams.set('afterReviewedAt', cursor.reviewedAt);
+        url.searchParams.set('afterId', cursor.id);
+      }
+      const response = await fetch(url.href, {
+        headers: {
+          Authorization: `Bearer ${credentials.clientTrackingToken}`,
+          'X-License-Serial': credentials.serial
+        },
+        cache: 'no-store'
+      });
+      let result;
+      try {
+        result = await response.json();
+      } catch {
+        throw new Error('استجابة خادم مسودات المحاسبة المعتمدة غير صالحة.');
+      }
+      if (!response.ok) throw new Error(result.error || `تعذر استيراد المسودات المعتمدة (${response.status}).`);
+      if (!Array.isArray(result.drafts) || typeof result.hasMore !== 'boolean') {
+        throw new Error('استجابة خادم المسودات المعتمدة غير مكتملة.');
+      }
+
+      const pageDraftIds = [];
+      const journalBefore = db.journal.slice();
+      const customersBefore = db.customers.slice();
+      const importsBefore = db.accountingDraftImports.slice();
+      try {
+        for (const draft of result.drafts) {
+          if (!draft || typeof draft.id !== 'string' || !draft.payload ||
+              !Array.isArray(draft.payload.journalEntries)) {
+            throw new Error('تحتوي إحدى المسودات المعتمدة على بيانات غير صالحة.');
+          }
+          pageDraftIds.push(draft.id);
+          if (importedIds.has(draft.id)) continue;
+
+          const payload = draft.payload;
+          if (!['sale', 'purchase'].includes(draft.type) ||
+              !payload.counterparty || typeof payload.counterparty.name !== 'string') {
+            throw new Error(`بيانات المسودة ${draft.id} غير صالحة.`);
+          }
+          const customerKey = `${draft.sourceSerial}:${payload.counterparty.sourceId}`;
+          if (draft.type === 'sale' && !db.customers.some(customer =>
+            customer.accountingSyncCustomerId === customerKey)) {
+            db.customers.push({
+              id: nid(db.customers),
+              name: payload.counterparty.name,
+              phone: String(payload.counterparty.phone || ''),
+              income: 0,
+              sector: '',
+              accountingSyncCustomerId: customerKey
+            });
+          }
+
+          for (const entry of payload.journalEntries) {
+            if (!entry || typeof entry.sourceEntryId !== 'string') {
+              throw new Error(`يحتوي القيد في المسودة ${draft.id} على بيانات غير صالحة.`);
+            }
+            const externalEntryId = `${draft.id}:${entry.sourceEntryId}`;
+            if (db.journal.some(item => item.accountingSyncEntryId === externalEntryId)) continue;
+            if (!entry || !Number.isFinite(Number(entry.amount)) || Number(entry.amount) <= 0 ||
+                typeof entry.debitAccount !== 'string' || typeof entry.creditAccount !== 'string' ||
+                !entry.debitAccount || !entry.creditAccount || entry.debitAccount === entry.creditAccount) {
+              throw new Error(`يحتوي القيد في المسودة ${draft.id} على بيانات غير صالحة.`);
+            }
+            db.journal.push({
+              id: nid(db.journal),
+              date: String(entry.date || draft.occurredAt).slice(0, 10),
+              contractId: null,
+              desc: `${String(entry.description || payload.description || 'عملية مستوردة')} · ${draft.id}`,
+              debitAccount: entry.debitAccount,
+              creditAccount: entry.creditAccount,
+              amount: Number(entry.amount),
+              accountingSyncDraftId: draft.id,
+              accountingSyncEntryId: externalEntryId
+            });
+          }
+          db.accountingDraftImports.push({
+            draftId: draft.id,
+            sourceSerial: draft.sourceSerial,
+            sourceRecordId: draft.sourceRecordId,
+            type: draft.type,
+            occurredAt: draft.occurredAt,
+            amount: draft.amount,
+            description: payload.description,
+            details: payload.details,
+            counterparty: payload.counterparty,
+            importedAt: new Date().toISOString()
+          });
+          importedIds.add(draft.id);
+          imported++;
+        }
+        if (result.drafts.length && !saveLocal()) {
+          throw new Error('تعذر حفظ القيود المستوردة محلياً؛ لم يتم تأكيد استلامها للخادم.');
+        }
+      } catch (error) {
+        db.journal = journalBefore;
+        db.customers = customersBefore;
+        db.accountingDraftImports = importsBefore;
+        throw error;
+      }
+
+      if (pageDraftIds.length) {
+        const ack = await postAccountingDraftRequest({
+          ...credentials,
+          action: 'acknowledge',
+          draftIds: pageDraftIds
+        });
+        if (!ack.ok) throw new Error('تعذر تأكيد استلام المسودات؛ ستظهر مجدداً عند إعادة المزامنة.');
+      }
+      pages++;
+      if (!result.hasMore) break;
+      if (!result.nextCursor ||
+          typeof result.nextCursor.reviewedAt !== 'string' ||
+          typeof result.nextCursor.id !== 'string' ||
+          pages >= 100) {
+        throw new Error('توقفت المزامنة عند حد الصفحات؛ أعد المحاولة لاستكمال الاستيراد.');
+      }
+      cursor = result.nextCursor;
+    }
+    setAccountingDraftSyncState(`تم استيراد ${imported} مسودة معتمدة وإضافة قيودها مرة واحدة إلى الأستاذ العام.`);
+  } catch (error) {
+    console.error('Approved accounting draft import failed:', error);
+    setAccountingDraftSyncState(error instanceof Error ? error.message : 'تعذر استيراد المسودات المعتمدة.', true);
+  } finally {
+    button.disabled = false;
+  }
+}
+
+function erpStageToPageStatus(stage) {
+  return ({
+    Lead: 'new',
+    Contacted: 'contacted',
+    Qualified: 'qualified',
+    Screening: 'qualified',
+    Visit: 'visit_or_quote',
+    Won: 'won',
+    Lost: 'lost'
+  })[stage] || 'new';
+}
+
+function pageStatusToErpStage(status) {
+  return ({
+    new: 'Lead',
+    contacted: 'Contacted',
+    qualified: 'Qualified',
+    visit_or_quote: 'Visit',
+    won: 'Won',
+    lost: 'Lost'
+  })[status] || 'Lead';
+}
+
+function getLandingCrmToken() {
+  return localStorage.getItem(LANDING_CRM_TOKEN_KEY) || '';
+}
+
+function setLandingCrmState(message, isError = false) {
+  const state = $('landingCrmState');
+  if (!state) return;
+  state.textContent = message;
+  state.style.color = isError ? 'var(--bad)' : 'var(--mute)';
+}
+
+function saveLandingCrmToken() {
+  if (!licenseCanUseStandaloneCrm()) {
+    setLandingCrmState('مزامنة CRM المستقلة متاحة في باقات Growth وPro وEnterprise فقط.', true);
+    return;
+  }
+  const token = $('landingCrmToken').value.trim();
+  if (!/^afcrm_[a-f0-9]{64}$/.test(token)) {
+    setLandingCrmState('رمز الربط غير صالح. أنشئ رمزاً جديداً من لوحة صفحة AUTOFYON.', true);
+    return;
+  }
+  try {
+    if (getLandingCrmToken() !== token) localStorage.removeItem(LANDING_CRM_CURSOR_KEY);
+    localStorage.setItem(LANDING_CRM_TOKEN_KEY, token);
+    setLandingCrmState('تم حفظ الربط على هذا الجهاز. اضغط مزامنة الاستفسارات والتحديثات.');
+    toast('تم حفظ ربط صفحة AUTOFYON');
+  } catch (error) {
+    console.error('Unable to save landing CRM connection:', error);
+    setLandingCrmState('تعذر حفظ رمز الربط على هذا الجهاز.', true);
+  }
+}
+
+function disconnectLandingCrm() {
+  try {
+    localStorage.removeItem(LANDING_CRM_TOKEN_KEY);
+    localStorage.removeItem(LANDING_CRM_CURSOR_KEY);
+    $('landingCrmToken').value = '';
+    setLandingCrmState('تم فصل الربط عن هذا الجهاز. العملاء المستوردون سابقاً باقون في CRM.');
+  } catch (error) {
+    console.error('Unable to disconnect landing CRM:', error);
+    setLandingCrmState('تعذر فصل الربط على هذا الجهاز.', true);
+  }
+}
+
+function landingLocalChanges(lead) {
+  const baseline = lead.landingSyncBaseline;
+  if (!baseline) return null;
+  const changes = {};
+  const status = erpStageToPageStatus(lead.stage);
+  const nextFollowUpAt = lead.nextFollowUpAt || null;
+  const notes = lead.notes || '';
+  const archived = Boolean(lead.landingArchivedAt);
+  if (status !== baseline.status) changes.status = status;
+  if (nextFollowUpAt !== baseline.nextFollowUpAt) changes.nextFollowUpAt = nextFollowUpAt;
+  if (notes !== baseline.notes) changes.notes = notes;
+  if (archived !== Boolean(baseline.archivedAt)) changes.archived = archived;
+  return changes;
+}
+
+function mergeLandingActivities(lead, remoteActivities) {
+  if (!Array.isArray(remoteActivities)) return;
+  if (!Array.isArray(lead.activities)) lead.activities = [];
+  for (const activity of remoteActivities) {
+    if (!activity || typeof activity.id !== 'string') continue;
+    const externalId = typeof activity.external_id === 'string' ? activity.external_id : '';
+    const existing = lead.activities.find(item => externalId
+      ? item.externalId === externalId
+      : item.landingActivityId === activity.id);
+    if (existing) {
+      existing.synced = true;
+      continue;
+    }
+    lead.activities.push({
+      date: activity.created_at,
+      summary: activity.summary || '',
+      type: activity.activity_type || 'follow_up',
+      ...(externalId ? { externalId, synced: true } : { landingActivityId: activity.id, source: 'landing' })
+    });
+  }
+}
+
+function createLandingActivityId() {
+  if (crypto.randomUUID) return `erp-${crypto.randomUUID()}`;
+  return `erp-${[...crypto.getRandomValues(new Uint8Array(16))].map(byte => byte.toString(16).padStart(2, '0')).join('')}`;
+}
+
+function applyLandingRemoteLead(lead, remote) {
+  lead.stage = pageStatusToErpStage(remote.status);
+  lead.nextFollowUpAt = remote.next_follow_up_at || '';
+  lead.notes = remote.notes || '';
+  lead.landingInquiry = remote.inquiry || '';
+  lead.landingEmail = remote.email || '';
+  mergeLandingActivities(lead, remote.activities);
+  lead.carModel = remote.inquiry_for || lead.carModel || '';
+  lead.source = remote.source || lead.source || 'website';
+  lead.landingArchivedAt = remote.archived_at || '';
+  lead.landingSyncBaseline = {
+    status: remote.status,
+    nextFollowUpAt: remote.next_follow_up_at || null,
+    notes: remote.notes || '',
+    archivedAt: remote.archived_at || null,
+    revision: remote.sync_revision,
+    updatedAt: remote.updated_at
+  };
+  lead.landingSyncConflict = null;
+}
+
+function resolveLandingLeadConflict(id, choice) {
+  const lead = (db.leads || []).find(item => Number(item.id) === Number(id));
+  const remote = lead && lead.landingSyncConflict && lead.landingSyncConflict.remote;
+  if (!lead || !remote) return;
+  if (choice === 'remote') {
+    applyLandingRemoteLead(lead, remote);
+  } else if (choice === 'local') {
+    lead.landingSyncBaseline = {
+      status: remote.status,
+      nextFollowUpAt: remote.next_follow_up_at || null,
+      notes: remote.notes || '',
+      archivedAt: remote.archived_at || null,
+      revision: remote.sync_revision,
+      updatedAt: remote.updated_at
+    };
+    lead.landingSyncConflict = null;
+  } else {
+    return;
+  }
+  saveLocal();
+  renderLeads();
+}
+
+async function syncLandingPageLeads() {
+  if (!licenseCanUseStandaloneCrm()) {
+    setLandingCrmState('مزامنة CRM المستقلة متاحة في باقات Growth وPro وEnterprise فقط.', true);
+    return;
+  }
+  const token = getLandingCrmToken();
+  if (!token) {
+    setLandingCrmState('أدخل رمز الربط واحفظه أولاً.', true);
+    return;
+  }
+  const button = $('landingCrmSyncBtn');
+  button.disabled = true;
+  let imported = 0;
+  let updated = 0;
+  let conflicts = 0;
+  let pages = 0;
+  try {
+    const pendingUpdates = (db.leads || [])
+      .filter(lead => lead.landingLeadId && lead.landingSyncBaseline && !lead.landingSyncConflict)
+      .map(lead => {
+        const changes = landingLocalChanges(lead) || {};
+        const pendingActivities = (lead.activities || [])
+          .filter(activity => !activity.landingActivityId && !activity.synced)
+          .filter(activity => typeof activity.summary === 'string' && activity.summary.trim())
+          .slice(0, 20)
+          .map(activity => {
+            if (!activity.externalId) activity.externalId = createLandingActivityId();
+            return {
+              externalId: activity.externalId,
+              type: activity.type || 'follow_up',
+              summary: activity.summary.trim()
+            };
+          });
+        if (pendingActivities.length) changes.activities = pendingActivities;
+        return {
+          lead,
+          changes,
+          activityIds: pendingActivities.map(activity => activity.externalId)
+        };
+      })
+      .filter(item => Object.keys(item.changes).length)
+      .map(item => ({
+        leadId: item.lead.landingLeadId,
+        baseRevision: item.lead.landingSyncBaseline.revision,
+        changes: item.changes,
+        localId: item.lead.id,
+        activityIds: item.activityIds
+      }));
+
+    for (let offset = 0; offset < pendingUpdates.length; offset += 20) {
+      const chunk = pendingUpdates.slice(offset, offset + 20);
+      const response = await fetch(LANDING_CRM_API_URL, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          updates: chunk.map(({ leadId, baseRevision, changes }) => ({ leadId, baseRevision, changes }))
+        }),
+        cache: 'no-store'
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || `تعذر إرسال تحديثات ERP (${response.status}).`);
+      if (!result || !Array.isArray(result.results)) throw new Error('استجابة تحديثات ERP غير صالحة.');
+      for (const syncResult of result.results) {
+        const pendingItem = chunk.find(item => item.leadId === syncResult.leadId);
+        const localId = pendingItem && pendingItem.localId;
+        const localLead = (db.leads || []).find(item => Number(item.id) === Number(localId));
+        if (!localLead) continue;
+        if (syncResult.status === 'updated' && syncResult.remote) {
+          applyLandingRemoteLead(localLead, syncResult.remote);
+          for (const activity of localLead.activities || []) {
+            if (pendingItem && pendingItem.activityIds.includes(activity.externalId)) activity.synced = true;
+          }
+          updated++;
+        } else if (syncResult.status === 'conflict') {
+          localLead.landingSyncConflict = { remote: syncResult.remote || null };
+          conflicts++;
+        } else if (syncResult.status === 'not_found') {
+          localLead.landingSyncConflict = { remote: null };
+          conflicts++;
+        } else {
+          throw new Error('حالة مزامنة غير معروفة من خادم AUTOFYON.');
+        }
+      }
+      if (!saveLocal()) throw new Error('تعذر حفظ نتيجة المزامنة على هذا الجهاز.');
+    }
+
+    let cursor = null;
+    try {
+      cursor = JSON.parse(localStorage.getItem(LANDING_CRM_CURSOR_KEY) || 'null');
+    } catch (error) {
+      console.error('Unable to read landing CRM cursor:', error);
+      throw new Error('تعذر قراءة نقطة المزامنة؛ افصل الربط وأعد إدخال الرمز للبدء من جديد.');
+    }
+
+    let firstPage = true;
+    while (true) {
+      const url = new URL(LANDING_CRM_API_URL);
+      if (cursor && typeof cursor.updatedAt === 'string' && typeof cursor.id === 'string') {
+        url.searchParams.set('afterUpdatedAt', cursor.updatedAt);
+        if (!firstPage) url.searchParams.set('afterId', cursor.id);
+      }
+      const response = await fetch(url.href, {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${token}` },
+        cache: 'no-store'
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || `تعذر استيراد استفسارات الصفحة (${response.status}).`);
+      if (!result || !Array.isArray(result.leads) || typeof result.hasMore !== 'boolean') {
+        throw new Error('استجابة خادم صفحة AUTOFYON غير صالحة.');
+      }
+
+      const importedIds = new Set((db.leads || []).map(lead => lead.landingLeadId).filter(Boolean));
+      for (const lead of result.leads) {
+        if (!lead || typeof lead.id !== 'string' || typeof lead.name !== 'string' ||
+            typeof lead.phone !== 'string' || typeof lead.inquiry !== 'string' ||
+            typeof lead.created_at !== 'string' || typeof lead.updated_at !== 'string' ||
+            !Number.isInteger(lead.sync_revision) || typeof lead.status !== 'string') {
+          throw new Error('توجد بيانات استفسار غير صالحة في استجابة الخادم.');
+        }
+        let localLead = importedIds.has(lead.id)
+          ? (db.leads || []).find(item => item.landingLeadId === lead.id)
+          : null;
+        if (!localLead) {
+          localLead = {
+            id: nid(db.leads),
+            landingLeadId: lead.id,
+            name: lead.name,
+            phone: lead.phone,
+            carModel: typeof lead.inquiry_for === 'string' ? lead.inquiry_for : '',
+            budget: 0,
+            source: lead.source || 'website',
+            stage: pageStatusToErpStage(lead.status),
+            notes: '',
+            nextFollowUpAt: '',
+            activities: [],
+            date: lead.created_at.slice(0, 10),
+            docs: []
+          };
+          db.leads.push(localLead);
+          importedIds.add(lead.id);
+          imported++;
+          applyLandingRemoteLead(localLead, lead);
+          continue;
+        }
+
+        if (!localLead.landingSyncBaseline) {
+          const legacyNotes = typeof localLead.notes === 'string' ? localLead.notes : '';
+          if (legacyNotes.startsWith('استفسار من صفحة AUTOFYON:\n')) localLead.notes = '';
+          localLead.landingInquiry = lead.inquiry || '';
+          localLead.landingEmail = lead.email || '';
+          const hasLegacyEdits = erpStageToPageStatus(localLead.stage) !== lead.status
+            || (localLead.nextFollowUpAt || null) !== (lead.next_follow_up_at || null)
+            || Boolean(localLead.notes);
+          localLead.landingSyncBaseline = {
+            status: lead.status,
+            nextFollowUpAt: lead.next_follow_up_at || null,
+            notes: lead.notes || '',
+            archivedAt: lead.archived_at || null,
+            revision: lead.sync_revision,
+            updatedAt: lead.updated_at
+          };
+          if (hasLegacyEdits) {
+            localLead.landingSyncConflict = { remote: lead };
+            conflicts++;
+          } else {
+            applyLandingRemoteLead(localLead, lead);
+          }
+          continue;
+        }
+
+        const localChanges = landingLocalChanges(localLead) || {};
+        if (localLead.landingSyncConflict) {
+          localLead.landingSyncConflict = { remote: lead };
+        } else if (Object.keys(localChanges).length &&
+                   localLead.landingSyncBaseline.revision !== lead.sync_revision) {
+          localLead.landingSyncConflict = { remote: lead };
+          conflicts++;
+        } else if (!Object.keys(localChanges).length) {
+          const revisionChanged = localLead.landingSyncBaseline.revision !== lead.sync_revision;
+          applyLandingRemoteLead(localLead, lead);
+          if (revisionChanged) updated++;
+        }
+      }
+
+      if (result.leads.length) {
+        const lastLead = result.leads[result.leads.length - 1];
+        const nextCursor = result.nextCursor && typeof result.nextCursor.updatedAt === 'string' && typeof result.nextCursor.id === 'string'
+          ? result.nextCursor
+          : { updatedAt: lastLead.updated_at, id: lastLead.id };
+        if (!saveLocal()) throw new Error('تعذر حفظ العملاء المستوردين على هذا الجهاز.');
+        localStorage.setItem(LANDING_CRM_CURSOR_KEY, JSON.stringify(nextCursor));
+        cursor = nextCursor;
+      }
+      firstPage = false;
+      pages++;
+      if (!result.hasMore) break;
+      if (pages >= 100) throw new Error('تجاوزت المزامنة حد الصفحات؛ أعد المحاولة لاحقاً.');
+    }
+
+    renderLeads();
+    setLandingCrmState(`اكتملت المزامنة: ${imported} جديد، ${updated} تحديث، ${conflicts} تعارض يحتاج مراجعة. عملاء ERP المحليون لم يُنشأ لهم سجل في AUTOFYON.`);
+  } catch (error) {
+    console.error('Landing CRM sync failed:', error);
+    setLandingCrmState(error instanceof Error ? error.message : 'تعذرت مزامنة CRM.', true);
+  } finally {
+    button.disabled = false;
+  }
+}
+
+function renderLeadCarOptions() {
+  const select = $('lead_inventory_car');
+  if (!select) return;
+  const selected = select.value;
+  const availableCars = (db.cars || []).filter(car => car.status === 'Available');
+  select.innerHTML = '<option value="">-- استفسار عام عن سيارة --</option>' +
+    availableCars.map(car =>
+      `<option value="${Number(car.id)}">${esc(car.brand)} ${esc(car.model)} (${esc(car.year)}) · ${esc(car.chassisNo || car.chassis || '')}</option>`
+    ).join('');
+  if (availableCars.some(car => String(car.id) === selected)) select.value = selected;
+}
+
+const CRM_DOCUMENT_DB = 'showroom_crm_documents_v1';
+const CRM_DOCUMENT_MAX_BYTES = 15 * 1024 * 1024;
+const CRM_DOCUMENT_CATEGORIES = {
+  identity: 'هوية العميل',
+  vehicle: 'مستندات المركبة',
+  contract: 'عقد',
+  finance: 'تمويل / موافقة',
+  other: 'مستند آخر'
+};
+
+function crmDocumentOwnerKey(ownerType, ownerId) {
+  return `${ownerType}:${String(ownerId)}`;
+}
+
+function openCrmDocumentDb() {
+  if (!window.indexedDB) throw new Error('التخزين المحلي للمستندات غير متاح في هذا المتصفح.');
+  return new Promise((resolve, reject) => {
+    const request = window.indexedDB.open(CRM_DOCUMENT_DB, 1);
+    request.onupgradeneeded = () => {
+      const localDb = request.result;
+      if (!localDb.objectStoreNames.contains('documents')) {
+        const store = localDb.createObjectStore('documents', {keyPath: 'id'});
+        store.createIndex('ownerKey', 'ownerKey', {unique: false});
+      }
+    };
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error || new Error('تعذر فتح مخزن المستندات المحلي.'));
+  });
+}
+
+async function saveLocalCrmDocuments(ownerType, ownerId, files, category) {
+  if (!Object.prototype.hasOwnProperty.call(CRM_DOCUMENT_CATEGORIES, category)) {
+    throw new Error('اختر تصنيفاً صالحاً للمستند.');
+  }
+  const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
+  const invalidFile = files.find(file =>
+    !allowedTypes.includes(file.type) || file.size < 1 || file.size > CRM_DOCUMENT_MAX_BYTES);
+  if (invalidFile) {
+    throw new Error(`${invalidFile.name}: اختر PDF أو JPEG أو PNG أو WebP بحجم لا يتجاوز 15 ميجابايت.`);
+  }
+  const ownerKey = crmDocumentOwnerKey(ownerType, ownerId);
+  const records = files.map(file => ({
+    id: crypto.randomUUID(),
+    ownerType,
+    ownerId: String(ownerId),
+    ownerKey,
+    category,
+    name: file.name,
+    type: file.type,
+    size: file.size,
+    createdAt: new Date().toISOString(),
+    blob: file
+  }));
+  const localDb = await openCrmDocumentDb();
+  await new Promise((resolve, reject) => {
+    const transaction = localDb.transaction('documents', 'readwrite');
+    transaction.oncomplete = () => resolve();
+    transaction.onerror = () => reject(transaction.error || new Error('تعذر حفظ المستندات على هذا الجهاز.'));
+    transaction.onabort = () => reject(transaction.error || new Error('أُلغيت عملية حفظ المستندات.'));
+    records.forEach(record => transaction.objectStore('documents').put(record));
+  }).finally(() => localDb.close());
+}
+
+async function getLocalCrmDocuments(ownerType, ownerId) {
+  const localDb = await openCrmDocumentDb();
+  try {
+    return await new Promise((resolve, reject) => {
+      const transaction = localDb.transaction('documents', 'readonly');
+      const request = transaction.objectStore('documents').index('ownerKey')
+        .getAll(crmDocumentOwnerKey(ownerType, ownerId));
+      request.onsuccess = () => resolve(request.result || []);
+      request.onerror = () => reject(request.error || new Error('تعذر قراءة المستندات من هذا الجهاز.'));
+    });
+  } finally {
+    localDb.close();
+  }
+}
+
+async function getLocalCrmDocument(documentId) {
+  const localDb = await openCrmDocumentDb();
+  try {
+    return await new Promise((resolve, reject) => {
+      const transaction = localDb.transaction('documents', 'readonly');
+      const request = transaction.objectStore('documents').get(documentId);
+      request.onsuccess = () => resolve(request.result || null);
+      request.onerror = () => reject(request.error || new Error('تعذر قراءة المستند من هذا الجهاز.'));
+    });
+  } finally {
+    localDb.close();
+  }
+}
+
+async function removeLocalCrmDocument(documentId) {
+  const localDb = await openCrmDocumentDb();
+  try {
+    await new Promise((resolve, reject) => {
+      const transaction = localDb.transaction('documents', 'readwrite');
+      transaction.objectStore('documents').delete(documentId);
+      transaction.oncomplete = () => resolve();
+      transaction.onerror = () => reject(transaction.error || new Error('تعذر حذف المستند من هذا الجهاز.'));
+      transaction.onabort = () => reject(transaction.error || new Error('أُلغيت عملية حذف المستند.'));
+    });
+  } finally {
+    localDb.close();
+  }
+}
+
+async function removeLocalCrmDocuments(ownerType, ownerId) {
+  const documents = await getLocalCrmDocuments(ownerType, ownerId);
+  if (!documents.length) return;
+  const localDb = await openCrmDocumentDb();
+  try {
+    await new Promise((resolve, reject) => {
+      const transaction = localDb.transaction('documents', 'readwrite');
+      const store = transaction.objectStore('documents');
+      documents.forEach(document => store.delete(document.id));
+      transaction.oncomplete = () => resolve();
+      transaction.onerror = () => reject(transaction.error || new Error('تعذر حذف مستندات هذا السجل.'));
+      transaction.onabort = () => reject(transaction.error || new Error('أُلغيت عملية حذف المستندات.'));
+    });
+  } finally {
+    localDb.close();
+  }
+}
+
+async function renderCrmDocuments(ownerType, ownerId, sectionId) {
+  const list = $(`crmDocumentList_${ownerType}_${sectionId}`);
+  if (!list) return;
+  list.textContent = 'جارٍ تحميل المستندات المحفوظة على هذا الجهاز...';
+  try {
+    const documents = await getLocalCrmDocuments(ownerType, ownerId);
+    list.innerHTML = documents.length ? documents
+      .sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)))
+      .map(document => `<div class="row" style="font-size:12px;padding:6px 0">
+        <span>${esc(CRM_DOCUMENT_CATEGORIES[document.category] || CRM_DOCUMENT_CATEGORIES.other)} · ${esc(document.name)} · ${Math.ceil(document.size / 1024)} كيلوبايت</span>
+        <span style="display:flex;gap:4px">
+          <button type="button" class="sm sec" onclick="downloadLocalCrmDocument('${esc(document.id)}')">فتح / تنزيل</button>
+          <button type="button" class="sm del" onclick="deleteLocalCrmDocument('${esc(document.id)}', '${ownerType}', '${esc(ownerId)}', ${Number(sectionId)})">حذف</button>
+        </span>
+      </div>`).join('') : '<div class="mute">لا توجد مستندات مرفقة.</div>';
+  } catch (error) {
+    console.error('Unable to load local CRM documents:', error);
+    list.textContent = error instanceof Error ? error.message : 'تعذر تحميل المستندات.';
+  }
+}
+
+async function attachLocalCrmDocuments(ownerType, ownerId, sectionId, input) {
+  const files = Array.from(input.files || []);
+  input.value = '';
+  if (!files.length) return;
+  try {
+    const category = $(`crmDocumentCategory_${ownerType}_${sectionId}`).value;
+    await saveLocalCrmDocuments(ownerType, ownerId, files, category);
+    await renderCrmDocuments(ownerType, ownerId, sectionId);
+    toast(`تم حفظ ${files.length} مستند على هذا الجهاز فقط`);
+  } catch (error) {
+    console.error('Unable to save local CRM documents:', error);
+    toast(error instanceof Error ? error.message : 'تعذر حفظ المستندات.');
+  }
+}
+
+function stageCrmScanPages(ownerType, ownerId, sectionId, input) {
+  const key = crmDocumentOwnerKey(ownerType, ownerId);
+  const files = Array.from(input.files || []);
+  input.value = '';
+  if (!files.length) return;
+  const pages = pendingCrmScanPages[key] || [];
+  if (pages.length + files.length > 20 ||
+      files.some(file => !['image/jpeg', 'image/png', 'image/webp'].includes(file.type))) {
+    toast('اختر حتى 20 صورة صفحات للمستند الواحد');
+    return;
+  }
+  pendingCrmScanPages[key] = [...pages, ...files];
+  const status = $(`crmScanStatus_${ownerType}_${sectionId}`);
+  if (status) status.textContent = `${pendingCrmScanPages[key].length} صفحة جاهزة لتجميعها في PDF`;
+}
+
+function makeLocalCrmPdf(pages) {
+  const encoder = new TextEncoder();
+  const chunks = [];
+  const offsets = [0];
+  let length = 0;
+  const append = bytes => { chunks.push(bytes); length += bytes.byteLength; };
+  const appendText = value => append(encoder.encode(value));
+  const startObject = id => { offsets[id] = length; appendText(`${id} 0 obj\n`); };
+  appendText('%PDF-1.4\n');
+  startObject(1);
+  appendText('<< /Type /Catalog /Pages 2 0 R >>\nendobj\n');
+  startObject(2);
+  appendText(`<< /Type /Pages /Kids [${pages.map((_, index) => `${3 + index * 3} 0 R`).join(' ')}] /Count ${pages.length} >>\nendobj\n`);
+  pages.forEach((page, index) => {
+    const pageId = 3 + index * 3;
+    const imageId = pageId + 1;
+    const contentId = pageId + 2;
+    const content = `q\n${page.width} 0 0 ${page.height} 0 0 cm\n/Im0 Do\nQ\n`;
+    startObject(pageId);
+    appendText(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${page.width} ${page.height}] /Resources << /XObject << /Im0 ${imageId} 0 R >> >> /Contents ${contentId} 0 R >>\nendobj\n`);
+    startObject(imageId);
+    appendText(`<< /Type /XObject /Subtype /Image /Width ${page.width} /Height ${page.height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${page.bytes.byteLength} >>\nstream\n`);
+    append(page.bytes);
+    appendText('\nendstream\nendobj\n');
+    startObject(contentId);
+    appendText(`<< /Length ${encoder.encode(content).byteLength} >>\nstream\n${content}endstream\nendobj\n`);
+  });
+  const xrefOffset = length;
+  appendText(`xref\n0 ${offsets.length}\n0000000000 65535 f \n`);
+  for (let id = 1; id < offsets.length; id++) appendText(`${String(offsets[id]).padStart(10, '0')} 00000 n \n`);
+  appendText(`trailer\n<< /Size ${offsets.length} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF\n`);
+  const pdf = new Uint8Array(length);
+  let offset = 0;
+  chunks.forEach(chunk => { pdf.set(chunk, offset); offset += chunk.byteLength; });
+  return pdf;
+}
+
+async function buildLocalCrmScanPdf(files, ownerType, ownerId) {
+  if (!files.length || files.length > 20) throw new Error('اختر من صفحة واحدة إلى 20 صفحة.');
+  const pages = [];
+  for (const file of files) {
+    const image = await createImageBitmap(file);
+    const scale = Math.min(1, 2400 / Math.max(image.width, image.height));
+    const width = Math.max(1, Math.round(image.width * scale));
+    const height = Math.max(1, Math.round(image.height * scale));
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext('2d', {alpha: false});
+    if (!context) {
+      image.close();
+      throw new Error('تعذر تجهيز صفحة المسح على هذا الجهاز.');
+    }
+    context.fillStyle = '#fff';
+    context.fillRect(0, 0, width, height);
+    context.drawImage(image, 0, 0, width, height);
+    image.close();
+    const jpeg = await new Promise((resolve, reject) => canvas.toBlob(blob =>
+      blob ? resolve(blob) : reject(new Error('تعذر تحويل صورة الصفحة إلى مستند.')), 'image/jpeg', 0.9));
+    pages.push({width, height, bytes: new Uint8Array(await jpeg.arrayBuffer())});
+  }
+  const pdf = makeLocalCrmPdf(pages);
+  return new File([pdf], `scan-${ownerType}-${ownerId}-${Date.now()}.pdf`, {type: 'application/pdf'});
+}
+
+async function finishCrmScan(ownerType, ownerId, sectionId) {
+  const key = crmDocumentOwnerKey(ownerType, ownerId);
+  const pages = pendingCrmScanPages[key] || [];
+  if (!pages.length) {
+    toast('التقط أو اختر صفحات المسح أولاً');
+    return;
+  }
+  try {
+    const file = await buildLocalCrmScanPdf(pages, ownerType, ownerId);
+    const category = $(`crmDocumentCategory_${ownerType}_${sectionId}`).value;
+    await saveLocalCrmDocuments(ownerType, ownerId, [file], category);
+    delete pendingCrmScanPages[key];
+    const status = $(`crmScanStatus_${ownerType}_${sectionId}`);
+    if (status) status.textContent = '';
+    await renderCrmDocuments(ownerType, ownerId, sectionId);
+    toast('تم تجميع الصفحات وحفظها كملف PDF على هذا الجهاز');
+  } catch (error) {
+    console.error('Unable to create local CRM scan:', error);
+    toast(error instanceof Error ? error.message : 'تعذر إنشاء ملف المسح.');
+  }
+}
+
+function crmDocumentControls(ownerType, record) {
+  if (!record.crmDocumentKey) {
+    record.crmDocumentKey = crypto.randomUUID();
+    crmDocumentKeysDirty = true;
+  }
+  const ownerId = record.crmDocumentKey;
+  const id = Number(record.id);
+  const options = Object.entries(CRM_DOCUMENT_CATEGORIES)
+    .map(([value, label]) => `<option value="${value}">${label}</option>`).join('');
+  return `<details style="margin:8px 0;border:1px solid var(--line);border-radius:8px;padding:8px" onToggle="if(this.open) renderCrmDocuments('${ownerType}', '${esc(ownerId)}', ${id})">
+    <summary style="cursor:pointer;font-size:12px;font-weight:bold">المستندات المرفقة (هوية، أوراق، عقود)</summary>
+    <div class="mute" style="margin:6px 0">تُحفظ الملفات في هذا المتصفح والجهاز فقط، ولا تدخل في مزامنة ERP أو نسخة Excel. لا تحفظ المستندات على جهاز مشترك.</div>
+    <label class="mute">تصنيف المستند
+      <select id="crmDocumentCategory_${ownerType}_${id}" style="width:auto;padding:5px">${options}</select>
+    </label>
+    <label class="sm sec" style="display:inline-block;margin:5px 0">رفع ملفات PDF أو صور
+      <input type="file" accept=".pdf,image/jpeg,image/png,image/webp" multiple onchange="attachLocalCrmDocuments('${ownerType}', '${esc(ownerId)}', ${id}, this)">
+    </label>
+    <div class="g2">
+      <label class="sm sec">التقاط صفحة بالكاميرا
+        <input type="file" accept="image/*" capture="environment" onchange="stageCrmScanPages('${ownerType}', '${esc(ownerId)}', ${id}, this)">
+      </label>
+      <label class="sm sec">إضافة صفحات من الجهاز
+        <input type="file" accept="image/*" multiple onchange="stageCrmScanPages('${ownerType}', '${esc(ownerId)}', ${id}, this)">
+      </label>
+    </div>
+    <div class="row"><span id="crmScanStatus_${ownerType}_${id}" class="mute"></span>
+      <button type="button" class="sm" onclick="finishCrmScan('${ownerType}', '${esc(ownerId)}', ${id})">تجميع الصفحات في PDF وحفظه</button>
+    </div>
+    <div id="crmDocumentList_${ownerType}_${id}" style="margin-top:8px"></div>
+  </details>`;
+}
+
+async function downloadLocalCrmDocument(documentId) {
+  try {
+    const document = await getLocalCrmDocument(documentId);
+    if (!document || !document.blob) throw new Error('لم يتم العثور على الملف في هذا الجهاز.');
+    const url = URL.createObjectURL(document.blob);
+    const link = window.document.createElement('a');
+    link.href = url;
+    link.download = document.name;
+    link.rel = 'noopener';
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+  } catch (error) {
+    console.error('Unable to open local CRM document:', error);
+    toast(error instanceof Error ? error.message : 'تعذر فتح المستند.');
+  }
+}
+
+async function deleteLocalCrmDocument(documentId, ownerType, ownerId, sectionId) {
+  if (!confirm('هل تريد حذف هذا المستند نهائياً من هذا الجهاز؟')) return;
+  try {
+    await removeLocalCrmDocument(documentId);
+    await renderCrmDocuments(ownerType, ownerId, sectionId);
+    toast('تم حذف المستند من هذا الجهاز');
+  } catch (error) {
+    console.error('Unable to delete local CRM document:', error);
+    toast(error instanceof Error ? error.message : 'تعذر حذف المستند.');
+  }
+}
+
+function setLeadCarFromInventory(carId) {
+  const car = (db.cars || []).find(item => String(item.id) === String(carId));
+  if (car) $('lead_car').value = `${car.brand} ${car.model} (${car.year})`;
+  else if (!carId) $('lead_car').value = '';
+}
+
 function renderLeads() {
   const div = $('leadsList');
   if (!div) return;
-  const list = db.leads || [];
+  renderLeadCarOptions();
+  const list = (db.leads || []).filter(lead => !lead.landingArchivedAt);
 
   if (!list.length) {
     div.innerHTML = '<div class="mute" style="text-align:center;padding:15px">لا يوجد عملاء محتملون حالياً.</div>';
@@ -2332,6 +3826,8 @@ function renderLeads() {
 
   const STAGE_NAMES = {
     Lead: 'مهتم جديد (Lead)',
+    Contacted: 'تم التواصل (Contacted)',
+    Qualified: 'عميل مؤهل (Qualified)',
     Visit: 'معاينة بالمعرض (Visit)',
     Screening: 'فحص ائتماني وبنكي (Screening)',
     Won: 'تم التعاقد (Won)',
@@ -2350,15 +3846,36 @@ function renderLeads() {
         </select>
       </div>
       <div class="mute" style="margin:4px 0">
-        السيارة المطلوبة: <strong>${esc(l.carModel || '---')}</strong> | الميزانية: <strong>${fmt(l.budget || 0)} ج.م</strong>
+        السيارة المطلوبة: <strong>${esc(l.carModel || '---')}</strong>
+        ${l.carId ? `<span class="badge badge-dev">مرتبطة بالمخزون #${Number(l.carId)}</span>` : ''}
+        | الميزانية: <strong>${fmt(l.budget || 0)} ج.م</strong>
       </div>
+      ${l.landingInquiry ? `<div style="font-size:12px;background:var(--bg);padding:6px 10px;border-radius:8px;margin:6px 0"><strong>استفسار صفحة AUTOFYON:</strong><br>${esc(l.landingInquiry)}${l.landingEmail ? `<br>البريد الإلكتروني: ${esc(l.landingEmail)}` : ''}</div>` : ''}
       ${l.notes ? `<div style="font-size:12px;background:var(--bg);padding:6px 10px;border-radius:8px;margin:6px 0">${esc(l.notes)}</div>` : ''}
+      ${l.nextFollowUpAt ? `<div class="mute" style="margin:4px 0">موعد المتابعة: <strong>${esc(l.nextFollowUpAt)}</strong></div>` : ''}
+      ${l.activities && l.activities.length ? `<div style="font-size:12px;margin:8px 0"><strong>آخر الأنشطة:</strong>${l.activities.slice().reverse().slice(0, 3).map(activity => `<div class="mute" style="padding:3px 0">${esc(activity.date || '')} · ${esc(activity.summary || '')}</div>`).join('')}</div>` : ''}
+      ${crmDocumentControls('lead', l)}
+      ${l.landingSyncConflict ? `<div style="background:#fff7ed;border:1px solid #fb923c;padding:9px;border-radius:8px;margin:8px 0">
+        <strong>تعارض مزامنة — راجع النسختين قبل المتابعة.</strong>
+        ${l.landingSyncConflict.remote ? `<div class="mute">مرحلة الصفحة: ${esc(l.landingSyncConflict.remote.status)} · آخر تحديث: ${esc(l.landingSyncConflict.remote.updated_at)}</div>
+        <button class="sm" onclick="resolveLandingLeadConflict(${Number(l.id)}, 'remote')">اعتماد نسخة صفحة AUTOFYON</button>
+        <button class="sm" onclick="resolveLandingLeadConflict(${Number(l.id)}, 'local')">الإبقاء على نسخة ERP ومزامنتها لاحقاً</button>` : '<div class="mute">لم يعد سجل الصفحة متاحاً. احتفظ بنسختك وراجع المالك.</div>'}
+      </div>` : ''}
+      <details style="margin:8px 0">
+       <summary style="cursor:pointer;font-size:12px;font-weight:bold">تسجيل متابعة / نتيجة تواصل</summary>
+       <div class="g2" style="margin-top:8px">
+        <input id="leadActivity_${Number(l.id)}" maxlength="300" placeholder="مثال: تم الاتصال، طلب عرض سعر...">
+        <input id="leadFollowUp_${Number(l.id)}" type="date" value="${esc(l.nextFollowUpAt || '')}">
+       </div>
+       <button class="sm" onclick="saveLeadFollowUp(${Number(l.id)})">حفظ النشاط والموعد</button>
+      </details>
       <div class="row" style="border:0;padding-bottom:0">
         <button class="sm wa" onclick="sendWhatsApp('${l.phone}', 'مرحباً أستاذ ${esc(l.name)}، بخصوص استفساركم عن سيارة ${esc(l.carModel)} في معرض السيارات...')">📲 محادثة واتساب</button>
-        <button class="sm del" onclick="deleteLead(${l.id})">حذف العميل</button>
+        <button class="sm del" onclick="deleteLead(${l.id})">${l.landingLeadId ? 'أرشفة العميل' : 'حذف العميل'}</button>
       </div>
     </div>
   `).join('');
+  if (crmDocumentKeysDirty && saveLocal()) crmDocumentKeysDirty = false;
 }
 
 function addLead() {
@@ -2368,27 +3885,41 @@ function addLead() {
   const budget = +$('lead_budget').value || 0;
   const stage = $('lead_stage').value;
   const notes = $('lead_notes').value.trim();
+  const nextFollowUpAt = $('lead_next_follow_up').value;
+  const selectedCarId = $('lead_inventory_car').value;
+  const selectedCar = selectedCarId
+    ? (db.cars || []).find(car => String(car.id) === String(selectedCarId) && car.status === 'Available')
+    : null;
 
   if (!name || !phone) {
     toast('اكتب اسم العميل ورقم الهاتف');
+    return;
+  }
+  if (selectedCarId && !selectedCar) {
+    toast('السيارة المختارة لم تعد متاحة؛ حدّث الاختيار قبل حفظ العميل');
     return;
   }
 
   if (!db.leads) db.leads = [];
   db.leads.push({
     id: nid(db.leads),
+    crmDocumentKey: crypto.randomUUID(),
     name,
     phone,
-    carModel,
+    carId: selectedCar ? selectedCar.id : null,
+    carModel: selectedCar ? `${selectedCar.brand} ${selectedCar.model} (${selectedCar.year})` : carModel,
     budget,
     stage,
     notes,
+    nextFollowUpAt,
+    activities: [],
     date: iso(new Date()),
     docs: []
   });
 
   saveLocal();
-  ['lead_name', 'lead_phone', 'lead_car', 'lead_budget', 'lead_notes'].forEach(id => $(id).value = '');
+  ['lead_name', 'lead_phone', 'lead_car', 'lead_budget', 'lead_notes', 'lead_next_follow_up'].forEach(id => $(id).value = '');
+  $('lead_inventory_car').value = '';
   renderLeads();
   toast('تمت إضافة العميل لقمع المبيعات');
 }
@@ -2397,15 +3928,54 @@ function changeLeadStage(id, newStage) {
   const l = (db.leads || []).find(x => x.id === id);
   if (l) {
     l.stage = newStage;
+    if (!Array.isArray(l.activities)) l.activities = [];
+    l.activities.push({ date: new Date().toISOString(), summary: `تغيير المرحلة إلى ${newStage}`, type: 'follow_up' });
     saveLocal();
+    renderLeads();
     toast('تم تحديث مرحلة العميل');
   }
 }
 
+function saveLeadFollowUp(id) {
+  const lead = (db.leads || []).find(item => Number(item.id) === Number(id));
+  if (!lead) return;
+  const activityInput = $(`leadActivity_${id}`);
+  const followUpInput = $(`leadFollowUp_${id}`);
+  const summary = activityInput.value.trim();
+  const nextFollowUpAt = followUpInput.value;
+  if (!summary && !nextFollowUpAt) {
+    toast('اكتب نتيجة المتابعة أو حدد موعداً قادماً');
+    return;
+  }
+  if (!Array.isArray(lead.activities)) lead.activities = [];
+  if (summary) lead.activities.push({ date: new Date().toISOString(), summary, type: 'follow_up' });
+  lead.nextFollowUpAt = nextFollowUpAt;
+  saveLocal();
+  renderLeads();
+  toast('تم حفظ النشاط وموعد المتابعة');
+}
+
 function deleteLead(id) {
-  if (confirm('حذف هذا العميل من المتابعة؟')) {
-    db.leads = (db.leads || []).filter(x => x.id !== id);
+  const linkedLead = (db.leads || []).find(lead => Number(lead.id) === Number(id));
+  if (linkedLead && linkedLead.landingLeadId) {
+    if (!confirm('أرشفة هذا العميل المرتبط بصفحة AUTOFYON؟ لن يُحذف نهائياً.')) return;
+    linkedLead.landingArchivedAt = linkedLead.landingArchivedAt || new Date().toISOString();
     saveLocal();
+    renderLeads();
+    toast('تمت الأرشفة؛ ستُرسل إلى صفحة AUTOFYON عند المزامنة');
+    return;
+  }
+  if (confirm('حذف هذا العميل من المتابعة؟')) {
+    const leadsBeforeDelete = db.leads;
+    db.leads = (db.leads || []).filter(x => x.id !== id);
+    if (!saveLocal()) {
+      db.leads = leadsBeforeDelete;
+      return;
+    }
+    removeLocalCrmDocuments('lead', linkedLead && linkedLead.crmDocumentKey || id).catch(error => {
+      console.error('Unable to remove documents for deleted lead:', error);
+      toast('حُذف العميل لكن تعذر حذف بعض ملفاته من هذا الجهاز');
+    });
     renderLeads();
     toast('تم الحذف');
   }
@@ -2430,73 +4000,129 @@ function renderContracts() {
   }
 
   el.innerHTML = list.map(c => {
-    const paid = c.installments.filter(i => i.paid).length;
-    const next = c.installments.find(i => !i.paid);
-    const completed = paid === c.installments.length;
+    const installments = Array.isArray(c.installments) ? c.installments : [];
+    const owner = contractInstallmentOwner(c);
+    const paid = installments.filter(i => i.paid).length;
+    const next = installments.find(i => !i.paid);
+    const policy = (db.insurancePolicies || [])
+      .filter(item => Number(item.contractId) === Number(c.id))
+      .slice()
+      .reverse()[0];
 
     // Check overdue
     let overdueCount = 0;
-    c.installments.forEach(i => {
+    installments.forEach(i => {
       if (!i.paid && i.due < today) overdueCount++;
     });
+    const settlementRemaining = Math.max(0, Math.round((
+      Number(c.financeSettlementAmount || 0) - Number(c.financeSettlementReceivedAmount || 0)
+    ) * 100) / 100);
 
     return `<div class="card">
       <div class="row" style="padding-top:0">
         <div>
           <span class="b" style="font-size:16px">${esc(c.customerName)}</span> 
           ${c.customerPhone ? `<span class="mute">(${esc(c.customerPhone)})</span>`:''}
-          ${overdueCount > 0 ? `<span class="badge badge-bad" style="margin-right:6px">⚠️ متعثر في ${overdueCount} قسط</span>` : ''}
+          ${overdueCount > 0 ? `<span class="badge badge-bad" style="margin-right:6px">⚠️ ${owner === 'finance' ? 'متأخر لدى الجهة في' : 'متعثر في'} ${overdueCount} قسط</span>` : ''}
         </div>
-        <span class="badge ${c.type.includes('مباشر') ? 'badge-ok' : 'badge-dev'}">${esc(c.type)}</span>
+        <span class="badge ${String(c.type || '').includes('مباشر') ? 'badge-ok' : 'badge-dev'}">${esc(c.type || 'عقد بيع')}</span>
       </div>
       <div class="mute" style="margin:4px 0">
-        ${c.carModel ? `السيارة: <strong>${esc(c.carModel)}</strong> · ` : ''}السعر: ${fmt(c.price)} ج.م · القسط: ${fmt(c.monthly)} ج.م · المدة: ${c.months} شهر (مسدد ${paid} من ${c.installments.length})
+        ${c.carModel ? `السيارة: <strong>${esc(c.carModel)}</strong> · ` : ''}
+        ${c.paymentType === 'cash'
+          ? `بيع نقدي: ${fmt(c.price)} ج.م · التحصيل: ${c.downPaymentMethod === 'bank' ? 'تحويل بنكي' : 'نقداً'}`
+          : `السعر: ${fmt(c.price)} ج.م · القسط: ${fmt(c.monthly)} ج.م · المدة: ${c.months} شهر (مسدد ${paid} من ${installments.length})`}
       </div>
+      ${owner === 'finance'
+        ? `<div class="tip">الأقساط لدى ${esc(c.financeOrgName || 'جهة التمويل')} وليست مديونية على العميل في دفاتر المعرض. ${c.financeScheduleEstimated !== false ? 'الجدول تقديري؛ افتح تفاصيل الأقساط لتسجيل الجدول المعتمد من الجهة.' : 'تم إدخال جدول الجهة المعتمد.'}</div>`
+        : owner === 'dealer'
+          ? `<div class="mute">خطة التقسيط والتحصيل مملوكة للمعرض · طريقة التحصيل: ${c.collectionMethod === 'bank' ? 'تحويل بنكي' : 'نقداً'} · المعدل المسجل عند التعاقد: ${(Number(c.dealerPolicyRate || 0) * 100).toFixed(1)}%</div>`
+          : '<div class="mute">تم البيع دون أقساط على العميل.</div>'}
+      ${owner === 'finance' ? `
+        <div class="card" style="margin:8px 0;padding:10px">
+          ${Number(c.financeSettlementAmount || 0) > 0
+            ? `<strong>تسوية الجهة مع المعرض: ${fmt(c.financeSettlementAmount)} ج.م</strong>
+          <div class="mute">المستلم: ${fmt(c.financeSettlementReceivedAmount || 0)} ج.م · المتبقي: ${fmt(settlementRemaining)} ج.م · الحالة: ${c.financeSettlementStatus === 'received' ? 'مكتملة' : c.financeSettlementStatus === 'partial' ? 'جزئية' : 'بانتظار التسوية'}</div>
+          ${settlementRemaining > 0 ? `<div class="g3">
+            <input id="financeAgreementReference_${Number(c.id)}" maxlength="120" value="${esc(c.financeAgreementReference || '')}" placeholder="رقم موافقة / مرجع الجهة" aria-label="مرجع جهة التمويل">
+            <input id="financeReceiptAmount_${Number(c.id)}" type="number" min="0.01" max="${settlementRemaining}" step="0.01" value="${settlementRemaining}" aria-label="مبلغ التسوية المستلم">
+            <select id="financeReceiptMethod_${Number(c.id)}" aria-label="طريقة استلام التسوية"><option value="bank">تحويل بنكي</option><option value="cash">نقداً</option></select>
+          </div><button type="button" class="sm" onclick="recordFinanceSettlement(${Number(c.id)})">تسجيل مبلغ مستلم</button>` : ''}`
+            : '<div class="tip">لا توجد قيمة تسوية محفوظة لهذا العقد القديم؛ لا تسجل إيصالاً قبل مراجعة مستندات التمويل.</div>'}
+        </div>` : ''}
+      <div class="row">
+        <span>${c.carId ? `السيارة مرتبطة بالمخزون #${Number(c.carId)}` : 'العقد غير مرتبط بسيارة مخزون'}
+          ${policy ? ` · وثيقة ${esc(policy.policyNumber)} حتى ${esc(policy.endDate)} (${policy.status === 'renewed' ? 'تم تجديدها' : 'مسجلة'})` : ' · لا توجد وثيقة تأمين مسجلة'}
+        </span>
+        <button type="button" class="sm sec" onclick="openInsuranceForContract(${Number(c.id)})">${policy ? 'متابعة / تجديد التأمين' : 'تسجيل التأمين'}</button>
+      </div>
+      ${crmDocumentControls('contract', c)}
       ${next ? `<div class="row">
-        <span>⚠️ القسط التالي رقم <strong>#${next.n}</strong> (استحقاق ${next.due}): <strong>${fmt(next.amount)} ج.م</strong></span>
+        <span>⚠️ ${owner === 'finance' ? 'قسط الجهة التالي' : 'القسط التالي'} رقم <strong>#${next.n}</strong> (استحقاق ${next.due}): <strong>${fmt(next.amount)} ج.م</strong></span>
         <div style="display:flex;gap:4px">
-          <button class="sm" onclick="pay(${c.id}, ${next.n})">سداد القسط</button>
-          <button class="sm wa" onclick="sendWhatsAppReminder(${c.id}, ${next.n})" title="تذكير واتساب">📲 تذكير</button>
+          <button class="sm" onclick="pay(${c.id}, ${next.n})">${owner === 'finance' ? 'تأكيد السداد لدى الجهة' : 'سداد القسط للمعرض'}</button>
+          ${owner === 'finance' ? '' : `<button class="sm wa" onclick="sendWhatsAppReminder(${c.id}, ${next.n})" title="تذكير واتساب">📲 تذكير</button>`}
         </div>
-      </div>` : '<div class="ok" style="text-align:center;font-weight:700">🎉 تم سداد جميع الأقساط والعقد مكتمل بالكامل</div>'}
+      </div>` : owner === 'none'
+        ? '<div class="ok" style="text-align:center;font-weight:700">تم البيع النقدي ولا توجد أقساط للمتابعة.</div>'
+        : '<div class="ok" style="text-align:center;font-weight:700">🎉 تم سداد جميع الأقساط والعقد مكتمل بالكامل</div>'}
       
       <div class="g3" style="margin-top:10px">
-        <button class="sec sm" onclick="toggleIns(${c.id})">عرض جدول الأقساط الكامل</button>
+        ${installments.length ? `<button class="sec sm" onclick="toggleIns(${c.id})">عرض جدول الأقساط الكامل</button>` : ''}
         <button class="blue sm" onclick="printContractSummary(${c.id})">🖨️ طباعة ملخص العقد</button>
         <button class="del sm" onclick="delContract(${c.id})">حذف العقد</button>
       </div>
       <div id="ins${c.id}" style="display:none;margin-top:10px;border-top:1px dashed var(--line);padding-top:8px"></div>
     </div>`;
   }).join('');
+  if (crmDocumentKeysDirty && saveLocal()) crmDocumentKeysDirty = false;
+}
+
+function openInsuranceForContract(contractId) {
+  tab('creditflow');
+  $('policy_contract').value = String(contractId);
+  $('policy_number').focus();
 }
 
 function toggleIns(id) {
   const e = $('ins' + id), c = db.contracts.find(x => x.id === id);
+  const owner = contractInstallmentOwner(c);
   const today = iso(new Date());
 
   if (e.style.display === 'none') {
-    e.innerHTML = c.installments.map(i => {
+    e.innerHTML = (c.installments || []).map(i => {
       const isOverdue = !i.paid && i.due < today;
       const daysLate = isOverdue ? Math.floor((new Date() - new Date(i.due)) / (1000 * 60 * 60 * 24)) : 0;
 
       return `
         <div class="row" style="font-size:12px;${isOverdue ? 'background:var(--bads);padding:6px;border-radius:8px;margin:3px 0' : ''}">
           <div>
-            <span>قسط #${i.n} · استحقاق: ${i.due} · <strong>${fmt(i.amount)} ج.م</strong></span>
+            <span>قسط #${i.n} · استحقاق: ${i.due} · <strong>${fmt(i.amount)} ج.م</strong>
+              ${owner === 'finance' && i.estimated !== false ? '<span class="badge badge-dev">تقديري</span>' : ''}
+            </span>
             ${isOverdue ? `<span class="badge badge-bad" style="margin-right:6px">متأخر ${daysLate} يوم</span>` : ''}
           </div>
           <div style="display:flex;gap:4px;align-items:center">
-            ${i.paid 
-              ? `<span class="badge badge-ok">مسدد في ${esc(i.paidDate)}</span>
+            ${i.paid
+              ? owner === 'finance'
+                ? `<span class="badge badge-dev">تم تأكيد السداد لدى الجهة في ${esc(i.paidDate)}</span>`
+                : `<span class="badge badge-ok">مسدد للمعرض في ${esc(i.paidDate)}</span>
                  <button class="sm sec" style="padding:4px 8px;font-size:11px" onclick="printReceipt(${id}, ${i.n})">🖨️ إيصال</button>
-                 <button class="sm wa" style="padding:4px 8px;font-size:11px" onclick="sendWhatsAppReceipt(${id}, ${i.n})">📲 واتساب</button>` 
-              : `<button class="sm" onclick="pay(${id}, ${i.n}, 1)">سداد الآن</button>
-                 ${isOverdue 
-                   ? `<button class="sm wa" style="padding:4px 8px;font-size:11px" onclick="sendWhatsAppOverdue(${id}, ${i.n}, ${daysLate})">${i.whatsappOverdueSent ? '⚠️ تم الإنذار مسبقاً' : '📲 إنذار تأخير'}</button>`
-                   : `<button class="sm wa" style="padding:4px 8px;font-size:11px" onclick="sendWhatsAppReminder(${id}, ${i.n})">${i.whatsappSent ? '✅ تم التذكير مسبقاً' : '📲 تذكير'}</button>`
-                 }`}
+                 <button class="sm wa" style="padding:4px 8px;font-size:11px" onclick="sendWhatsAppReceipt(${id}, ${i.n})">📲 واتساب</button>`
+              : owner === 'finance'
+                ? `<button class="sm" onclick="pay(${id}, ${i.n}, 1)">تأكيد السداد لدى الجهة</button>`
+                : `<button class="sm" onclick="pay(${id}, ${i.n}, 1)">تسجيل التحصيل للمعرض</button>
+                   ${isOverdue
+                     ? `<button class="sm wa" style="padding:4px 8px;font-size:11px" onclick="sendWhatsAppOverdue(${id}, ${i.n}, ${daysLate})">${i.whatsappOverdueSent ? '⚠️ تم الإنذار مسبقاً' : '📲 إنذار تأخير'}</button>`
+                     : `<button class="sm wa" style="padding:4px 8px;font-size:11px" onclick="sendWhatsAppReminder(${id}, ${i.n})">${i.whatsappSent ? '✅ تم التذكير مسبقاً' : '📲 تذكير'}</button>`
+                   }`}
           </div>
         </div>
+        ${owner === 'finance' && !i.paid ? `<div class="g3" style="margin:4px 0 8px">
+          <input id="financeDue_${Number(id)}_${Number(i.n)}" type="date" value="${esc(i.due)}" aria-label="تاريخ القسط المعتمد من الجهة">
+          <input id="financeAmount_${Number(id)}_${Number(i.n)}" type="number" min="0.01" step="0.01" value="${Number(i.amount)}" aria-label="قيمة القسط المعتمد من الجهة">
+          <button type="button" class="sm sec" onclick="saveFinanceScheduleItem(${Number(id)}, ${Number(i.n)})">حفظ بيانات القسط المعتمدة</button>
+        </div>` : ''}
       `;
     }).join('');
     e.style.display = 'block';
@@ -2505,13 +4131,59 @@ function toggleIns(id) {
   }
 }
 
+function saveFinanceScheduleItem(contractId, installmentNumber) {
+  const contract = (db.contracts || []).find(item => Number(item.id) === Number(contractId));
+  const installment = contract && Array.isArray(contract.installments)
+    ? contract.installments.find(item => Number(item.n) === Number(installmentNumber))
+    : null;
+  if (!contract || contractInstallmentOwner(contract) !== 'finance' || !installment || installment.paid) return;
+  const due = $(`financeDue_${contractId}_${installmentNumber}`).value;
+  const amount = Number($(`financeAmount_${contractId}_${installmentNumber}`).value);
+  if (!due || !Number.isFinite(Date.parse(due)) || !Number.isFinite(amount) || amount <= 0) {
+    toast('أدخل تاريخاً صحيحاً وقيمة قسط أكبر من صفر');
+    return;
+  }
+  const previousDue = installment.due;
+  const previousAmount = installment.amount;
+  const previousEstimated = installment.estimated;
+  const previousScheduleEstimated = contract.financeScheduleEstimated;
+  const previousOwner = contract.installmentOwner;
+  contract.installmentOwner = 'finance';
+  installment.due = due;
+  installment.amount = amount;
+  installment.estimated = false;
+  contract.financeScheduleEstimated = contract.installments.some(item => item.estimated !== false);
+  if (!saveLocal()) {
+    installment.due = previousDue;
+    installment.amount = previousAmount;
+    installment.estimated = previousEstimated;
+    contract.financeScheduleEstimated = previousScheduleEstimated;
+    contract.installmentOwner = previousOwner;
+    return;
+  }
+  renderContracts();
+  toggleIns(contractId);
+  toast(contract.financeScheduleEstimated
+    ? 'تم حفظ التعديل؛ لا تزال هناك أقساط تقديرية غير معتمدة'
+    : 'تم اعتماد جميع تواريخ وقيم الأقساط من جدول جهة التمويل');
+}
+
 // PRINTING SYSTEM
 function printReceipt(cid, n) {
   const c = db.contracts.find(x => x.id === cid);
-  const i = c.installments.find(x => x.n === n);
-  const paidCount = c.installments.filter(x => x.paid).length;
-  const remainingCount = c.installments.length - paidCount;
-  const remainingBal = c.installments.filter(x => !x.paid).reduce((acc, x) => acc + x.amount, 0);
+  if (!c || contractInstallmentOwner(c) !== 'dealer') {
+    toast('إيصالات تحصيل المعرض لا تصدر لأقساط جهة التمويل');
+    return;
+  }
+  const installments = Array.isArray(c.installments) ? c.installments : [];
+  const i = installments.find(x => x.n === n);
+  if (!i || !i.paid) {
+    toast('لا يوجد قسط محصل للمعرض بهذا الرقم');
+    return;
+  }
+  const paidCount = installments.filter(x => x.paid).length;
+  const remainingCount = installments.length - paidCount;
+  const remainingBal = installments.filter(x => !x.paid).reduce((acc, x) => acc + x.amount, 0);
 
   const html = `
     <div style="font-family:'Cairo',sans-serif;direction:rtl;padding:25px;border:2px solid #0f6b5c;border-radius:12px;max-width:550px;margin:auto;background:#fff;color:#000">
@@ -2540,14 +4212,27 @@ function printReceipt(cid, n) {
 
 function printContractSummary(cid) {
   const c = db.contracts.find(x => x.id === cid);
-  const paidCount = c.installments.filter(x => x.paid).length;
-  const remainingBal = c.installments.filter(x => !x.paid).reduce((acc, x) => acc + x.amount, 0);
+  if (!c) return;
+  const installments = Array.isArray(c.installments) ? c.installments : [];
+  const paidCount = installments.filter(x => x.paid).length;
+  const remainingBal = installments.filter(x => !x.paid).reduce((acc, x) => acc + x.amount, 0);
+  const owner = contractInstallmentOwner(c);
+  const paymentOwner = owner === 'finance'
+    ? `جهة التمويل: ${esc(c.financeOrgName || 'غير محددة')}`
+    : owner === 'dealer'
+      ? 'المعرض'
+      : 'نقدي بالكامل';
+  const paymentDescription = owner === 'finance'
+    ? 'هذا الجدول مرجعي لالتزامات العميل لدى جهة التمويل. يؤكد المعرض السداد للمتابعة فقط ولا يسجل هذه الأقساط كتحصيلات.'
+    : owner === 'dealer'
+      ? 'يلتزم العميل بسداد الأقساط للمعرض في المواعيد المحددة.'
+      : 'تم سداد قيمة البيع نقداً؛ لا يوجد جدول أقساط.';
 
   const html = `
     <div style="font-family:'Cairo',sans-serif;direction:rtl;padding:25px;border:2px solid #0f6b5c;border-radius:12px;max-width:650px;margin:auto;background:#fff;color:#000">
       <div style="text-align:center;border-bottom:2px solid #0f6b5c;padding-bottom:12px;margin-bottom:15px">
         <h2 style="margin:0;color:#0f6b5c">🚗 ${esc(db.settings.companyName || 'معرض السيارات')}</h2>
-        <div style="font-size:14px;color:#333">ملخص عقد البيع وجدولة الأقساط</div>
+        <div style="font-size:14px;color:#333">ملخص عقد البيع ${installments.length ? 'وجدولة الأقساط' : ''}</div>
         <div style="font-size:11px;color:#777">عقد رقم: CTR-${c.id} | تاريخ التعاقد: ${c.date}</div>
       </div>
       <table style="width:100%;font-size:13px;line-height:1.9">
@@ -2556,15 +4241,17 @@ function printContractSummary(cid) {
         <tr><td><strong>السيارة:</strong></td><td>${esc(c.carModel || 'سيارة معتمدة')}</td></tr>
         <tr><td><strong>رقم الشاسيه:</strong></td><td>${esc(c.carChassis || '---')}</td></tr>
         <tr><td><strong>نوع التمويل:</strong></td><td>${esc(c.type)}</td></tr>
+        <tr><td><strong>جهة التحصيل:</strong></td><td>${paymentOwner}</td></tr>
         <tr><td><strong>سعر السيارة:</strong></td><td>${fmt(c.price)} ج.م</td></tr>
         <tr><td><strong>المقدم المدفوع:</strong></td><td>${fmt(c.downPayment)} ج.م</td></tr>
-        <tr><td><strong>القسط الشهري:</strong></td><td><strong>${fmt(c.monthly)} ج.م</strong></td></tr>
+        ${installments.length ? `<tr><td><strong>القسط الشهري/التقديري:</strong></td><td><strong>${fmt(c.monthly)} ج.م</strong></td></tr>
         <tr><td><strong>مدة التقسيط:</strong></td><td>${c.months} شهر</td></tr>
-        <tr><td><strong>الأقساط المسددة:</strong></td><td>${paidCount} من أصل ${c.installments.length}</td></tr>
-        <tr><td><strong>الرصيد المتبقي:</strong></td><td><strong>${fmt(remainingBal)} ج.م</strong></td></tr>
+        <tr><td><strong>الأقساط المؤكدة/المسددة:</strong></td><td>${paidCount} من أصل ${installments.length}</td></tr>
+        <tr><td><strong>الرصيد المتبقي على العميل:</strong></td><td><strong>${fmt(remainingBal)} ج.م</strong></td></tr>` : ''}
+        ${owner === 'finance' && Number(c.financeSettlementAmount || 0) > 0 ? `<tr><td><strong>مستحق التسوية من جهة التمويل:</strong></td><td>${fmt(c.financeSettlementAmount)} ج.م · تم استلام ${fmt(c.financeSettlementReceivedAmount || 0)} ج.م</td></tr>` : ''}
       </table>
       <div style="margin-top:20px;border-top:1px dashed #ccc;padding-top:10px;font-size:11px;color:#666">
-        تنبيه: يتعهد العميل بسداد الأقساط في المواعيد المقررة شهرياً تجنباً لغرامات التأخير أو اتخاذ الإجراءات القانونية.
+        ${paymentDescription}${owner === 'finance' && c.financeScheduleEstimated !== false ? ' القيم والتواريخ الحالية تقديرية حتى استبدالها بجدول الجهة المعتمد.' : ''}
       </div>
       <div style="margin-top:25px;display:flex;justify-content:space-between;text-align:center;font-size:12px">
         <div>توقيع العميل المقر بما فيه:<br><br>_________________</div>
@@ -2768,6 +4455,7 @@ function generateCollectionsReportHtml(comp, nowStr) {
   const today = iso(new Date());
 
   contracts.forEach(c => {
+    if (contractInstallmentOwner(c) !== 'dealer') return;
     (c.installments || []).forEach(i => {
       totalFin += i.amount;
       if (i.paid) {
@@ -2785,13 +4473,13 @@ function generateCollectionsReportHtml(comp, nowStr) {
   return `
     <div class="header-box" style="text-align:center;border-bottom:2px solid #0f6b5c;padding-bottom:12px;margin-bottom:15px">
       <h2 style="margin:0;color:#0f6b5c">🚗 ${esc(comp)}</h2>
-      <h3 style="margin:4px 0;font-size:16px;color:#333">تقرير تحصيل الأقساط ومتابعة المديونيات والمتأخرات</h3>
+      <h3 style="margin:4px 0;font-size:16px;color:#333">تقرير تحصيل أقساط المعرض ومتابعة مديونياته ومتأخراته</h3>
       <div style="font-size:12px;color:#777">تاريخ الاستخراج: ${nowStr}</div>
     </div>
 
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:15px;text-align:center">
       <div style="background:#e8f4fd;padding:10px;border-radius:8px">
-        <div style="font-size:11px;color:#555">إجمالي المحفظة التمويلية</div>
+        <div style="font-size:11px;color:#555">إجمالي أقساط المعرض</div>
         <div style="font-size:16px;font-weight:800;color:#1a73e8">${fmt(totalFin)} ج.م</div>
       </div>
       <div style="background:#e1f0ec;padding:10px;border-radius:8px">
@@ -2917,14 +4605,16 @@ function generateContractsReportHtml(comp, nowStr) {
           <th style="padding:8px;border:1px solid #ddd">المركبة</th>
           <th style="padding:8px;border:1px solid #ddd">السعر الكلي</th>
           <th style="padding:8px;border:1px solid #ddd">المقدم</th>
+          <th style="padding:8px;border:1px solid #ddd">جهة التحصيل</th>
           <th style="padding:8px;border:1px solid #ddd">القسط الشهري</th>
           <th style="padding:8px;border:1px solid #ddd">المدة</th>
-          <th style="padding:8px;border:1px solid #ddd">المسدد</th>
+          <th style="padding:8px;border:1px solid #ddd">المسدد / المؤكد</th>
         </tr>
       </thead>
       <tbody>
         ${contracts.map(c => {
           const paidC = (c.installments || []).filter(x => x.paid).length;
+          const owner = contractInstallmentOwner(c);
           return `
             <tr>
               <td style="padding:7px;border:1px solid #ddd;text-align:center">CTR-${c.id}</td>
@@ -2932,9 +4622,10 @@ function generateContractsReportHtml(comp, nowStr) {
               <td style="padding:7px;border:1px solid #ddd">${esc(c.carModel || 'مركبة معتمدة')}</td>
               <td style="padding:7px;border:1px solid #ddd">${fmt(c.price)}</td>
               <td style="padding:7px;border:1px solid #ddd">${fmt(c.downPayment)}</td>
-              <td style="padding:7px;border:1px solid #ddd;font-weight:700;color:#0f6b5c">${fmt(c.monthly)}</td>
-              <td style="padding:7px;border:1px solid #ddd;text-align:center">${c.months} شهر</td>
-              <td style="padding:7px;border:1px solid #ddd;text-align:center">${paidC} من ${(c.installments || []).length}</td>
+              <td style="padding:7px;border:1px solid #ddd">${owner === 'finance' ? `جهة التمويل: ${esc(c.financeOrgName || 'غير محددة')}` : owner === 'dealer' ? 'المعرض' : 'نقدي'}</td>
+              <td style="padding:7px;border:1px solid #ddd;font-weight:700;color:#0f6b5c">${owner === 'none' ? '—' : fmt(c.monthly)}</td>
+              <td style="padding:7px;border:1px solid #ddd;text-align:center">${owner === 'none' ? '—' : `${c.months} شهر`}</td>
+              <td style="padding:7px;border:1px solid #ddd;text-align:center">${owner === 'none' ? '—' : `${paidC} من ${(c.installments || []).length}`}</td>
             </tr>
           `;
         }).join('')}
@@ -2983,32 +4674,130 @@ function exportActiveReportExcel() {
 
 function pay(cid, n, keepOpen) {
   const c = db.contracts.find(x => x.id === cid);
-  const i = c.installments.find(x => x.n === n);
+  const i = c && Array.isArray(c.installments) ? c.installments.find(x => x.n === n) : null;
+  if (!c || !i || i.paid) return;
+  const owner = contractInstallmentOwner(c);
+  const previousDate = i.paidDate;
+  const previousMethod = i.paymentMethod;
+  const previousOwner = c.installmentOwner;
   i.paid = true;
   i.paidDate = iso(new Date());
 
-  db.journal.push({
+  if (owner === 'finance') {
+    c.installmentOwner = 'finance';
+    i.confirmedByDealerAt = new Date().toISOString();
+    if (!saveLocal()) {
+      i.paid = false;
+      i.paidDate = previousDate;
+      delete i.confirmedByDealerAt;
+      c.installmentOwner = previousOwner;
+      return;
+    }
+    renderContracts();
+    if (keepOpen) toggleIns(cid);
+    toast('تم تأكيد سداد القسط لدى الجهة؛ لم يُسجل تحصيلاً في دفاتر المعرض');
+    stat();
+    return;
+  }
+
+  const paymentMethod = c.collectionMethod || 'cash';
+  if (!['cash', 'bank'].includes(paymentMethod)) {
+    toast('طريقة تحصيل القسط غير صالحة');
+    return;
+  }
+  i.paymentMethod = paymentMethod;
+  const journalEntry = {
     id: nid(db.journal),
     date: i.paidDate,
     contractId: cid,
     desc: `تحصيل قسط #${n} من العميل: ${c.customerName}`,
-    debitAccount: '1010 - النقدية والبنوك',
+    debitAccount: receiptAccount(paymentMethod),
     creditAccount: '1020 - مديونيات التقسيط المباشر',
     amount: i.amount
-  });
+  };
+  db.journal.push(journalEntry);
 
-  saveLocal();
+  if (!saveLocal()) {
+    db.journal.pop();
+    i.paid = false;
+    i.paidDate = previousDate;
+    if (previousMethod) i.paymentMethod = previousMethod;
+    else delete i.paymentMethod;
+    return;
+  }
   renderContracts();
   if (keepOpen) toggleIns(cid);
   toast('تم تسجيل سداد القسط وتحديث دفتر الأستاذ العام');
   stat();
 }
 
+function recordFinanceSettlement(contractId) {
+  const contract = (db.contracts || []).find(item => Number(item.id) === Number(contractId));
+  if (!contract || contractInstallmentOwner(contract) !== 'finance' ||
+      !Number.isFinite(Number(contract.financeSettlementAmount)) || Number(contract.financeSettlementAmount) <= 0) return;
+  const amount = Math.round(Number($(`financeReceiptAmount_${contractId}`).value) * 100) / 100;
+  const method = $(`financeReceiptMethod_${contractId}`).value;
+  const referenceInput = $(`financeAgreementReference_${contractId}`);
+  const reference = referenceInput.value.trim();
+  const expected = Math.round(Number(contract.financeSettlementAmount || 0) * 100) / 100;
+  const previousReceived = Math.round(Number(contract.financeSettlementReceivedAmount || 0) * 100) / 100;
+  const remaining = Math.max(0, Math.round((expected - previousReceived) * 100) / 100);
+  if (!Number.isFinite(amount) || amount <= 0 || amount > remaining ||
+      !['cash', 'bank'].includes(method) || reference.length > 120) {
+    toast('تحقق من مبلغ وطريقة ومرجع تسوية جهة التمويل');
+    return;
+  }
+  const journalCount = db.journal.length;
+  const previousStatus = contract.financeSettlementStatus;
+  const previousReference = contract.financeAgreementReference;
+  const previousDate = contract.financeSettlementReceivedAt;
+  const previousOwner = contract.installmentOwner;
+  contract.installmentOwner = 'finance';
+  contract.financeSettlementReceivedAmount = Math.round((previousReceived + amount) * 100) / 100;
+  contract.financeSettlementStatus = contract.financeSettlementReceivedAmount >= expected
+    ? 'received'
+    : 'partial';
+  contract.financeSettlementReceivedAt = iso(new Date());
+  contract.financeAgreementReference = reference;
+  db.journal.push({
+    id: nid(db.journal),
+    date: iso(new Date()),
+    contractId: contract.id,
+    desc: `تحصيل تسوية تمويل ${contract.financeOrgName} - العقد #${contract.id}${reference ? ` - مرجع ${reference}` : ''}`,
+    debitAccount: receiptAccount(method),
+    creditAccount: '1055 - مستحقات شركات التمويل',
+    amount
+  });
+  if (!saveLocal()) {
+    db.journal.splice(journalCount);
+    contract.financeSettlementReceivedAmount = previousReceived;
+    contract.financeSettlementStatus = previousStatus;
+    contract.financeSettlementReceivedAt = previousDate;
+    contract.financeAgreementReference = previousReference;
+    contract.installmentOwner = previousOwner;
+    return;
+  }
+  renderContracts();
+  renderGeneralLedger();
+  toast('تم تسجيل استلام تسوية الجهة في حسابات المعرض');
+}
+
 function delContract(id) {
   if (confirm('هل أنت متأكد من حذف هذا العقد وكافة سجلات أقساطه؟')) {
+    const deletedContract = db.contracts.find(contract => contract.id === id);
+    const contractsBeforeDelete = db.contracts;
+    const journalBeforeDelete = db.journal;
     db.contracts = db.contracts.filter(c => c.id !== id);
     db.journal = db.journal.filter(j => j.contractId !== id);
-    saveLocal();
+    if (!saveLocal()) {
+      db.contracts = contractsBeforeDelete;
+      db.journal = journalBeforeDelete;
+      return;
+    }
+    removeLocalCrmDocuments('contract', deletedContract && deletedContract.crmDocumentKey || id).catch(error => {
+      console.error('Unable to remove documents for deleted contract:', error);
+      toast('حُذف العقد لكن تعذر حذف بعض ملفاته من هذا الجهاز');
+    });
     renderContracts();
     stat();
   }
@@ -3092,6 +4881,7 @@ function renderCreditFlow() {
   const monthlyFlow = {};
 
   db.contracts.forEach(c => {
+    if (contractInstallmentOwner(c) !== 'dealer') return;
     (c.installments || []).forEach(i => {
       totalFin += i.amount;
       if (i.paid) {
@@ -3137,6 +4927,129 @@ function renderCreditFlow() {
       <span class="badge badge-ok">${(ins.rate * 100).toFixed(1)}% سنوياً</span>
     </div>
   `).join('');
+  renderInsurancePolicies();
+}
+
+function renderInsurancePolicies() {
+  const contractSelect = $('policy_contract');
+  const providerSelect = $('policy_provider');
+  const list = $('insurancePoliciesList');
+  if (!contractSelect || !providerSelect || !list) return;
+
+  const selectedContract = contractSelect.value;
+  const selectedProvider = providerSelect.value;
+  contractSelect.innerHTML = '<option value="">-- اختر عقداً --</option>' +
+    (db.contracts || []).slice().reverse().map(contract =>
+      `<option value="${Number(contract.id)}">#${Number(contract.id)} · ${esc(contract.customerName)} · ${esc(contract.carModel || 'سيارة غير مرتبطة')}</option>`
+    ).join('');
+  providerSelect.innerHTML = '<option value="">-- اختر شركة التأمين --</option>' +
+    (db.insurance || []).map(provider =>
+      `<option value="${Number(provider.id)}">${esc(provider.name)}</option>`
+    ).join('');
+  if ((db.contracts || []).some(contract => String(contract.id) === selectedContract)) {
+    contractSelect.value = selectedContract;
+  }
+  if ((db.insurance || []).some(provider => String(provider.id) === selectedProvider)) {
+    providerSelect.value = selectedProvider;
+  }
+
+  const policies = Array.isArray(db.insurancePolicies) ? db.insurancePolicies : [];
+  if (!policies.length) {
+    list.innerHTML = '<div class="mute">لا توجد وثائق تأمين مسجلة بعد.</div>';
+    return;
+  }
+  const today = iso(new Date());
+  const reminderLimit = iso(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000));
+  list.innerHTML = policies.slice().reverse().map(policy => {
+    const contract = (db.contracts || []).find(item => Number(item.id) === Number(policy.contractId));
+    const isExpired = policy.status !== 'renewed' && policy.endDate < today;
+    const isExpiring = policy.status !== 'renewed' && !isExpired && policy.endDate <= reminderLimit;
+    const badge = policy.status === 'renewed'
+      ? '<span class="badge badge-dev">تم التجديد</span>'
+      : isExpired
+        ? '<span class="badge badge-bad">منتهية</span>'
+        : isExpiring
+          ? '<span class="badge badge-warn">تجديد قريب</span>'
+          : '<span class="badge badge-ok">سارية</span>';
+    return `<article class="card" style="margin:8px 0;padding:12px">
+      <div class="row"><strong>${esc(policy.provider)} · وثيقة ${esc(policy.policyNumber)}</strong>${badge}</div>
+      <div class="mute">العقد #${Number(policy.contractId)} · ${esc(contract ? contract.customerName : policy.customerName)} · ${esc(policy.vehicle || 'سيارة')}</div>
+      <div class="mute">قسط: ${fmt(policy.premium)} ج.م · من ${esc(policy.startDate)} إلى ${esc(policy.endDate)}</div>
+      ${isExpired || isExpiring ? '<div class="tip">يلزم التواصل مع العميل ومتابعة التجديد.</div>' : ''}
+      ${policy.status !== 'renewed' ? `<button type="button" class="sm sec" onclick="renewInsurancePolicy(${Number(policy.id)})">تسجيل تجديد الوثيقة</button>` : ''}
+    </article>`;
+  }).join('');
+}
+
+function saveInsurancePolicy() {
+  const contractId = Number($('policy_contract').value);
+  const providerId = Number($('policy_provider').value);
+  const policyNumber = $('policy_number').value.trim();
+  const premium = Number($('policy_premium').value);
+  const startDate = $('policy_start').value;
+  const endDate = $('policy_end').value;
+  const renewalId = $('policy_renewal_of').value;
+  const contract = (db.contracts || []).find(item => Number(item.id) === contractId);
+  const provider = (db.insurance || []).find(item => Number(item.id) === providerId);
+  const validDate = value => {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+    const parsed = new Date(`${value}T00:00:00.000Z`);
+    return !Number.isNaN(parsed.valueOf()) && parsed.toISOString().slice(0, 10) === value;
+  };
+  if (!contract || !provider || !policyNumber || policyNumber.length > 120 ||
+      !Number.isFinite(premium) || premium <= 0 ||
+      !validDate(startDate) || !validDate(endDate) || endDate < startDate) {
+    toast('تحقق من العقد وشركة التأمين ورقم الوثيقة والمبلغ والتواريخ');
+    return;
+  }
+  const priorPolicy = renewalId
+    ? (db.insurancePolicies || []).find(item => Number(item.id) === Number(renewalId))
+    : null;
+  if (renewalId && !priorPolicy) {
+    toast('تعذر العثور على الوثيقة المراد تجديدها');
+    return;
+  }
+  const previousStatus = priorPolicy ? priorPolicy.status : '';
+  if (priorPolicy) priorPolicy.status = 'renewed';
+  const policy = {
+    id: nid(db.insurancePolicies),
+    contractId: contract.id,
+    carId: contract.carId || null,
+    customerName: contract.customerName,
+    vehicle: contract.carModel || 'سيارة غير محددة',
+    providerId: provider.id,
+    provider: provider.name,
+    policyNumber,
+    premium,
+    startDate,
+    endDate,
+    status: 'active',
+    renewalOf: priorPolicy ? priorPolicy.id : null
+  };
+  db.insurancePolicies.push(policy);
+  if (!saveLocal()) {
+    db.insurancePolicies.pop();
+    if (priorPolicy) priorPolicy.status = previousStatus;
+    return;
+  }
+  $('policy_renewal_of').value = '';
+  $('policy_number').value = '';
+  $('policy_premium').value = '';
+  $('policy_start').value = '';
+  $('policy_end').value = '';
+  renderInsurancePolicies();
+  toast('تم حفظ وثيقة التأمين وربطها بعقد البيع');
+}
+
+function renewInsurancePolicy(id) {
+  const policy = (db.insurancePolicies || []).find(item => Number(item.id) === Number(id));
+  if (!policy || policy.status === 'renewed') return;
+  $('policy_renewal_of').value = String(policy.id);
+  $('policy_contract').value = String(policy.contractId);
+  $('policy_provider').value = String(policy.providerId);
+  $('policy_start').value = iso(new Date());
+  $('policy_number').focus();
+  toast('أدخل رقم الوثيقة الجديدة والمبلغ وتواريخ التغطية ثم احفظ التجديد');
 }
 
 function renderBanks() {
@@ -3144,7 +5057,7 @@ function renderBanks() {
     <div class="row">
       <div>
         <span class="b">${esc(b.name)}</span><br>
-        <span class="mute">أقل راتب: ${fmt(b.minSalary)} ج.م · DBR: ${Math.round(b.maxDBR * 100)}% · مقدم جديد/مستعمل: ${Math.round(b.minDPNew * 100)}% / ${Math.round(b.minDPUsed * 100)}% · عمولة: ${(b.commission * 100).toFixed(1)}%</span>
+        <span class="mute">معدل سنوي: ${((typeof b.annualRate === 'number' && Number.isFinite(b.annualRate) ? b.annualRate : db.settings.bank) * 100).toFixed(1)}% · أقل راتب: ${fmt(b.minSalary)} ج.م · DBR: ${Math.round(b.maxDBR * 100)}% · مقدم جديد/مستعمل: ${Math.round(b.minDPNew * 100)}% / ${Math.round(b.minDPUsed * 100)}% · عمولة: ${(b.commission * 100).toFixed(1)}%</span>
       </div>
       <button class="del" onclick="delBank(${b.id})">حذف</button>
     </div>
@@ -3154,7 +5067,9 @@ function renderBanks() {
 function addBank() {
   const v = id => parseFloat($(id).value);
   const name = $('bn').value.trim();
-  if (!name || [v('bs'), v('bd'), v('bpn'), v('bpu'), v('bc'), v('bm')].some(isNaN)) {
+  const annualRate = v('b_rate');
+  if (!name || [v('bs'), v('bd'), v('bpn'), v('bpu'), v('bc'), v('bm'), annualRate].some(isNaN) ||
+      annualRate < 0 || annualRate > 1) {
     toast('يرجى تعبئة جميع حقول البنك');
     return;
   }
@@ -3167,10 +5082,11 @@ function addBank() {
     minDPNew: v('bpn'),
     minDPUsed: v('bpu'),
     maxMonths: v('bm'),
+    annualRate,
     commission: v('bc')
   });
   saveLocal();
-  ['bn', 'bs', 'bd', 'bpn', 'bpu', 'bc'].forEach(i => $(i).value = '');
+  ['bn', 'bs', 'bd', 'bpn', 'bpu', 'bc', 'b_rate'].forEach(i => $(i).value = '');
   renderBanks();
   stat();
   toast('تم حفظ البنك في النظام');
@@ -3236,6 +5152,203 @@ function showOwnerAlert(title, text) {
   setTimeout(() => { if (alertBox.parentElement) alertBox.remove(); }, 12000);
 }
 
+const PURCHASE_EXPENSE_ACCOUNT = '5090 - مصروفات شراء وتجهيز المركبات';
+const MAX_PURCHASE_COST_ITEMS = 30;
+
+function renderVehicleSourcingCalls() {
+  const calls = Array.isArray(db.vehicleSourcingCalls) ? db.vehicleSourcingCalls : [];
+  const list = $('vehicleSourcingCallsList');
+  const sourceSelect = $('p_source_lead');
+  if (sourceSelect) {
+    const selected = sourceSelect.value;
+    const openCalls = calls.filter(item => item.stage !== 'purchased' && item.stage !== 'closed');
+    sourceSelect.innerHTML = '<option value="">-- اختيار بائع مسجل --</option>' +
+      openCalls.map(item =>
+        `<option value="${Number(item.id)}">${esc(item.sellerName)} · ${esc(item.vehicle || 'سيارة مستعملة')} · ${esc(item.phone)}</option>`
+      ).join('');
+    if (openCalls.some(item => String(item.id) === selected)) sourceSelect.value = selected;
+  }
+  if (!list) return;
+  if (!calls.length) {
+    list.innerHTML = '<div class="mute">لا توجد مكالمات بائعين مسجلة.</div>';
+    return;
+  }
+  list.innerHTML = calls.slice().reverse().map(item => `
+    <article class="card" style="margin:8px 0;padding:12px">
+      <div class="row">
+        <div><strong>${esc(item.sellerName)}</strong> · ${esc(item.phone)}<div class="mute">${esc(item.vehicle || 'سيارة مستعملة')} · السعر المطلوب: ${item.askingPrice ? `${fmt(item.askingPrice)} ج.م` : 'غير محدد'}</div></div>
+        <span class="badge ${item.stage === 'purchased' ? 'badge-ok' : item.stage === 'closed' ? 'badge-bad' : 'badge-warn'}">${item.stage === 'purchased' ? 'تم الشراء' : item.stage === 'closed' ? 'مغلقة' : 'متابعة البائع'}</span>
+      </div>
+      ${item.nextFollowUpAt ? `<div class="mute">معاودة الاتصال: <strong>${esc(item.nextFollowUpAt)}</strong></div>` : ''}
+      ${item.linkedCarId ? `<div class="mute">السيارة المرتبطة بالمخزون: #${Number(item.linkedCarId)}</div>` : ''}
+      ${Array.isArray(item.activities) && item.activities.length
+        ? `<div class="mute">${item.activities.slice(-2).map(activity => `${esc(activity.date || '')} · ${esc(activity.summary || '')}`).join('<br>')}</div>`
+        : ''}
+      <details>
+        <summary style="cursor:pointer">تسجيل مكالمة متابعة</summary>
+        <div class="g2">
+          <input id="sourceActivity_${Number(item.id)}" maxlength="300" placeholder="نتيجة المكالمة">
+          <input id="sourceFollowUp_${Number(item.id)}" type="date" value="${esc(item.nextFollowUpAt || '')}">
+        </div>
+        <button type="button" class="sm" onclick="saveVehicleSourcingFollowUp(${Number(item.id)})">حفظ المتابعة</button>
+      </details>
+      ${item.stage !== 'purchased' ? `<button type="button" class="sm del" onclick="closeVehicleSourcingCall(${Number(item.id)})">إغلاق هذا العرض</button>` : ''}
+    </article>
+  `).join('');
+}
+
+function addVehicleSourcingCall() {
+  const sellerName = $('source_seller_name').value.trim();
+  const phone = $('source_seller_phone').value.trim();
+  const askingPriceValue = $('source_asking_price').value.trim();
+  const askingPrice = askingPriceValue ? Number(askingPriceValue) : null;
+  const nextFollowUpAt = $('source_follow_up').value;
+  const notes = $('source_call_notes').value.trim();
+  if (!sellerName || sellerName.length > 120 || !phone || phone.length > 30 ||
+      askingPriceValue && (!Number.isFinite(askingPrice) || askingPrice <= 0) ||
+      notes.length > 300 || (nextFollowUpAt && !/^\d{4}-\d{2}-\d{2}$/.test(nextFollowUpAt))) {
+    toast('تحقق من اسم البائع والهاتف والسعر وموعد المتابعة');
+    return;
+  }
+  const call = {
+    id: nid(db.vehicleSourcingCalls),
+    sellerName,
+    phone,
+    vehicle: $('source_vehicle').value.trim().slice(0, 120),
+    askingPrice,
+    stage: 'contacted',
+    date: iso(new Date()),
+    nextFollowUpAt,
+    activities: [{ date: new Date().toISOString(), summary: notes || 'مكالمة أولية مع البائع' }]
+  };
+  db.vehicleSourcingCalls.push(call);
+  if (!saveLocal()) {
+    db.vehicleSourcingCalls.pop();
+    return;
+  }
+  ['source_seller_name', 'source_seller_phone', 'source_vehicle', 'source_asking_price', 'source_follow_up', 'source_call_notes']
+    .forEach(id => $(id).value = '');
+  renderVehicleSourcingCalls();
+  toast('تم حفظ مكالمة البائع وموعد متابعته');
+}
+
+function saveVehicleSourcingFollowUp(id) {
+  const call = (db.vehicleSourcingCalls || []).find(item => Number(item.id) === Number(id));
+  if (!call) return;
+  const summary = $(`sourceActivity_${id}`).value.trim();
+  const nextFollowUpAt = $(`sourceFollowUp_${id}`).value;
+  if (!summary && !nextFollowUpAt) {
+    toast('أدخل نتيجة المكالمة أو موعد المتابعة');
+    return;
+  }
+  if (!Array.isArray(call.activities)) call.activities = [];
+  if (summary) call.activities.push({ date: new Date().toISOString(), summary });
+  call.nextFollowUpAt = nextFollowUpAt;
+  if (!saveLocal()) return;
+  renderVehicleSourcingCalls();
+  toast('تم حفظ متابعة البائع');
+}
+
+function closeVehicleSourcingCall(id) {
+  const call = (db.vehicleSourcingCalls || []).find(item => Number(item.id) === Number(id));
+  if (!call || call.stage === 'purchased') return;
+  const previousStage = call.stage;
+  call.stage = 'closed';
+  if (!saveLocal()) {
+    call.stage = previousStage;
+    return;
+  }
+  renderVehicleSourcingCalls();
+}
+
+function selectVehicleSourcingCall(id) {
+  const call = (db.vehicleSourcingCalls || []).find(item => String(item.id) === String(id));
+  if (!call) return;
+  $('p_supplier').value = call.sellerName;
+  $('p_supp_phone').value = call.phone;
+  if (call.askingPrice) $('p_cost').value = call.askingPrice;
+  updatePurchaseCostSummary();
+}
+
+function getPurchaseCostRows() {
+  return Array.from($('p_additional_costs').querySelectorAll('[data-purchase-cost-row]')).map(row => ({
+    description: row.querySelector('[data-cost-description]').value.trim(),
+    amountValue: row.querySelector('[data-cost-amount]').value.trim(),
+    treatment: row.querySelector('[data-cost-treatment]').value,
+    paymentMethod: row.querySelector('[data-cost-payment]').value
+  }));
+}
+
+function addPurchaseCostRow() {
+  const container = $('p_additional_costs');
+  if (container.querySelectorAll('[data-purchase-cost-row]').length >= MAX_PURCHASE_COST_ITEMS) {
+    toast(`يمكن إضافة ${MAX_PURCHASE_COST_ITEMS} بند تكلفة كحد أقصى لكل عملية شراء`);
+    return;
+  }
+  const row = document.createElement('div');
+  row.className = 'card';
+  row.setAttribute('data-purchase-cost-row', '');
+  row.innerHTML = `
+    <div class="g3">
+      <div><label>وصف التكلفة *</label><input data-cost-description maxlength="120" placeholder="نقل، وقود، زيت، أجر سائق..." oninput="updatePurchaseCostSummary()"></div>
+      <div><label>المبلغ (ج.م) *</label><input data-cost-amount type="number" min="0.01" max="1000000000000" step="0.01" inputmode="decimal" placeholder="0.00" oninput="updatePurchaseCostSummary()"></div>
+      <div><label>المعالجة المحاسبية *</label>
+        <select data-cost-treatment onchange="updatePurchaseCostSummary()">
+          <option value="inventory">إضافة إلى تكلفة مخزون السيارة</option>
+          <option value="expense">تسجيل كمصروف شراء وتجهيز</option>
+        </select>
+      </div>
+    </div>
+    <div class="g2">
+      <div><label>طريقة سداد هذا البند *</label>
+        <select data-cost-payment>
+          <option value="cash">نقداً من الخزينة</option>
+          <option value="bank">تحويل بنكي</option>
+          <option value="credit">آجل / على الحساب</option>
+        </select>
+      </div>
+      <div style="display:flex;align-items:end;justify-content:flex-end">
+        <button type="button" class="del" onclick="removePurchaseCostRow(this)">إزالة البند</button>
+      </div>
+    </div>`;
+  container.appendChild(row);
+  updatePurchaseCostSummary();
+}
+
+function removePurchaseCostRow(button) {
+  const row = button.closest('[data-purchase-cost-row]');
+  if (row) row.remove();
+  updatePurchaseCostSummary();
+}
+
+function updatePurchaseCostSummary() {
+  const baseCost = Number($('p_cost').value);
+  const rows = getPurchaseCostRows();
+  const capitalized = rows.reduce((sum, row) =>
+    row.treatment === 'inventory' && Number.isFinite(Number(row.amountValue))
+      ? sum + Number(row.amountValue)
+      : sum, 0);
+  const expensed = rows.reduce((sum, row) =>
+    row.treatment === 'expense' && Number.isFinite(Number(row.amountValue))
+      ? sum + Number(row.amountValue)
+      : sum, 0);
+  const summary = $('p_cost_summary');
+  if (!Number.isFinite(baseCost) || baseCost <= 0) {
+    summary.textContent = 'أدخل سعر السيارة وأي تكاليف إضافية لعرض الإجمالي.';
+    return;
+  }
+  summary.innerHTML = `تكلفة مخزون السيارة: <strong>${fmt(baseCost + capitalized)} ج.م</strong>
+    · المصروفات المباشرة: <strong>${fmt(expensed)} ج.م</strong>
+    · إجمالي عملية الشراء: <strong>${fmt(baseCost + capitalized + expensed)} ج.م</strong>`;
+}
+
+function purchaseCreditAccount(paymentMethod) {
+  if (paymentMethod === 'cash') return '1010 - النقدية بالخزينة';
+  if (paymentMethod === 'bank') return '1015 - الحسابات البنكية للمنشأة';
+  if (paymentMethod === 'credit') return '2020 - الموردون وأوراق الدفع (آجل)';
+  throw new Error('طريقة سداد غير صالحة.');
+}
+
 // 1. PURCHASE ENGINE: Buy vehicle from supplier into Inventory & General Ledger
 function executeCarPurchase() {
   const supplier = $('p_supplier').value.trim();
@@ -3243,57 +5356,152 @@ function executeCarPurchase() {
   const cat = $('p_cat').value;
   const brand = $('p_brand').value.trim();
   const model = $('p_model').value.trim();
-  const year = parseInt($('p_year').value) || 0;
+  const year = Number($('p_year').value);
   const color = $('p_color').value.trim() || 'أبيض';
   const chassis = $('p_chassis').value.trim();
-  const cost = parseFloat($('p_cost').value) || 0;
-  const price = parseFloat($('p_price').value) || 0;
+  const baseCost = Number($('p_cost').value);
+  const price = Number($('p_price').value);
   const payMethod = $('p_pay_method').value;
+  const arrivalStatus = $('p_arrival_status').value;
+  const sourceLeadId = $('p_source_lead').value;
+  const sourceLead = sourceLeadId
+    ? (db.vehicleSourcingCalls || []).find(item =>
+      String(item.id) === String(sourceLeadId) && item.stage !== 'purchased' && item.stage !== 'closed')
+    : null;
   const notes = $('p_notes').value.trim();
+  const rawCostRows = getPurchaseCostRows();
+  const costRows = rawCostRows.filter(row => row.description || row.amountValue).map(row => ({
+    id: createAccountingSyncId(),
+    description: row.description,
+    amount: Number(row.amountValue),
+    treatment: row.treatment,
+    paymentMethod: row.paymentMethod
+  }));
+  const capitalizedAdditionalCost = costRows
+    .filter(row => row.treatment === 'inventory')
+    .reduce((sum, row) => sum + row.amount, 0);
+  const expensedAdditionalCost = costRows
+    .filter(row => row.treatment === 'expense')
+    .reduce((sum, row) => sum + row.amount, 0);
+  const inventoryCost = baseCost + capitalizedAdditionalCost;
+  const purchaseTotalAmount = baseCost + capitalizedAdditionalCost + expensedAdditionalCost;
 
-  if (!supplier || !brand || !model || !year || !cost || !price || !chassis) {
-    toast('⚠️ يرجى ملء الحقول الإلزامية لشراء وتوريد المركبة');
+  if (!supplier || supplier.length > 120 || suppPhone.length > 30 ||
+      !brand || brand.length > 100 || !model || model.length > 120 ||
+      !Number.isInteger(year) || year < 1900 || year > new Date().getFullYear() + 2 ||
+      !Number.isFinite(baseCost) || baseCost <= 0 ||
+      !Number.isFinite(price) || price <= 0 ||
+      !chassis || chassis.length > 120 ||
+      !['car', 'moto', 'scooter', 'truck'].includes(cat) ||
+      !['cash', 'bank', 'credit'].includes(payMethod) || notes.length > 500 ||
+      !['in_transit', 'arrived'].includes(arrivalStatus) ||
+      sourceLeadId && !sourceLead ||
+      rawCostRows.length > MAX_PURCHASE_COST_ITEMS ||
+      rawCostRows.some(row => (row.description || row.amountValue) &&
+        (!row.description || row.description.length > 120 ||
+          !Number.isFinite(Number(row.amountValue)) || Number(row.amountValue) <= 0 ||
+          Number(row.amountValue) > 1_000_000_000_000 ||
+          !['inventory', 'expense'].includes(row.treatment) ||
+          !['cash', 'bank', 'credit'].includes(row.paymentMethod))) ||
+      !Number.isFinite(inventoryCost) || inventoryCost <= 0 ||
+      !Number.isFinite(purchaseTotalAmount) || purchaseTotalAmount > 1_000_000_000_000) {
+    toast('تحقق من بيانات المورد والمركبة والمبالغ قبل اعتماد الشراء');
+    return;
+  }
+  if ((db.cars || []).some(car =>
+    String(car.chassis || car.chassisNo || '').trim().toLocaleUpperCase() === chassis.toLocaleUpperCase())) {
+    toast('رقم الشاسيه مسجل مسبقاً؛ راجع المخزون قبل تكرار الشراء');
     return;
   }
 
-  // 1. Add to Car Inventory
+  const carId = nid(db.cars);
+  const purchaseTransactionId = createAccountingSyncId();
+  const purchaseDate = iso(new Date());
+  const arrived = arrivalStatus === 'arrived';
   const newCar = {
-    id: nid(db.cars),
+    id: carId,
     brand,
     model,
     year,
     color,
     chassisNo: chassis,
-    cost,
+    cost: inventoryCost,
+    purchaseBaseCost: baseCost,
+    purchaseAdditionalCosts: costRows,
+    purchaseTotalAmount,
     price,
     condition: year >= new Date().getFullYear() ? 'New' : 'Used',
-    status: 'Available',
+    status: arrived ? 'Available' : 'InTransit',
+    arrivalDate: arrived ? purchaseDate : '',
+    sourceLeadId: sourceLead ? sourceLead.id : null,
     supplier,
     supplierPhone: suppPhone,
+    purchasePayMethod: payMethod,
+    purchaseTransactionId,
+    purchaseSupplierSyncId: createAccountingSyncId(),
     category: cat,
     notes,
     dateAdded: iso(new Date())
   };
+  const journalCount = db.journal.length;
   db.cars.unshift(newCar);
 
-  // 2. Generate Double-Entry Accounting Journal Entry
-  const creditAcc = payMethod === 'credit' 
-    ? '2020 - الموردون وأوراق الدفع (آجل)' 
-    : (payMethod === 'bank' ? '1015 - الحسابات البنكية للمنشأة' : '1010 - النقدية بالخزينة');
-
-  const jId = nid(db.journal);
-  db.journal.push({
-    id: jId,
-    date: iso(new Date()),
-    desc: `فاتورة شراء وتوريد مركبة: ${brand} ${model} (${year}) - شاسيه: ${chassis} من المورد: ${supplier}`,
+  const purchaseEntries = [{
+    description: `شراء السيارة: ${brand} ${model} (${year}) - شاسيه: ${chassis} - ${supplier}`,
     debitAccount: '1040 - مخزون المركبات',
-    creditAccount: creditAcc,
-    amount: cost
+    creditAccount: purchaseCreditAccount(payMethod),
+    amount: baseCost
+  }, ...costRows.map(row => ({
+    description: `تكلفة إضافية (${row.treatment === 'inventory' ? 'مضافة للمخزون' : 'مصروف شراء وتجهيز'}): ${row.description}`,
+    debitAccount: row.treatment === 'inventory'
+      ? '1040 - مخزون المركبات'
+      : PURCHASE_EXPENSE_ACCOUNT,
+    creditAccount: purchaseCreditAccount(row.paymentMethod),
+    amount: row.amount
+  }))];
+  purchaseEntries.forEach(entry => {
+    db.journal.push({
+      id: nid(db.journal),
+      date: purchaseDate,
+      desc: entry.description,
+      debitAccount: entry.debitAccount,
+      creditAccount: entry.creditAccount,
+      amount: entry.amount,
+      sourceEntityId: carId,
+      purchaseTransactionId
+    });
   });
 
-  saveLocal();
+  const previousLeadStage = sourceLead ? sourceLead.stage : '';
+  const previousLeadCarId = sourceLead ? sourceLead.linkedCarId : null;
+  const previousLeadActivityCount = sourceLead && Array.isArray(sourceLead.activities)
+    ? sourceLead.activities.length
+    : 0;
+  if (sourceLead) {
+    if (!Array.isArray(sourceLead.activities)) sourceLead.activities = [];
+    sourceLead.stage = 'purchased';
+    sourceLead.linkedCarId = carId;
+    sourceLead.activities.push({
+      date: new Date().toISOString(),
+      summary: `تم شراء السيارة وربطها بالمخزون #${carId}`
+    });
+  }
+
+  if (!saveLocal()) {
+    db.cars.shift();
+    db.journal.splice(journalCount);
+    if (sourceLead) {
+      sourceLead.stage = previousLeadStage;
+      sourceLead.linkedCarId = previousLeadCarId;
+      sourceLead.activities.splice(previousLeadActivityCount);
+    }
+    return;
+  }
   stat();
   renderCars();
+  renderCarSelectDropdown();
+  renderLeads();
+  renderVehicleSourcingCalls();
   renderGeneralLedger();
 
   // Clear inputs
@@ -3307,9 +5515,14 @@ function executeCarPurchase() {
   $('p_cost').value = '';
   $('p_price').value = '';
   $('p_notes').value = '';
+  $('p_additional_costs').innerHTML = '';
+  $('p_source_lead').value = '';
+  $('p_arrival_status').value = 'in_transit';
+  updatePurchaseCostSummary();
 
-  showOwnerAlert('تم تسجيل شراء وتوريد مركبة جديدة بنجاح', `تم إضافة [${brand} ${model} ${year}] للمخزون برقم شاسيه (${chassis}) وتوليد القيد المحاسبي بالمديونية بقيمة ${fmt(cost)} ج.م.`);
-  toast('✅ تم إضافة المركبة للمخزون وترحيل قيد الشراء للأستاذ العام');
+  showOwnerAlert('تم تسجيل شراء وتوريد مركبة جديدة بنجاح',
+    `تم إضافة [${brand} ${model} ${year}] للمخزون بتكلفة ${fmt(inventoryCost)} ج.م، وإثبات مصروفات إضافية ${fmt(expensedAdditionalCost)} ج.م. إجمالي العملية ${fmt(purchaseTotalAmount)} ج.م.`);
+  toast('تم تسجيل الشراء وتكاليفه؛ القيد المحلي جاهز للمراجعة والمزامنة كمسودة');
 }
 
 // 2. MARKET ORDERS API: Fetch, Alert Owner & Approve Sales
@@ -3588,6 +5801,10 @@ $('imp').addEventListener('change', async e => {
     db = dbFromSheets({
       Banks: rows('Banks'),
       Insurance: rows('Insurance'),
+      InsurancePolicies: rows('InsurancePolicies'),
+      VehicleSourcingCalls: rows('VehicleSourcingCalls'),
+      SourcingCallActivities: rows('SourcingCallActivities'),
+      PurchaseCosts: rows('PurchaseCosts'),
       Cars: rows('Cars'),
       Leads: rows('Leads'),
       Customers: rows('Customers'),
@@ -3652,6 +5869,10 @@ async function reportClientHeartbeat() {
     if (typeof result.status === 'string') license.activationStatus = result.status;
     else if (!response.ok) license.activationStatus = 'pending_verification';
     if (response.ok && result.features) license.features = result.features;
+    if (response.ok && ['growth', 'pro', 'enterprise'].includes(result.crmTier)) {
+      license.crmTier = result.crmTier;
+      license.crmEntitlements = result.crmEntitlements;
+    }
     if (['suspended', 'revoked'].includes(license.activationStatus)) localStorage.removeItem(ACT_K);
   } catch (error) {
     console.warn('Unable to refresh client license status:', error);
@@ -4114,6 +6335,8 @@ async function deletePcRibbon(id) {
 }
 
 async function boot() {
+  const landingCrmTokenInput = $('landingCrmToken');
+  if (landingCrmTokenInput) landingCrmTokenInput.value = getLandingCrmToken();
   if (window.SHOWROOM_LICENSE && window.SHOWROOM_LICENSE.companyName) {
     const installedName = window.SHOWROOM_LICENSE.companyName;
     const hasClientProfile = db.settings.companyProfileInitialized ||
@@ -4173,7 +6396,13 @@ function toSheets() {
   return {
     Banks: db.banks,
     Insurance: db.insurance || [],
-    Cars: db.cars || [],
+    InsurancePolicies: db.insurancePolicies || [],
+    VehicleSourcingCalls: (db.vehicleSourcingCalls || []).map(({activities, ...call}) => call),
+    SourcingCallActivities: (db.vehicleSourcingCalls || []).flatMap(call =>
+      (call.activities || []).map(activity => ({callId: call.id, ...activity}))),
+    PurchaseCosts: (db.cars || []).flatMap(car =>
+      (car.purchaseAdditionalCosts || []).map(cost => ({carId: car.id, ...cost}))),
+    Cars: (db.cars || []).map(({purchaseAdditionalCosts, ...car}) => car),
     Leads: db.leads || [],
     Customers: db.customers,
     Contracts: db.contracts.map(({installments, ...c}) => c),
@@ -4187,6 +6416,8 @@ function dbFromSheets(S) {
   const N = x => x === '' || x == null ? 0 : +x;
   const T = x => x === true || x === 'TRUE' || x === 'true';
   const ins = S.Installments || [];
+  const purchaseCosts = S.PurchaseCosts || [];
+  const sourcingActivities = S.SourcingCallActivities || [];
   const set = {...DEF_SET};
   (S.Settings || []).forEach(r => {
     if (r.key) {
@@ -4207,6 +6438,7 @@ function dbFromSheets(S) {
       minDPNew: N(b.minDPNew),
       minDPUsed: N(b.minDPUsed),
       maxMonths: N(b.maxMonths),
+      annualRate: b.annualRate == null || b.annualRate === '' ? DEF_SET.bank : N(b.annualRate),
       commission: N(b.commission),
       sectors: String(b.sectors || '')
     })),
@@ -4215,9 +6447,38 @@ function dbFromSheets(S) {
       id: N(i.id),
       rate: N(i.rate)
     })),
+    insurancePolicies: (S.InsurancePolicies || []).map(policy => ({
+      ...policy,
+      id: N(policy.id),
+      contractId: N(policy.contractId),
+      carId: policy.carId ? N(policy.carId) : null,
+      providerId: N(policy.providerId),
+      premium: N(policy.premium),
+      renewalOf: policy.renewalOf ? N(policy.renewalOf) : null
+    })),
+    vehicleSourcingCalls: (S.VehicleSourcingCalls || []).map(call => ({
+      ...call,
+      id: N(call.id),
+      askingPrice: call.askingPrice === '' || call.askingPrice == null ? null : N(call.askingPrice),
+      linkedCarId: call.linkedCarId ? N(call.linkedCarId) : null,
+      activities: sourcingActivities.filter(activity => N(activity.callId) === N(call.id)).map(activity => ({
+        date: String(activity.date || ''),
+        summary: String(activity.summary || '')
+      }))
+    })),
     cars: (S.Cars || DEF_CARS).map(c => ({
       ...c,
       id: N(c.id),
+      sourceLeadId: c.sourceLeadId ? N(c.sourceLeadId) : null,
+      purchaseBaseCost: c.purchaseBaseCost == null ? N(c.cost) : N(c.purchaseBaseCost),
+      purchaseTotalAmount: c.purchaseTotalAmount == null ? N(c.cost) : N(c.purchaseTotalAmount),
+      purchaseAdditionalCosts: purchaseCosts.filter(cost => N(cost.carId) === N(c.id)).map(cost => ({
+        id: String(cost.id || ''),
+        description: String(cost.description || ''),
+        amount: N(cost.amount),
+        treatment: String(cost.treatment || 'expense'),
+        paymentMethod: String(cost.paymentMethod || 'cash')
+      })),
       cost: N(c.cost),
       price: N(c.price),
       year: N(c.year)
@@ -4225,6 +6486,9 @@ function dbFromSheets(S) {
     leads: (S.Leads || DEF_LEADS).map(l => ({
       ...l,
       id: N(l.id),
+      crmDocumentKey: String(l.crmDocumentKey || crypto.randomUUID()),
+      carId: l.carId ? N(l.carId) : null,
+      contractId: l.contractId ? N(l.contractId) : null,
       budget: N(l.budget)
     })),
     customers: (S.Customers || []).map(c => ({
@@ -4236,11 +6500,31 @@ function dbFromSheets(S) {
     contracts: (S.Contracts || []).map(c => ({
       ...c,
       id: N(c.id),
+      crmDocumentKey: String(c.crmDocumentKey || crypto.randomUUID()),
       customerId: N(c.customerId),
+      carId: c.carId ? N(c.carId) : null,
+      carCost: N(c.carCost),
       price: N(c.price),
       downPayment: N(c.downPayment),
       months: N(c.months),
       monthly: N(c.monthly),
+      paymentType: String(c.paymentType || ''),
+      installmentOwner: String(c.installmentOwner || ''),
+      collectionMethod: String(c.collectionMethod || 'cash'),
+      downPaymentMethod: String(c.downPaymentMethod || 'cash'),
+      dealerPolicyRate: N(c.dealerPolicyRate),
+      financeOrgId: c.financeOrgId ? N(c.financeOrgId) : null,
+      financeOrgName: String(c.financeOrgName || ''),
+      financeAnnualRate: N(c.financeAnnualRate),
+      financeCommission: N(c.financeCommission),
+      financeSettlementAmount: N(c.financeSettlementAmount),
+      financeSettlementReceivedAmount: N(c.financeSettlementReceivedAmount),
+      financeSettlementStatus: String(c.financeSettlementStatus || ''),
+      financeSettlementReceivedAt: String(c.financeSettlementReceivedAt || ''),
+      financeAgreementReference: String(c.financeAgreementReference || ''),
+      financeScheduleEstimated: c.financeScheduleEstimated == null
+        ? String(c.installmentOwner || '') === 'finance'
+        : T(c.financeScheduleEstimated),
       date: String(c.date || ''),
       installments: ins.filter(i => N(i.contractId) === N(c.id)).map(i => ({
         n: N(i.n),
@@ -4248,6 +6532,12 @@ function dbFromSheets(S) {
         amount: N(i.amount),
         paid: T(i.paid),
         paidDate: i.paidDate ? String(i.paidDate) : '',
+        paymentMethod: String(i.paymentMethod || ''),
+        payer: String(i.payer || (c.installmentOwner === 'finance' ? 'finance' : c.installmentOwner === 'dealer' ? 'dealer' : '')),
+        estimated: i.estimated == null || i.estimated === ''
+          ? String(c.installmentOwner || '') === 'finance'
+          : T(i.estimated),
+        confirmedByDealerAt: String(i.confirmedByDealerAt || ''),
         whatsappSent: T(i.whatsappSent),
         whatsappSentDate: i.whatsappSentDate ? String(i.whatsappSentDate) : '',
         whatsappOverdueSent: T(i.whatsappOverdueSent),

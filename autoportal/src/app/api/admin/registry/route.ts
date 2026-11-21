@@ -4,6 +4,7 @@ import { execute, queryOne } from '@/lib/db';
 import { assertNesting, loadTypeRule, TypologyError } from '@/lib/typology';
 import { resolveSections } from '@/lib/minisite';
 import { parseCustomDomain } from '@/lib/custom-domain';
+import { isVendorTierId } from '@/lib/tiers';
 
 
 function slugify(text: string): string {
@@ -114,13 +115,14 @@ export async function POST(req: NextRequest) {
     };
 
     const businessId = `biz_${type_id.slice(0, 4)}_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 6)}`;
+    const validTier = isVendorTierId(subscription_tier) ? subscription_tier : 'free';
 
     // 4. Create the Node in Database
     await execute(
       `INSERT INTO businesses (
         id, name, name_ar, slug, type_id, status, published,
-        parent_business_id, custom_domain, minisite_mode, custom_data
-      ) VALUES (?, ?, ?, ?, ?, 'active', ?, ?, ?, 'standalone', ?)`,
+        parent_business_id, custom_domain, minisite_mode, subscription_tier, custom_data
+      ) VALUES (?, ?, ?, ?, ?, 'active', ?, ?, ?, 'standalone', ?, ?)`,
       [
         businessId,
         name,
@@ -130,6 +132,7 @@ export async function POST(req: NextRequest) {
         published ? 1 : 0,
         parent_business_id || null,
         parsedDomain.domain,
+        validTier,
         JSON.stringify(autoCustomData),
       ]
     );
@@ -142,6 +145,7 @@ export async function POST(req: NextRequest) {
         name,
         slug: finalSlug,
         type_id,
+        subscription_tier: validTier,
         is_parent: typeRule.is_parent,
         vendor_claimable: typeRule.vendor_claimable,
         website_policy: {

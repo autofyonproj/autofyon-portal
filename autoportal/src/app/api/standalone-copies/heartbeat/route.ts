@@ -2,9 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { batch, queryOne } from '@/lib/db';
 import {
   effectiveStandaloneFeatures,
+  isStandaloneCrmTierId,
   parseStandaloneFeatureOverrides,
   parseStandaloneFeatures,
 } from '@/lib/standalone-license';
+import { getVendorTier } from '@/lib/tiers';
 
 
 const corsHeaders = {
@@ -55,17 +57,22 @@ export async function POST(request: NextRequest) {
     const copy = await queryOne<{
       serial: string;
       status: string;
+      business_id: string | null;
       package_version: string | null;
       template_id: string;
+      crm_tier: string;
       feature_overrides_json: string;
       phone_verified_at: string | null;
     }>(
-      `SELECT serial, status, package_version, template_id, feature_overrides_json, phone_verified_at
+      `SELECT serial, status, business_id, package_version, template_id, crm_tier, feature_overrides_json, phone_verified_at
          FROM standalone_client_copies
         WHERE serial = ? AND client_token_hash = ?`,
       [body.serial, tokenHash],
     );
     if (!copy) return jsonResponse({ error: 'Invalid client credentials' }, 401);
+    if (!isStandaloneCrmTierId(copy.crm_tier)) {
+      return jsonResponse({ error: 'Client CRM tier configuration is invalid' }, 500);
+    }
 
     const template = await queryOne<{ features_json: string }>(
       'SELECT features_json FROM standalone_license_templates WHERE id = ?',
@@ -111,8 +118,11 @@ export async function POST(request: NextRequest) {
       ok: true,
       serial: copy.serial,
       status: copy.status,
+      businessId: copy.business_id,
       phoneVerified: Boolean(copy.phone_verified_at),
       features: effectiveFeatures,
+      crmTier: copy.crm_tier,
+      crmEntitlements: getVendorTier(copy.crm_tier).crm,
       serverTime: new Date().toISOString(),
     });
   } catch (error) {

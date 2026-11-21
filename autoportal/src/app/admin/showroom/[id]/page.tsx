@@ -4,6 +4,7 @@ import { queryOne } from '@/lib/db';
 import { getBusinessMembership } from '@/lib/business-apps';
 import BusinessTeamManager from '@/components/BusinessTeamManager';
 import { notFound } from 'next/navigation';
+import { isVendorLeadBusinessType } from '@/lib/vendor-leads';
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -22,9 +23,9 @@ export default async function ShowroomDashboard({ params }: Params) {
 
   const showroom = await queryOne<{
     id: string; name: string; name_ar: string | null; slug: string;
-    type_id: string; custom_data: string;
+    type_id: string; custom_data: string; published: number;
   }>(
-    'SELECT id, name, name_ar, slug, type_id, custom_data FROM businesses WHERE id = ? AND status = \'active\'',
+    'SELECT id, name, name_ar, slug, type_id, custom_data, published FROM businesses WHERE id = ? AND status = \'active\'',
     [id],
   );
   if (!showroom) notFound();
@@ -135,6 +136,47 @@ export default async function ShowroomDashboard({ params }: Params) {
               <div className="text-xs opacity-60">Views, vehicle clicks, and contact-link clicks</div>
             </div>
           </a>
+          {showroom.published === 1
+            && isVendorLeadBusinessType(showroom.type_id)
+            && (user.role === 'platform_admin' || (membership?.status === 'active' && ['owner', 'sales'].includes(membership.role))) ? (
+            <a
+              href={`/admin/showroom/${id}/leads`}
+              className="flex items-center gap-3 p-4 rounded-xl border border-emerald-500/20 bg-emerald-500/5 hover:bg-emerald-500/10 transition"
+            >
+              <span className="text-2xl">👥</span>
+              <div>
+                <div className="font-bold text-sm text-emerald-700">Landing-page CRM</div>
+                <div className="text-xs opacity-60">استفسارات الصفحة ومهام المتابعة</div>
+              </div>
+            </a>
+          ) : null}
+          {user.role === 'platform_admin'
+            || (membership?.status === 'active' && ['owner', 'accountant'].includes(membership.role)) ? (
+            <a
+              href={`/admin/showroom/${id}/accounting-drafts`}
+              className="flex items-center gap-3 rounded-xl border border-amber-500/20 bg-amber-500/5 p-4 transition hover:bg-amber-500/10"
+            >
+              <span className="text-2xl">🧾</span>
+              <div>
+                <div className="text-sm font-bold text-amber-700">مسودات المحاسبة</div>
+                <div className="text-xs opacity-60">مراجعة واعتماد عمليات ERP المرتبطة</div>
+              </div>
+            </a>
+          ) : null}
+          {showroom.published === 1
+            && (user.role === 'platform_admin'
+              || (membership?.status === 'active' && ['owner', 'sales'].includes(membership.role))) ? (
+            <a
+              href={`/admin/showroom/${id}/social`}
+              className="flex items-center gap-3 rounded-xl border border-fuchsia-500/20 bg-fuchsia-500/5 p-4 transition hover:bg-fuchsia-500/10"
+            >
+              <span className="text-2xl">📣</span>
+              <div>
+                <div className="text-sm font-bold text-fuchsia-700">إدارة المحتوى الاجتماعي</div>
+                <div className="text-xs opacity-60">مسودات، مشاركة يدوية، وتقويم حسب الباقة</div>
+              </div>
+            </a>
+          ) : null}
         </div>
       </div>
       {user.role === 'platform_admin' || (membership?.status === 'active' && membership.role === 'owner')

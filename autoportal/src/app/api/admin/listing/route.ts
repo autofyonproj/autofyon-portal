@@ -29,6 +29,7 @@ import {
   assertSellable,
   assertUnitOverrideKey,
 } from '@/lib/typology';
+import { getVendorTier } from '@/lib/tiers';
 
 const J = { 'Content-Type': 'application/json' };
 const ok = (d: unknown, s = 200) => new Response(JSON.stringify(d), { status: s, headers: J });
@@ -189,6 +190,19 @@ export async function POST(req: Request) {
     // A unit needs a real, published, sellable seller. This is the guard that
     // refuses a factory or a vehicle_model as seller before the row exists.
     const seller = await assertSellable(unit.seller_business_id!);
+    const entitlement = await queryOne<{ subscription_tier: string }>(
+      'SELECT subscription_tier FROM businesses WHERE id = ?',
+      [seller.id],
+    );
+    const tier = getVendorTier(entitlement?.subscription_tier);
+    const activeListings = await queryOne<{ count: number }>(
+      `SELECT COUNT(*) AS count FROM units
+        WHERE seller_business_id = ? AND status != 'inactive' AND published = 1`,
+      [seller.id],
+    );
+    if ((activeListings?.count ?? 0) >= tier.maxActiveCars) {
+      return err(`Your plan allows up to ${tier.maxActiveCars} active listings`, 403);
+    }
     if (unit.model_business_id) {
       const model = await queryOne<{ id: string; type_id: string; status: string }>(
         `SELECT id, type_id, status FROM businesses WHERE id = ?`,

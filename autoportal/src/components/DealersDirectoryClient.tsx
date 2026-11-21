@@ -65,7 +65,7 @@ export default function DealersDirectoryClient({ dealers, locale = 'ar' }: Props
 
       // Search match
       if (q) {
-        const text = `${d.name} ${d.name_en || ''} ${d.district} ${d.address} ${d.brand} ${d.contact_name} ${d.primary_phone}`.toLowerCase();
+        const text = `${d.name} ${d.name_en || ''} ${d.district} ${d.address} ${d.brand}`.toLowerCase();
         if (!text.includes(q)) return false;
       }
 
@@ -184,7 +184,7 @@ export default function DealersDirectoryClient({ dealers, locale = 'ar' }: Props
         <div className="flex items-center gap-2">
           <span>{dict.showingCount}:</span>
           <strong className="text-white font-black text-sm">{filteredDealers.length}</strong>
-          <span>{dict.of} 2,800+ {dict.entities}</span>
+          <span>{dict.of} {dict.entities}</span>
           {selectedCategory !== 'all' && (
             <span className="text-red-400 font-semibold">• {translateCategory(selectedCategory, locale).label}</span>
           )}
@@ -238,7 +238,7 @@ export default function DealersDirectoryClient({ dealers, locale = 'ar' }: Props
             // Registration claim URL with pre-filled parameters
             const claimUrl = `/join?claim=${encodeURIComponent(item.id)}&slug=${encodeURIComponent(
               item.slug,
-            )}&name=${encodeURIComponent(item.name)}&phone=${encodeURIComponent(item.primary_phone || '')}&city=${encodeURIComponent(
+            )}&name=${encodeURIComponent(item.name)}&city=${encodeURIComponent(
               item.city || '',
             )}`;
 
@@ -299,13 +299,6 @@ export default function DealersDirectoryClient({ dealers, locale = 'ar' }: Props
                     </p>
                   )}
 
-                  {/* Contact Person */}
-                  {item.contact_name && (
-                    <p className="text-[11px] text-neutral-500">
-                      {dict.contactPerson}:{' '}
-                      <span className="text-neutral-300 font-medium">{item.contact_name}</span>
-                    </p>
-                  )}
                 </div>
 
                 {/* Free Package Claim Notice for Unregistered Prospects */}

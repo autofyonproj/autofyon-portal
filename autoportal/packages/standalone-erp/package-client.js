@@ -24,6 +24,7 @@ const featureKeys = [
   'cloud_sync',
   'marketplace'
 ];
+const crmTierKeys = ['growth', 'pro', 'enterprise'];
 
 function readConfig() {
   const args = process.argv.slice(2);
@@ -51,6 +52,10 @@ function validateConfig(config) {
   const trackingToken = typeof config.clientTrackingToken === 'string'
     ? config.clientTrackingToken.trim()
     : '';
+  const businessId = config.businessId === undefined || config.businessId === null
+    ? ''
+    : typeof config.businessId === 'string' ? config.businessId.trim() : null;
+  const crmTier = config.crmTier === undefined ? 'enterprise' : config.crmTier;
   const version = typeof config.version === 'string' ? config.version.trim() : '';
   const features = config.features;
   if (!companyName || companyName.length > 120 || phone.length < 10 || phone.length > 15 ||
@@ -64,6 +69,12 @@ function validateConfig(config) {
   }
   if (trackingToken && !/^[a-f0-9]{64}$/.test(trackingToken)) {
     throw new Error('The license configuration has an invalid tracking token.');
+  }
+  if (businessId === null || businessId.length > 100) {
+    throw new Error('The license configuration has an invalid AutoFyon business ID.');
+  }
+  if (!crmTierKeys.includes(crmTier)) {
+    throw new Error('The license configuration has an invalid standalone CRM tier.');
   }
   if (version && version.length > 40) throw new Error('The license version is too long.');
   return {
@@ -81,6 +92,8 @@ function validateConfig(config) {
     masterCopy: false,
     activationStatus: 'pending_verification',
     isLockedBranding: false,
+    crmTier,
+    ...(businessId ? { businessId } : {}),
     features,
     ...(trackingToken ? { clientTrackingToken: trackingToken } : {})
   };

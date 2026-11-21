@@ -119,9 +119,15 @@ export default async function VendorProspectsPage({
           These directory records are not registered vendors. Filter the reviewed Egypt sales cohort, then update outreach status manually. This screen never sends messages.
         </p>
         <div className="mt-3 flex flex-wrap gap-2">
+          <Link href="/admin/platform/vendor-onboarding" className="inline-flex items-center gap-1.5 rounded-lg border border-violet-700/25 bg-violet-700/5 px-4 py-2 text-sm font-bold text-violet-900 hover:bg-violet-700/10">
+            مراجعة تسجيلات المعارض ↗
+          </Link>
           <Link href="/admin/platform/vendor-prospects/groups" className="inline-flex rounded-lg border border-amber-700/25 bg-amber-700/5 px-4 py-2 text-sm font-bold text-amber-950 hover:bg-amber-700/10">
             Review company groups &amp; follow-ups ↗
           </Link>
+          <a href="/api/contacts/export-vcf" download="autofyon-prospect-contacts.vcf" className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-700/25 bg-emerald-700/5 px-4 py-2 text-sm font-bold text-emerald-900 hover:bg-emerald-700/10">
+            📥 Export prospect contacts (VCF)
+          </a>
           <Link href="/admin/platform/vendor-prospects/import" className="inline-flex items-center gap-1.5 rounded-lg border border-blue-700/25 bg-blue-700/5 px-4 py-2 text-sm font-bold text-blue-900 hover:bg-blue-700/10">
             📥 Import vendors
           </Link>

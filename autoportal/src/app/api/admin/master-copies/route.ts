@@ -4,6 +4,7 @@ import { requireAutofyonMaster } from '@/lib/admin-auth';
 import {
   DEFAULT_STANDALONE_FEATURES,
   effectiveStandaloneFeatures,
+  isStandaloneCrmTierId,
   parseStandaloneFeatureOverrides,
   parseStandaloneFeatures,
 } from '@/lib/standalone-license';
@@ -23,7 +24,9 @@ type CopyRow = {
   serial: string;
   company_name: string;
   phone: string;
+  business_id: string | null;
   template_id: string;
+  crm_tier: string;
   feature_overrides_json: string;
   status: string;
   phone_verified_at: string | null;
@@ -89,7 +92,7 @@ export async function GET(request: NextRequest) {
           ORDER BY active DESC, name`,
       ),
       query<CopyRow>(
-        `SELECT c.serial, c.company_name, c.phone, c.template_id, c.feature_overrides_json,
+        `SELECT c.serial, c.company_name, c.phone, c.business_id, c.template_id, c.crm_tier, c.feature_overrides_json,
                 c.status, c.phone_verified_at, c.package_version, c.last_seen_at,
                 c.follow_up_at, c.notes, c.created_at, c.updated_at, t.name AS template_name
            FROM standalone_client_copies c
@@ -136,7 +139,9 @@ export async function GET(request: NextRequest) {
         serial: copy.serial,
         companyName: copy.company_name,
         phone: copy.phone,
+        businessId: copy.business_id,
         templateId: copy.template_id,
+        crmTier: copy.crm_tier,
         templateName: copy.template_name,
         featureOverrides,
         effectiveFeatures: effectiveStandaloneFeatures(templateFeatures, featureOverrides),
@@ -222,15 +227,28 @@ export async function POST(request: NextRequest) {
     if (body.action === 'create_copy') {
       const companyName = typeof body.companyName === 'string' ? body.companyName.trim() : '';
       const phone = typeof body.phone === 'string' ? body.phone.replace(/\D/g, '') : '';
+      const businessId = body.businessId === undefined || body.businessId === null || body.businessId === ''
+        ? null
+        : typeof body.businessId === 'string' ? body.businessId.trim() : undefined;
       const templateId = typeof body.templateId === 'string' ? body.templateId.trim() : '';
+      const crmTier = body.crmTier === undefined ? 'growth' : body.crmTier;
       const followUpAt = body.followUpAt === undefined ? null : parseDate(body.followUpAt);
       const notes = typeof body.notes === 'string' ? body.notes.trim() : '';
       const overrides = parseStandaloneFeatureOverrides(body.featureOverrides ?? {});
       if (!companyName || companyName.length > 120 || phone.length < 10 || phone.length > 15) {
         return NextResponse.json({ error: 'Enter a business name and a valid phone number' }, { status: 400 });
       }
-      if (followUpAt === undefined || notes.length > 2000 || !overrides) {
+      if (followUpAt === undefined || notes.length > 2000 || !overrides || !isStandaloneCrmTierId(crmTier)) {
         return NextResponse.json({ error: 'Invalid follow-up date, notes, or feature overrides' }, { status: 400 });
+      }
+      if (businessId === undefined || businessId !== null && businessId.length > 100) {
+        return NextResponse.json({ error: 'Enter a valid AutoFyon business ID or leave it blank.' }, { status: 400 });
+      }
+      if (businessId && !await queryOne(
+        'SELECT id FROM businesses WHERE id = ? AND status = \'active\'',
+        [businessId],
+      )) {
+        return NextResponse.json({ error: 'The linked AutoFyon business is not active or does not exist.' }, { status: 400 });
       }
       const template = await queryOne<{ id: string; active: number }>(
         'SELECT id, active FROM standalone_license_templates WHERE id = ?',
@@ -244,11 +262,11 @@ export async function POST(request: NextRequest) {
       await batch([
         {
           sql: `INSERT INTO standalone_client_copies
-                  (serial, company_name, phone, template_id, feature_overrides_json,
+                  (serial, company_name, phone, business_id, template_id, crm_tier, feature_overrides_json,
                    follow_up_at, notes, created_by, updated_by)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           params: [
-            serial, companyName, phone, templateId, JSON.stringify(overrides),
+            serial, companyName, phone, businessId, templateId, crmTier, JSON.stringify(overrides),
             followUpAt, notes, auth.user.id, auth.user.id,
           ],
         },
@@ -258,7 +276,7 @@ export async function POST(request: NextRequest) {
                 VALUES (?, 'copy', ?, 'copy_created', ?, ?)`,
           params: [
             crypto.randomUUID(), serial,
-            JSON.stringify({ companyName, phone, templateId, status: 'pending_verification' }),
+            JSON.stringify({ companyName, phone, businessId, templateId, crmTier, status: 'pending_verification' }),
             auth.user.email,
           ],
         },
@@ -268,8 +286,8 @@ export async function POST(request: NextRequest) {
 
     if (body.action === 'issue_package_config') {
       const serial = typeof body.serial === 'string' ? body.serial.trim() : '';
-      const copy = await queryOne<{ serial: string; status: string; phone_verified_at: string | null }>(
-        'SELECT serial, status, phone_verified_at FROM standalone_client_copies WHERE serial = ?',
+      const copy = await queryOne<{ serial: string; status: string; crm_tier: string; business_id: string | null; phone_verified_at: string | null }>(
+        'SELECT serial, status, crm_tier, business_id, phone_verified_at FROM standalone_client_copies WHERE serial = ?',
         [serial],
       );
       if (!copy) return NextResponse.json({ error: 'Client copy not found' }, { status: 404 });
@@ -293,7 +311,7 @@ export async function POST(request: NextRequest) {
           params: [
             crypto.randomUUID(),
             serial,
-            JSON.stringify({ status: copy.status, phoneVerified: Boolean(copy.phone_verified_at) }),
+            JSON.stringify({ status: copy.status, crmTier: copy.crm_tier, businessId: copy.business_id, phoneVerified: Boolean(copy.phone_verified_at) }),
             auth.user.email,
           ],
         },
@@ -350,15 +368,17 @@ export async function PATCH(request: NextRequest) {
         serial: string;
         company_name: string;
         phone: string;
+        business_id: string | null;
         status: string;
         template_id: string;
+        crm_tier: string;
         feature_overrides_json: string;
         phone_verified_at: string | null;
         follow_up_at: string | null;
         notes: string;
         package_version: string | null;
       }>(
-        `SELECT serial, company_name, phone, status, template_id, feature_overrides_json, phone_verified_at,
+        `SELECT serial, company_name, phone, business_id, status, template_id, crm_tier, feature_overrides_json, phone_verified_at,
                 follow_up_at, notes, package_version
            FROM standalone_client_copies WHERE serial = ?`,
         [serial],
@@ -382,14 +402,38 @@ export async function PATCH(request: NextRequest) {
       const templateId = body.templateId === undefined
         ? copy.template_id
         : typeof body.templateId === 'string' ? body.templateId.trim() : '';
+      const crmTier = body.crmTier === undefined ? copy.crm_tier : body.crmTier;
       const companyName = body.companyName === undefined
         ? copy.company_name
         : typeof body.companyName === 'string' ? body.companyName.trim() : '';
       const phone = body.phone === undefined
         ? copy.phone
         : typeof body.phone === 'string' ? body.phone.replace(/\D/g, '') : '';
+      const businessId = body.businessId === undefined
+        ? copy.business_id
+        : body.businessId === null || body.businessId === ''
+          ? null
+          : typeof body.businessId === 'string' ? body.businessId.trim() : undefined;
       if (!companyName || companyName.length > 120 || phone.length < 10 || phone.length > 15) {
         return NextResponse.json({ error: 'Enter a business name and a valid phone number' }, { status: 400 });
+      }
+      if (businessId === undefined || businessId !== null && businessId.length > 100) {
+        return NextResponse.json({ error: 'Enter a valid AutoFyon business ID or leave it blank.' }, { status: 400 });
+      }
+      if (businessId && !await queryOne(
+        'SELECT id FROM businesses WHERE id = ? AND status = \'active\'',
+        [businessId],
+      )) {
+        return NextResponse.json({ error: 'The linked AutoFyon business is not active or does not exist.' }, { status: 400 });
+      }
+      if (businessId !== copy.business_id) {
+        const existingDrafts = await queryOne<{ count: number }>(
+          'SELECT COUNT(*) AS count FROM standalone_accounting_drafts WHERE source_serial = ?',
+          [serial],
+        );
+        if (Number(existingDrafts?.count ?? 0) > 0) {
+          return NextResponse.json({ error: 'The business link cannot change after accounting drafts have been submitted.' }, { status: 409 });
+        }
       }
       const template = await queryOne<{ id: string; active: number }>(
         'SELECT id, active FROM standalone_license_templates WHERE id = ?',
@@ -411,7 +455,7 @@ export async function PATCH(request: NextRequest) {
         : typeof body.packageVersion === 'string'
           ? body.packageVersion.trim() || null
           : body.packageVersion === null ? null : undefined;
-      if (!featureOverrides || requestedFollowUpAt === undefined ||
+      if (!featureOverrides || !isStandaloneCrmTierId(crmTier) || requestedFollowUpAt === undefined ||
           notes === null || notes.length > 2000 ||
           packageVersion === undefined || packageVersion !== null && packageVersion.length > 40) {
         return NextResponse.json({ error: 'Invalid copy update' }, { status: 400 });
@@ -421,14 +465,16 @@ export async function PATCH(request: NextRequest) {
       await batch([
         {
           sql: `UPDATE standalone_client_copies
-                   SET company_name = ?, phone = ?, template_id = ?, feature_overrides_json = ?, status = ?,
+                         SET company_name = ?, phone = ?, business_id = ?, template_id = ?, crm_tier = ?, feature_overrides_json = ?, status = ?,
                        follow_up_at = ?, notes = ?, package_version = ?,
                        updated_by = ?, updated_at = CURRENT_TIMESTAMP
                  WHERE serial = ?`,
           params: [
             companyName,
             phone,
+            businessId,
             templateId,
+            crmTier,
             JSON.stringify(featureOverrides),
             status,
             requestedFollowUpAt,
@@ -446,7 +492,7 @@ export async function PATCH(request: NextRequest) {
             crypto.randomUUID(),
             serial,
             previousStatus !== status ? 'copy_status_changed' : 'copy_updated',
-            JSON.stringify({ companyName, phone, status, templateId, followUpAt: requestedFollowUpAt, packageVersion }),
+            JSON.stringify({ companyName, phone, businessId, status, templateId, crmTier, followUpAt: requestedFollowUpAt, packageVersion }),
             auth.user.email,
           ],
         },

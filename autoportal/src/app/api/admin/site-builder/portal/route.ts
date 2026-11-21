@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requirePlatformAdmin } from '@/lib/admin-auth';
 import { loadPortalPageState, savePortalPage } from '@/lib/portal-site';
 
-export const runtime = 'edge';
-
 const COPY_KEYS = [
   'badge', 'title', 'description', 'productsTitle', 'productsDescription',
   'featuredTitle', 'ctaTitle', 'ctaDescription', 'ctaButton',

@@ -1,3 +1,5 @@
+import type { VendorTierId } from '@/lib/tiers';
+
 export const STANDALONE_FEATURES = {
   accounting: 'المحاسبة والأستاذ العام',
   inventory: 'مخزون المركبات',
@@ -11,6 +13,11 @@ export const STANDALONE_FEATURES = {
 export type StandaloneFeature = keyof typeof STANDALONE_FEATURES;
 export type StandaloneFeatureMap = Record<StandaloneFeature, boolean>;
 export type StandaloneFeatureOverrides = Partial<StandaloneFeatureMap>;
+export type StandaloneCrmTierId = Extract<VendorTierId, 'growth' | 'pro' | 'enterprise'>;
+
+export function isStandaloneCrmTierId(value: unknown): value is StandaloneCrmTierId {
+  return value === 'growth' || value === 'pro' || value === 'enterprise';
+}
 
 export const DEFAULT_STANDALONE_FEATURES: StandaloneFeatureMap = {
   accounting: true,
