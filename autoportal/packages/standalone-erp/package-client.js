@@ -2,6 +2,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const { execFileSync } = require('child_process');
+const { signLicensePayload } = require('./security-core');
 
 const projectDir = __dirname;
 const filesToInclude = [
@@ -9,6 +10,7 @@ const filesToInclude = [
   'start-laptop.bat',
   'start-server.bat',
   'serve.js',
+  'security-core.js',
   'manifest.json',
   'service-worker.js',
   'package.json',
@@ -77,7 +79,10 @@ function validateConfig(config) {
     throw new Error('The license configuration has an invalid standalone CRM tier.');
   }
   if (version && version.length > 40) throw new Error('The license version is too long.');
-  return {
+  const isTrial = config.isTrial === undefined ? true : Boolean(config.isTrial);
+  const expiresAt = config.expiresAt || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+
+  const baseLicense = {
     productName: 'Almostashar Auto',
     productNameAr: 'المستشار أوتو',
     companyName,
@@ -86,16 +91,26 @@ function validateConfig(config) {
     masterEmail: 'autofyon@gmail.com',
     allowedDevices: 2,
     issueDate: new Date().toISOString().slice(0, 10),
+    expiresAt,
+    isTrial,
     version: version || JSON.parse(fs.readFileSync(path.join(projectDir, 'package.json'), 'utf8')).version,
     clientId: serial,
     serial,
     masterCopy: false,
     activationStatus: 'pending_verification',
-    isLockedBranding: false,
+    isLockedBranding: true,
     crmTier,
     ...(businessId ? { businessId } : {}),
     features,
     ...(trackingToken ? { clientTrackingToken: trackingToken } : {})
+  };
+
+  // Sign cryptographically with HMAC-SHA256 for offline tamper-proofing
+  const signedLicense = signLicensePayload(baseLicense);
+
+  return {
+    ...baseLicense,
+    signature: signedLicense.signature
   };
 }
 

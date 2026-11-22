@@ -73,6 +73,29 @@ export default async function DealerPublicLanding({
             </address>
           )}
 
+          {dealer.isClaimable && (
+            <div className="mt-6 rounded-2xl border border-dashed border-amber-500/50 bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <div className="flex items-center gap-1.5 text-xs font-black uppercase text-amber-700">
+                  <span>⭐</span>
+                  <span>{isAr ? 'صفحة مسجلة في دليل أوتوفيون الرسمي' : 'Official AutoFyon Directory Listing'}</span>
+                </div>
+                <h2 className="text-sm sm:text-base font-black text-slate-900">
+                  {isAr ? `هل أنت صاحب أو مفوض إدارة [${dealer.displayName}]؟` : `Are you the owner or manager of [${dealer.displayNameEn || dealer.displayName}]?`}
+                </h2>
+                <p className="text-xs text-slate-600">
+                  {isAr ? 'وثّق ملكية صفحة معرضك الآن مجاناً لتفعيل استقبال استفسارات المشترين وتخصيص بياناتك.' : 'Claim and verify your business profile for free to start receiving direct buyer inquiries.'}
+                </p>
+              </div>
+              <Link
+                href={`/join?claim=${encodeURIComponent(dealer.businessId)}&slug=${encodeURIComponent(dealer.slug)}&name=${encodeURIComponent(dealer.displayName)}&city=${encodeURIComponent(dealer.city)}`}
+                className="shrink-0 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 px-5 py-2.5 text-xs sm:text-sm font-black text-neutral-950 hover:brightness-105 shadow-md transition"
+              >
+                {isAr ? 'توثيق واعتماد المعرض مجاناً ←' : 'Claim Showroom for Free →'}
+              </Link>
+            </div>
+          )}
+
           <div className="mt-8 flex flex-wrap gap-3">
             {whatsappCtaUrl && (
               <a href={whatsappCtaUrl} target="_blank" rel="noopener noreferrer" className="rounded-xl bg-emerald-700 px-5 py-3 text-sm font-bold text-white">

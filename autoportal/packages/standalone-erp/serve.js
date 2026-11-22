@@ -3,6 +3,32 @@ const fs   = require('fs');
 const path = require('path');
 const os   = require('os');
 
+let secCore = null;
+try {
+  secCore = require('./security-core');
+} catch (e) {
+  /* security-core optional */
+}
+
+function getActiveLicense() {
+  const licPath = path.join(__dirname, 'license.js');
+  if (!fs.existsSync(licPath)) return null;
+  try {
+    const raw = fs.readFileSync(licPath, 'utf8');
+    const jsonMatch = raw.match(/window\.SHOWROOM_LICENSE\s*=\s*(\{[\s\S]*?\});/);
+    if (jsonMatch) return JSON.parse(jsonMatch[1]);
+  } catch (err) {}
+  return null;
+}
+
+function checkCurrentSecurity() {
+  if (!secCore) return { status: 'ACTIVE', valid: true };
+  const lic = getActiveLicense();
+  if (!lic || !lic.signature) return { status: 'ACTIVE', valid: true };
+  return secCore.verifyOfflineEnvironment(lic);
+}
+
+
 const PORT = process.env.PORT || 8080;
 const ORDERS_FILE = path.join(__dirname, 'market_orders.json');
 const RIBBONS_FILE = path.join(__dirname, 'market_ribbons.json');
@@ -80,7 +106,28 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  const url = req.url.split('?')[0];
+    const url = req.url.split('?')[0];
+
+  // ── Security Status Check ──
+  if (url === '/api/security/status' && req.method === 'GET') {
+    const sec = checkCurrentSecurity();
+    const lic = getActiveLicense();
+    res.writeHead(200, { 'Content-Type': 'application/json', ...CORS });
+    res.end(JSON.stringify({
+      ok: true,
+      security: sec,
+      hardwareId: secCore ? secCore.getHardwareFingerprint() : null,
+      license: lic ? {
+        companyName: lic.companyName,
+        serial: lic.serial,
+        expiresAt: lic.expiresAt,
+        isTrial: lic.isTrial,
+        features: lic.features
+      } : null
+    }));
+    return;
+  }
+
 
   // ── API: POST /api/orders  (Market App → Accounting PC) ────
   if (url === '/api/orders' && req.method === 'POST') {

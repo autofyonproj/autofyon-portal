@@ -1,4 +1,5 @@
 import { parseJson, queryOne } from '@/lib/db';
+import dealersJson from '@/data/egypt_dealers_directory.json';
 
 export interface VendorPublicLanding {
   businessId: string;
@@ -15,6 +16,7 @@ export interface VendorPublicLanding {
   city: string;
   address: string;
   socials: Record<string, string>;
+  isClaimable?: boolean;
 }
 
 interface LandingRow {
@@ -49,7 +51,45 @@ export async function getPublishedVendorLanding(slug: string): Promise<VendorPub
       LIMIT 1`,
     [slug],
   );
-  if (!landing) return null;
+  if (!landing) {
+    const staticMatch = (dealersJson as Array<{
+      id: string;
+      name: string;
+      name_en?: string;
+      category_key: string;
+      brand?: string;
+      address?: string;
+      district?: string;
+      city?: string;
+      primary_phone?: string;
+      whatsapp?: string;
+      slug: string;
+    }>).find((d) => d.slug.toLowerCase() === slug.toLowerCase());
+
+    if (!staticMatch) return null;
+
+    const phone = (staticMatch.primary_phone && staticMatch.primary_phone !== '01000000000') ? staticMatch.primary_phone : '';
+    const whatsapp = (staticMatch.whatsapp && staticMatch.whatsapp !== '01000000000') ? staticMatch.whatsapp : phone;
+    const districtText = staticMatch.district ? `${staticMatch.district} — ` : '';
+
+    return {
+      businessId: staticMatch.id,
+      slug: staticMatch.slug,
+      displayName: staticMatch.name,
+      displayNameEn: staticMatch.name_en || staticMatch.name,
+      typeId: staticMatch.category_key === 'authorized_agent' ? 'main_agency' : staticMatch.category_key,
+      tagline: staticMatch.brand ? `متخصصون في سيارات ${staticMatch.brand}` : 'معرض سيارات معتمد في مصر',
+      description: `${staticMatch.name} — ${staticMatch.city ? staticMatch.city + '، ' : ''}${districtText}${staticMatch.address || ''}${staticMatch.brand ? ' | متخصصون في ' + staticMatch.brand : ''}`,
+      phone,
+      whatsapp,
+      websiteUrl: '',
+      email: '',
+      city: staticMatch.city || '',
+      address: `${districtText}${staticMatch.address || ''}`,
+      socials: {},
+      isClaimable: true,
+    };
+  }
 
   const customData = parseJson<Record<string, Record<string, string>>>(landing.custom_data, {});
   return {

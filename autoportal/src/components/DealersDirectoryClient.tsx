@@ -3,6 +3,16 @@
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import {
+  IconSearch,
+  IconPin,
+  IconGlobe,
+  IconStar,
+  IconTag,
+  IconPhone,
+  IconWhatsApp,
+  IconDiamond,
+} from '@/components/icons';
+import {
   CATEGORIES,
   GOVERNORATES,
   DICTIONARY,
@@ -104,8 +114,8 @@ export default function DealersDirectoryClient({ dealers, locale = 'ar' }: Props
         {/* Top line: Search Bar + Language Switcher */}
         <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
           <div className="relative flex-1">
-            <span className={`absolute top-1/2 -translate-y-1/2 text-neutral-400 text-sm ${isAr ? 'right-3.5' : 'left-3.5'}`}>
-              🔍
+            <span className={`absolute top-1/2 -translate-y-1/2 text-neutral-400 ${isAr ? 'right-3.5' : 'left-3.5'}`}>
+              <IconSearch size={16} />
             </span>
             <input
               type="text"
@@ -138,7 +148,7 @@ export default function DealersDirectoryClient({ dealers, locale = 'ar' }: Props
             >
               {GOVERNORATES.map((gov) => (
                 <option key={gov.ar} value={isAr ? gov.ar : gov.en} className="bg-[#0f141c] text-white">
-                  📍 {isAr ? gov.ar : gov.en}
+                  {isAr ? gov.ar : gov.en}
                 </option>
               ))}
             </select>
@@ -149,7 +159,7 @@ export default function DealersDirectoryClient({ dealers, locale = 'ar' }: Props
               className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] border border-white/15 text-xs font-bold text-white transition-all shadow-sm shrink-0"
               title="Change Language / تغيير اللغة"
             >
-              <span>🌐</span>
+              <IconGlobe size={15} />
               <span>{dict.switchLang}</span>
             </Link>
           </div>
@@ -181,10 +191,12 @@ export default function DealersDirectoryClient({ dealers, locale = 'ar' }: Props
 
       {/* Directory Stats Bar */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs text-neutral-400 px-1 gap-2">
-        <div className="flex items-center gap-2">
-          <span>{dict.showingCount}:</span>
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <span>{dict.showingCount}</span>
+          <strong className="text-white font-black text-sm">{Math.min(visibleCount, filteredDealers.length)}</strong>
+          <span>{dict.of}</span>
           <strong className="text-white font-black text-sm">{filteredDealers.length}</strong>
-          <span>{dict.of} {dict.entities}</span>
+          <span>{dict.entities}</span>
           {selectedCategory !== 'all' && (
             <span className="text-red-400 font-semibold">• {translateCategory(selectedCategory, locale).label}</span>
           )}
@@ -211,7 +223,7 @@ export default function DealersDirectoryClient({ dealers, locale = 'ar' }: Props
       {/* Dealers Cards Grid */}
       {filteredDealers.length === 0 ? (
         <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-12 text-center space-y-3">
-          <span className="text-4xl block">🔍</span>
+          <span className="flex justify-center text-neutral-500"><IconSearch size={36} /></span>
           <h3 className="text-lg font-bold text-white">{dict.noResults}</h3>
           <p className="text-xs sm:text-sm text-neutral-400 max-w-md mx-auto">{dict.noResultsHint}</p>
           <button
@@ -254,8 +266,8 @@ export default function DealersDirectoryClient({ dealers, locale = 'ar' }: Props
                 {/* Verified Golden Badge Top Banner */}
                 {isVerified && (
                   <div className="absolute -top-3 left-4 right-4 flex items-center justify-between pointer-events-none">
-                    <span className="inline-flex items-center gap-1 text-[10px] font-black tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 text-neutral-950 shadow-md">
-                      <span>⭐</span>
+                    <span className="inline-flex items-center gap-1.5 text-[10px] font-black tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 text-neutral-950 shadow-md">
+                      <IconStar size={11} className="fill-neutral-950" />
                       <span>{dict.verifiedBadge}</span>
                     </span>
                   </div>
@@ -273,7 +285,10 @@ export default function DealersDirectoryClient({ dealers, locale = 'ar' }: Props
                       <span>{catInfo.label}</span>
                     </span>
 
-                    <span className="text-[11px] text-neutral-400 font-medium">📍 {govDisplay}</span>
+                    <span className="text-[11px] text-neutral-400 font-medium inline-flex items-center gap-1">
+                      <IconPin size={11} className="text-neutral-500" />
+                      <span>{govDisplay}</span>
+                    </span>
                   </div>
 
                   {/* Dealer Name */}
@@ -282,8 +297,8 @@ export default function DealersDirectoryClient({ dealers, locale = 'ar' }: Props
                       {isAr ? item.name : item.name_en || item.name}
                     </h3>
                     {item.brand && (
-                      <p className="text-[11px] text-amber-400/90 font-semibold mt-0.5 flex items-center gap-1">
-                        <span>🏷️</span>
+                      <p className="text-[11px] text-amber-400/90 font-semibold mt-0.5 flex items-center gap-1.5">
+                        <IconTag size={12} className="text-amber-400" />
                         <span>
                           {dict.specializedIn}: {item.brand}
                         </span>
@@ -304,10 +319,13 @@ export default function DealersDirectoryClient({ dealers, locale = 'ar' }: Props
                 {/* Free Package Claim Notice for Unregistered Prospects */}
                 {!isVerified && (
                   <div className="rounded-xl border border-dashed border-emerald-500/30 bg-emerald-950/20 p-2.5 text-center space-y-1">
-                    <p className="text-[10px] text-emerald-400 font-bold">🎁 {dict.freeOfferNotice}</p>
+                    <p className="text-[10px] text-emerald-400 font-bold inline-flex items-center justify-center gap-1">
+                      <IconDiamond size={12} className="text-emerald-400" />
+                      <span>{dict.freeOfferNotice}</span>
+                    </p>
                     <Link
                       href={claimUrl}
-                      className="inline-flex items-center justify-center gap-1 text-[11px] font-black text-emerald-300 hover:text-emerald-200 underline"
+                      className="inline-flex items-center justify-center gap-1 text-[11px] font-black text-emerald-300 hover:text-emerald-200 underline block"
                     >
                       <span>{dict.claimButton}</span>
                       <span>→</span>
@@ -325,7 +343,7 @@ export default function DealersDirectoryClient({ dealers, locale = 'ar' }: Props
                       className="flex-1 inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/30 text-xs font-bold text-emerald-300 transition"
                       title={dict.whatsapp}
                     >
-                      <span>💬</span>
+                      <IconWhatsApp size={14} />
                       <span>{dict.whatsapp}</span>
                     </a>
                   )}
@@ -333,10 +351,10 @@ export default function DealersDirectoryClient({ dealers, locale = 'ar' }: Props
                   {telHref && (
                     <a
                       href={telHref}
-                      className="inline-flex items-center justify-center gap-1 py-2 px-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold text-neutral-200 hover:text-white transition"
+                      className="inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold text-neutral-200 hover:text-white transition"
                       title={dict.call}
                     >
-                      <span>📞</span>
+                      <IconPhone size={13} />
                       <span dir="ltr">{item.primary_phone}</span>
                     </a>
                   )}

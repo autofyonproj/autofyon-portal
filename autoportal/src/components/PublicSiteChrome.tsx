@@ -16,19 +16,19 @@ function AutoFyonBrandLogo({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
   const hClass = size === 'sm' ? 'h-7' : size === 'lg' ? 'h-12' : 'h-9 md:h-10';
   return (
     <span className={`inline-flex items-center relative ${hClass} max-w-[210px] md:max-w-[260px]`}>
-      {/* Light mode */}
+      {/* Light mode logo */}
       <img
         src="/brand/autofyon-logo-light.png"
         alt="AutoFyon.com — Drive • Explore • Connect"
-        className={`${hClass} w-auto object-contain dark:hidden select-none`}
+        className={`${hClass} w-auto object-contain logo-light select-none`}
         width={340}
         height={95}
       />
-      {/* Dark mode */}
+      {/* Dark mode logo */}
       <img
         src="/brand/autofyon-logo-dark.png"
         alt="AutoFyon.com — Drive • Explore • Connect"
-        className={`${hClass} w-auto object-contain hidden dark:block select-none`}
+        className={`${hClass} w-auto object-contain logo-dark select-none`}
         width={340}
         height={95}
       />

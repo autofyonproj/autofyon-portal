@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import DealersDirectoryClient from '@/components/DealersDirectoryClient';
 import { getDealersWithVerified } from '@/lib/dealers-directory';
 import { DICTIONARY } from '@/data/dealers_i18n';
+import { IconBuilding } from '@/components/icons';
 
 export const dynamic = 'force-dynamic';
 
@@ -43,7 +44,7 @@ export default async function DealersDirectoryPage() {
         {/* Page Header */}
         <header className="border-b border-white/10 pb-6 space-y-3">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-600/10 border border-red-500/30 text-red-400 text-xs font-bold">
-            <span>🏛️</span>
+            <IconBuilding size={14} className="text-red-400" />
             <span>{dict.headerBadge}</span>
           </div>
           <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white leading-tight">
