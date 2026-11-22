@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AutoFyon — Official Product Brochure 2026 | Egypt's #1 Automotive Dealership Platform</title>
+<style>
+  /* ─── Reset & Base ─────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  /* ─── Luxury Obsidian Dark Theme (Default) ──────────────────── */
+  :root, html.dark {
+    --gold: #c4a265;
+    --gold-light: #dfc187;
+    --gold-dark: #9e7d3b;
+    --gold-glow: rgba(196,162,101,0.18);
+    --bg-page: #07090c;
+    --bg-card: #0d1117;
+    --bg-card-subtle: #131822;
+    --bg-hover: #1a2230;
+    --text-primary: #ffffff;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --border: rgba(196,162,101,0.18);
+    --border-subtle: rgba(255,255,255,0.07);
+    --shadow-card: 0 12px 36px rgba(0,0,0,0.45);
+    --pill-bg: rgba(196,162,101,0.1);
+    --contrast-invert: #ffffff;
+    --page-width: 210mm;
+    --page-height: 297mm;
+  }
+
+  /* ─── Pristine Ivory Light Theme ────────────────────────────── */
+  html.light {
+    --gold: #9d7830;
+    --gold-light: #b89146;
+    --gold-dark: #7c5c1d;
+    --gold-glow: rgba(157,120,48,0.12);
+    --bg-page: #f8fafc;
+    --bg-card: #ffffff;
+    --bg-card-subtle: #f1f5f9;
+    --bg-hover: #e2e8f0;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #64748b;
+    --border: rgba(157,120,48,0.22);
+    --border-subtle: rgba(15,23,42,0.08);
+    --shadow-card: 0 10px 30px rgba(15,23,42,0.06);
+    --pill-bg: rgba(157,120,48,0.08);
+    --contrast-invert: #0f172a;
+  }
+
+  html { font-size: 10pt; scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--bg-page);
+    color: var(--text-primary);
+    line-height: 1.55;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  a { color: var(--gold); text-decoration: none; }
+
+  /* ─── Print Setup ──────────────────────────────────────────── */
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+  @media print {
+    .no-print { display: none !important; }
+    .page-break { page-break-after: always; break-after: page; }
+    .page-break-before { page-break-before: always; break-before: page; }
+    /* In print mode, always enforce crisp white paper output to save toner & deliver razor-sharp text */
+    body {
+      background: #ffffff !important;
+      color: #0f172a !important;
+    }
+    .page {
+      box-shadow: none !important;
+      margin: 0 !important;
+      padding: 12mm 12mm 10mm !important;
+      background: #ffffff !important;
+    }
+    .cover-page, .inner-page, .back-cover {
+      background: #ffffff !important;
+    }
+    .pkg-card-body, .module-card, .spec-cell, .contact-card {
+      background: #f8fafc !important;
+      border-color: #cbd5e1 !important;
+    }
+    .pkg-card-header, .module-card-header {
+      background: #f1f5f9 !important;
+    }
+    .text-primary, h1, h2, h3, h4, .cover-brand span {
+      color: #0f172a !important;
+    }
+    .body, .text-secondary, .desc {
+      color: #475569 !important;
+    }
+  }
+
+  /* ─── Top Floating Print Bar ───────────────────────────────── */
+  .print-bar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 999;
+    background: var(--bg-card); border-bottom: 1px solid var(--border);
+    padding: 10px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  }
+  .print-bar .logo-text { font-size: 15px; font-weight: 900; color: var(--gold); letter-spacing: 0.04em; }
+  .print-bar .hint { font-size: 11px; color: var(--text-secondary); }
+  .bar-actions { display: flex; align-items: center; gap: 10px; }
+  .btn-print {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: #000; font-weight: 800; font-size: 12px;
+    padding: 8px 18px; border-radius: 8px; border: none; cursor: pointer;
+    letter-spacing: 0.02em; transition: transform 0.15s, opacity 0.15s;
+    box-shadow: 0 4px 12px var(--gold-glow);
+  }
+  .btn-print:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn-theme {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--bg-card-subtle); color: var(--text-primary);
+    font-weight: 700; font-size: 11px;
+    padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border);
+    cursor: pointer; transition: all 0.15s;
+  }
+  .btn-theme:hover { background: var(--bg-hover); border-color: var(--gold); }
+  .btn-back {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: transparent; color: var(--text-secondary);
+    font-weight: 700; font-size: 11px;
+    padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border-subtle);
+    cursor: pointer; text-decoration: none; transition: all 0.15s;
+  }
+  .btn-back:hover { color: var(--gold); border-color: var(--border); }
+
+  /* ─── Page Container ───────────────────────────────────────── */
+  .page {
+    width: var(--page-width);
+    min-height: var(--page-height);
+    max-width: var(--page-width);
+    margin: 56px auto 16px;
+    padding: 14mm 14mm 10mm;
+    position: relative;
+    background: var(--bg-page);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+  }
+
+  /* ─── Typography & Utilities ───────────────────────────────── */
+  .gold-rule { width: 44px; height: 3px; background: var(--gold); border-radius: 2px; }
+  .gold-rule.wide { width: 100%; height: 1px; opacity: 0.3; background: var(--border); }
+  .eyebrow {
+    font-size: 7.5pt; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--gold); display: inline-flex; align-items: center; gap: 6px;
+  }
+  .eyebrow::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--gold);
+  }
+  h1.hero-title { font-size: 32pt; font-weight: 900; line-height: 1.08; color: var(--text-primary); }
+  h2.section-title { font-size: 16pt; font-weight: 900; color: var(--text-primary); letter-spacing: -0.01em; }
+  h3.pkg-title { font-size: 13pt; font-weight: 900; color: var(--text-primary); }
+  h4.sub-title { font-size: 10.5pt; font-weight: 800; color: var(--gold-light); }
+  p.body { font-size: 9pt; color: var(--text-secondary); line-height: 1.65; }
+  .text-gold { color: var(--gold); }
+  .text-muted { color: var(--text-muted); }
+
+  /* ─── Cover Page ───────────────────────────────────────────── */
+  .cover-page {
+    display: flex; flex-direction: column;
+    padding: 0 !important;
+  }
+  .cover-top-band {
+    background: linear-gradient(145deg, var(--bg-card) 0%, var(--bg-card-subtle) 100%);
+    padding: 18mm 14mm 12mm;
+    border-bottom: 1px solid var(--border);
+    flex: 1;
+    position: relative;
+  }
+  .cover-top-band::after {
+    content: '';
+    position: absolute; top: 0; right: 0; bottom: 0; left: 0;
+    background: radial-gradient(ellipse at 85% 20%, var(--gold-glow) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .cover-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--pill-bg); border: 1px solid var(--border);
+    padding: 5px 14px; border-radius: 100px;
+    font-size: 7.5pt; font-weight: 800; color: var(--gold); letter-spacing: 0.12em; text-transform: uppercase;
+    position: relative; z-index: 1;
+  }
+  .cover-title-block { position: relative; z-index: 1; margin-top: 10mm; }
+  .cover-label { font-size: 8.5pt; color: var(--text-secondary); font-weight: 600; letter-spacing: 0.08em; margin-bottom: 2mm; text-transform: uppercase; }
+  .cover-brand { font-size: 42pt; font-weight: 900; color: var(--gold); letter-spacing: -0.03em; line-height: 1; }
+  .cover-brand span { color: var(--text-primary); }
+  .cover-tagline { font-size: 15pt; font-weight: 400; color: var(--text-primary); margin-top: 3mm; letter-spacing: 0.01em; opacity: 0.9; }
+  .cover-desc { font-size: 9.5pt; color: var(--text-secondary); margin-top: 5mm; max-width: 135mm; line-height: 1.7; }
+
+  /* Tier Pills */
+  .tier-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8mm; position: relative; z-index: 1; }
+  .tier-pill {
+    padding: 5px 14px; border-radius: 6px; font-size: 8pt; font-weight: 800; border: 1px solid;
+  }
+  .pill-free { background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.3); color: #10b981; }
+  .pill-growth { background: rgba(245,158,11,0.08); border-color: rgba(245,158,11,0.3); color: #f59e0b; }
+  .pill-pro { background: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.3); color: #ef4444; }
+  .pill-ent { background: rgba(168,85,247,0.08); border-color: rgba(168,85,247,0.3); color: #a855f7; }
+
+  /* Bento Stats Grid */
+  .cover-stats {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 4mm;
+    margin-top: 10mm; position: relative; z-index: 1;
+  }
+  .cover-stat-box {
+    border: 1px solid var(--border); border-radius: 10px; padding: 4.5mm 3mm;
+    background: var(--bg-card); text-align: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+  }
+  .cover-stat-val { font-size: 22pt; font-weight: 900; color: var(--gold); line-height: 1; }
+  .cover-stat-lbl { font-size: 7.5pt; color: var(--text-secondary); font-weight: 700; margin-top: 2mm; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  .cover-bottom-band {
+    background: var(--bg-card);
+    padding: 6mm 14mm;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .cover-url { font-size: 10pt; font-weight: 900; color: var(--gold); }
+  .cover-meta { font-size: 8pt; color: var(--text-secondary); }
+
+  /* ─── Inner Page Layout ────────────────────────────────────── */
+  .inner-page { background: var(--bg-page); }
+  .page-header {
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 3.5mm; margin-bottom: 6mm;
+  }
+  .page-header .brand { font-size: 9.5pt; font-weight: 900; color: var(--gold); }
+  .page-header .page-num { font-size: 8pt; color: var(--text-muted); font-weight: 700; }
+
+  /* ─── Bento Sales Points Blocks ────────────────────────────── */
+  .bento-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 4.5mm; margin-top: 4mm;
+  }
+  .bento-card {
+    border: 1px solid var(--border); border-radius: 12px;
+    background: var(--bg-card); padding: 5mm;
+    position: relative; overflow: hidden;
+    box-shadow: var(--shadow-card);
+    transition: transform 0.2s;
+  }
+  .bento-card.featured {
+    border-color: var(--gold);
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-card-subtle) 100%);
+  }
+  .bento-badge {
+    display: inline-block; padding: 2px 8px; border-radius: 100px;
+    font-size: 6.5pt; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em;
+    background: var(--pill-bg); color: var(--gold); border: 1px solid var(--border);
+    margin-bottom: 2mm;
+  }
+  .bento-title { font-size: 11pt; font-weight: 900; color: var(--text-primary); margin-bottom: 2mm; }
+  .bento-desc { font-size: 8.5pt; color: var(--text-secondary); line-height: 1.6; }
+
+  /* ─── Before vs After Showdown Box ─────────────────────────── */
+  .showdown-box {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4mm;
+    border: 1px solid var(--border); border-radius: 12px;
+    overflow: hidden; margin-top: 6mm;
+  }
+  .showdown-col { padding: 5mm; }
+  .showdown-bad {
+    background: rgba(239,68,68,0.04);
+    border-right: 1px solid var(--border);
+  }
+  .showdown-good {
+    background: rgba(16,185,129,0.04);
+  }
+  .showdown-header { font-size: 9pt; font-weight: 900; margin-bottom: 3mm; display: flex; align-items: center; gap: 6px; }
+  .showdown-item { font-size: 8pt; margin-bottom: 2mm; display: flex; align-items: flex-start; gap: 6px; line-height: 1.5; }
+
+  /* ─── Package Cards ────────────────────────────────────────── */
+  .pkg-card {
+    border: 1px solid var(--border); border-radius: 12px;
+    overflow: hidden; margin-bottom: 5mm;
+    background: var(--bg-card);
+    box-shadow: var(--shadow-card);
+  }
+  .pkg-card-header {
+    padding: 5mm 6mm 4mm;
+    background: var(--bg-card-subtle);
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .pkg-card-body { padding: 5mm 6mm; background: var(--bg-card); }
+  .pkg-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; }
+
+  /* Feature Lists with High-Contrast Checks */
+  .feat-list { list-style: none; }
+  .feat-list li {
+    display: flex; align-items: flex-start; gap: 8px;
+    font-size: 8.5pt; color: var(--text-secondary); margin-bottom: 2.5mm; line-height: 1.5;
+  }
+  .feat-list li .check {
+    flex-shrink: 0; width: 16px; height: 16px; border-radius: 50%;
+    background: var(--pill-bg); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gold); font-size: 7.5pt; font-weight: 900; margin-top: 1px;
+  }
+  .feat-list li .check.green {
+    background: rgba(16,185,129,0.12); border-color: rgba(16,185,129,0.4); color: #10b981;
+  }
+
+  /* Step List */
+  .step-list { list-style: none; }
+  .step-list li {
+    display: flex; align-items: flex-start; gap: 8px;
+    font-size: 8.5pt; margin-bottom: 3.5mm; line-height: 1.5;
+  }
+  .step-num {
+    flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%;
+    background: var(--gold); color: #000; font-size: 7.5pt; font-weight: 900;
+    display: flex; align-items: center; justify-content: center; margin-top: 1px;
+  }
+  .step-label { font-weight: 800; color: var(--text-primary); display: block; font-size: 8.5pt; }
+  .step-desc { color: var(--text-secondary); display: block; font-size: 8pt; margin-top: 1px; }
+
+  /* Spec Grid */
+  .spec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5mm; }
+  .spec-cell {
+    background: var(--bg-card-subtle); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 3mm 4mm;
+  }
+  .spec-cell .spec-label { font-size: 7pt; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1mm; }
+  .spec-cell .spec-val { font-size: 9.5pt; font-weight: 900; color: var(--text-primary); }
+
+  /* Upgrade Box */
+  .upgrade-box {
+    background: var(--pill-bg); border: 1px solid var(--border);
+    border-radius: 10px; padding: 4mm 5mm;
+    display: flex; align-items: flex-start; gap: 10px; margin-top: 4mm;
+  }
+  .upgrade-icon { font-size: 16pt; flex-shrink: 0; }
+  .upgrade-label { font-size: 7.5pt; font-weight: 800; color: var(--gold); text-transform: uppercase; letter-spacing: 0.08em; }
+  .upgrade-desc { font-size: 8pt; color: var(--text-secondary); margin-top: 1mm; line-height: 1.5; }
+  .upgrade-target { font-size: 9pt; font-weight: 900; color: var(--text-primary); margin-top: 1.5mm; }
+
+  /* ─── Comparison Matrix Table ──────────────────────────────── */
+  .comp-table { width: 100%; border-collapse: collapse; font-size: 8pt; }
+  .comp-table th {
+    background: var(--bg-card-subtle); padding: 3.5mm 4mm;
+    font-weight: 800; text-align: center; border: 1px solid var(--border-subtle);
+    font-size: 8pt; color: var(--text-primary);
+  }
+  .comp-table th:first-child { text-align: left; }
+  .comp-table td {
+    padding: 3mm 4mm; border: 1px solid var(--border-subtle);
+    text-align: center; color: var(--text-secondary); background: var(--bg-card);
+  }
+  .comp-table td:first-child { text-align: left; font-weight: 700; color: var(--text-primary); }
+  .comp-table tr:hover td { background: var(--bg-hover); }
+  .yes { color: #10b981; font-weight: 800; }
+  .no { color: var(--text-muted); opacity: 0.4; }
+  .partial { color: #f59e0b; font-weight: 800; }
+
+  /* ─── Roadmap & Next Level ─────────────────────────────────── */
+  .roadmap { position: relative; padding-left: 8mm; }
+  .roadmap-line {
+    position: absolute; left: 10px; top: 10px; bottom: 10px;
+    width: 2px; background: linear-gradient(to bottom, var(--gold), var(--border));
+    border-radius: 2px;
+  }
+  .roadmap-item { position: relative; margin-bottom: 5.5mm; }
+  .roadmap-dot {
+    position: absolute; left: -24px; top: 2px;
+    width: 14px; height: 14px; border-radius: 50%;
+    border: 2px solid var(--gold); background: var(--bg-page);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .roadmap-dot.active { background: var(--gold); }
+  .roadmap-label { font-size: 7.5pt; color: var(--gold); font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; }
+  .roadmap-title { font-size: 10pt; font-weight: 900; color: var(--text-primary); margin-top: 1mm; }
+  .roadmap-desc { font-size: 8pt; color: var(--text-secondary); margin-top: 1mm; line-height: 1.55; }
+
+  /* ─── Back Cover ───────────────────────────────────────────── */
+  .back-cover {
+    padding: 0 !important; overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .back-top {
+    flex: 1; padding: 18mm 14mm;
+    background: linear-gradient(160deg, var(--bg-card-subtle) 0%, var(--bg-card) 100%);
+    position: relative;
+  }
+  .contact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; margin-top: 8mm; }
+  .contact-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 4.5mm; text-align: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+  }
+  .contact-icon { font-size: 16pt; margin-bottom: 2mm; display: block; }
+  .contact-label { font-size: 7pt; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1.5mm; }
+  .contact-val { font-size: 8.5pt; font-weight: 800; color: var(--text-primary); }
+  .back-bottom {
+    background: var(--bg-card); padding: 5mm 14mm;
+    display: flex; align-items: center; justify-content: space-between;
+    border-top: 1px solid var(--border);
+  }
+  .back-brand { font-size: 18pt; font-weight: 900; color: var(--gold); letter-spacing: -0.02em; }
+  .back-copy { font-size: 7pt; color: var(--text-secondary); text-align: right; }
+</style>
+</head>
+<body>
+
+<!-- ─── Print & Theme Bar (Visible on Screen Only) ────────────── -->
+<div class="print-bar no-print">
+  <div>
+    <div class="logo-text">AutoFyon — Official Product Brochure 2026</div>
+    <div class="hint">Executive Dealership Infrastructure · Print or Save as PDF</div>
+  </div>
+  <div class="bar-actions">
+    <button class="btn-theme" id="themeToggleBtn" onclick="toggleBrochureTheme()">
+      <span id="themeIcon">☀️</span> <span id="themeLabel">Light Mode</span>
+    </button>
+    <a href="/packages" class="btn-back">← Back to Packages</a>
+    <button class="btn-print" onclick="window.print()">
+      ⬇ Print / Save as PDF
+    </button>
+  </div>
+</div>
+
+<script>
+  function toggleBrochureTheme() {
+    const html = document.documentElement;
+    const isDark = html.classList.contains('dark');
+    if (isDark) {
+      html.classList.remove('dark');
+      html.classList.add('light');
+      document.getElementById('themeIcon').textContent = '🌙';
+      document.getElementById('themeLabel').textContent = 'Dark Mode';
+      localStorage.setItem('af-brochure-theme', 'light');
+    } else {
+      html.classList.remove('light');
+      html.classList.add('dark');
+      document.getElementById('themeIcon').textContent = '☀️';
+      document.getElementById('themeLabel').textContent = 'Light Mode';
+      localStorage.setItem('af-brochure-theme', 'dark');
+    }
+  }
+  // Initialize theme from storage
+  (function() {
+    const saved = localStorage.getItem('af-brochure-theme');
+    if (saved === 'light') {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
+      window.addEventListener('DOMContentLoaded', () => {
+        const icon = document.getElementById('themeIcon');
+        const lbl = document.getElementById('themeLabel');
+        if (icon) icon.textContent = '🌙';
+        if (lbl) lbl.textContent = 'Dark Mode';
+      });
+    }
+  })();
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE 1 — COVER
+════════════════════════════════════════════════════════════ -->
+<div class="page cover-page page-break">
+  <div class="cover-top-band">
+    <div class="cover-badge">
+      Official Product Brochure · 2026 Edition
+    </div>
+
+    <div class="cover-title-block">
+      <div class="cover-label">Egypt's Premier Automotive Infrastructure</div>
+      <div class="cover-brand">Auto<span>Fyon</span></div>
+      <div class="cover-tagline">Dealership Operations & Marketplace Ecosystem</div>
+      <div class="cover-desc">
+        From your first free verified digital showroom to a nationwide multi-branch agency network — 
+        AutoFyon is the only platform engineered specifically for Egypt's automotive commerce, combining 
+        cloud-first dealer discovery, 100% offline desktop ERP operations, and a verified B2C marketplace 
+        with zero lead commissions.
+      </div>
+
+      <div class="tier-pills">
+        <span class="tier-pill pill-free">Free Starter</span>
+        <span class="tier-pill pill-growth">Growth ERP</span>
+        <span class="tier-pill pill-pro">Pro Multi-Agent</span>
+        <span class="tier-pill pill-ent">Enterprise Agency</span>
+      </div>
+    </div>
+
+    <!-- Bento Stats Grid -->
+    <div class="cover-stats">
+      <div class="cover-stat-box">
+        <div class="cover-stat-val">2,823+</div>
+        <div class="cover-stat-lbl">Verified Dealers</div>
+      </div>
+      <div class="cover-stat-box">
+        <div class="cover-stat-val">27</div>
+        <div class="cover-stat-lbl">Governorates</div>
+      </div>
+      <div class="cover-stat-box">
+        <div class="cover-stat-val">30-Day</div>
+        <div class="cover-stat-lbl">Full Free Trial</div>
+      </div>
+      <div class="cover-stat-box">
+        <div class="cover-stat-val">0%</div>
+        <div class="cover-stat-lbl">Lead Commission</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cover-bottom-band">
+    <div>
+      <div class="cover-url">autofyon.com/packages</div>
+      <div class="cover-meta" style="margin-top:2mm">
+        <strong>Instant Trial:</strong> autofyon.com/download &nbsp;|&nbsp;
+        <strong>Dealers Network:</strong> autofyon.com/dealers &nbsp;|&nbsp;
+        <strong>Year:</strong> 2026
+      </div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:7pt;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;font-weight:700">Scan to Explore</div>
+      <div style="font-size:11pt;font-weight:900;color:var(--gold);margin-top:1mm">autofyon.com</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE 2 — WHAT IS AUTOFYON + FREE TIER
+════════════════════════════════════════════════════════════ -->
+<div class="page inner-page page-break">
+  <div class="page-header">
+    <span class="brand">AutoFyon — Official Product Brochure 2026</span>
+    <span class="page-num">Page 2 of 8</span>
+  </div>
+
+  <div class="eyebrow" style="margin-bottom:2mm">Platform Architecture</div>
+  <h2 class="section-title" style="margin-bottom:2mm">Modern Dealership Architecture</h2>
+  <p class="body" style="max-width:170mm">
+    AutoFyon replaces scattered, disconnected tools with a single unified operational standard.
+    Whether you operate from a mobile phone or manage 5 showroom branches across Cairo and Alexandria,
+    our two-layer ecosystem ensures your business is always open and your sales never stop.
+  </p>
+
+  <!-- Modern Sales Bento Blocks -->
+  <div class="bento-grid">
+    <div class="bento-card featured">
+      <span class="bento-badge">Zero Risk</span>
+      <div class="bento-title">🌐 Nationwide B2C Discovery</div>
+      <div class="bento-desc">
+        Every vehicle listing is indexed on Google Search and placed before thousands of serious Egyptian car buyers. Direct 1-tap WhatsApp chat with zero middleman or commission.
+      </div>
+    </div>
+    <div class="bento-card">
+      <span class="bento-badge">100% Offline</span>
+      <div class="bento-title">💻 Standalone Almostashar ERP</div>
+      <div class="bento-desc">
+        Installed locally on your PC. Operates fully without internet: sales contracts, installment schedules, profit margins, and inventory registers remain 100% accessible.
+      </div>
+    </div>
+    <div class="bento-card">
+      <span class="bento-badge">Smart Sync</span>
+      <div class="bento-title">☁️ Automatic Cloud Bridge</div>
+      <div class="bento-desc">
+        When internet is connected, customer inquiries and online reservations synchronize seamlessly with your offline desktop database without overwriting local data.
+      </div>
+    </div>
+    <div class="bento-card">
+      <span class="bento-badge">Legal Grade</span>
+      <div class="bento-title">📑 Legal Contract Engine</div>
+      <div class="bento-desc">
+        Instantly generates standardized bilingual (Arabic & English) vehicle purchase contracts, installment schedules, and deposit receipts reviewed by automotive legal experts.
+      </div>
+    </div>
+  </div>
+
+  <!-- Before vs After Showdown -->
+  <div class="showdown-box">
+    <div class="showdown-col showdown-bad">
+      <div class="showdown-header" style="color:#ef4444">❌ The Old Fragmented Way</div>
+      <div class="showdown-item"><span>⚠️</span>Flooding WhatsApp with 50 unorganized car photos.</div>
+      <div class="showdown-item"><span>⚠️</span>Paper contracts lost in drawers; installment calculation errors.</div>
+      <div class="showdown-item"><span>⚠️</span>Internet outage halts all showroom sales and invoicing.</div>
+      <div class="showdown-item"><span>⚠️</span>Zero Google Search presence or official verified brand.</div>
+    </div>
+    <div class="showdown-col showdown-good">
+      <div class="showdown-header" style="color:#10b981">✅ The AutoFyon Standard</div>
+      <div class="showdown-item"><span>✨</span>1 luxury verified link (autofyon.com/your-showroom).</div>
+      <div class="showdown-item"><span>✨</span>Automated bilingual contracts & overdue installment alerts.</div>
+      <div class="showdown-item"><span>✨</span>100% offline desktop ERP with cryptographic security.</div>
+      <div class="showdown-item"><span>✨</span>Instant Google indexing & verified automotive badge.</div>
+    </div>
+  </div>
+
+  <div class="gold-rule wide" style="margin:5mm 0"></div>
+
+  <!-- FREE TIER -->
+  <div class="eyebrow" style="margin-bottom:2mm">Tier 1 of 4</div>
+  <div class="pkg-card">
+    <div class="pkg-card-header">
+      <div>
+        <span class="pkg-badge pill-free" style="padding:2px 8px;border-radius:100px;font-size:7pt;font-weight:800">Free Starter Membership</span>
+        <h3 class="pkg-title" style="margin-top:2mm">Launch Your Digital Showroom at 0 Cost</h3>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:16pt;font-weight:900;color:#10b981">0 EGP</div>
+        <div style="font-size:7pt;color:var(--text-muted);font-weight:700">Forever Free · No Credit Card</div>
+      </div>
+    </div>
+    <div class="pkg-card-body">
+      <div class="pkg-cols">
+        <div>
+          <h4 class="sub-title" style="margin-bottom:2mm">Included Capabilities</h4>
+          <ul class="feat-list">
+            <li><span class="check green">✓</span>Official verified digital showroom at autofyon.com/your-name</li>
+            <li><span class="check green">✓</span>List up to 10 active vehicles with complete technical specs</li>
+            <li><span class="check green">✓</span>Direct WhatsApp inquiry button on every listing</li>
+            <li><span class="check green">✓</span>Google Search indexing for your dealership name</li>
+            <li><span class="check green">✓</span>Official AutoFyon verified dealer badge</li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="sub-title" style="margin-bottom:2mm">Practical Playbook</h4>
+          <ol class="step-list">
+            <li><span class="step-num">1</span><span><strong class="step-label">Add your top 10 cars</strong><span class="step-desc">List your best vehicles with clear pricing and high-res photos.</span></span></li>
+            <li><span class="step-num">2</span><span><strong class="step-label">Place link in social bios</strong><span class="step-desc">Replace scattered images with one professional showroom link.</span></span></li>
+            <li><span class="step-num">3</span><span><strong class="step-label">Receive buyer chats</strong><span class="step-desc">Leads arrive on WhatsApp with vehicle specs pre-filled.</span></span></li>
+          </ol>
+        </div>
+      </div>
+      <div class="upgrade-box">
+        <div class="upgrade-icon">⬆</div>
+        <div>
+          <div class="upgrade-label">When to Upgrade</div>
+          <div class="upgrade-desc">When your inventory exceeds 10 cars or you need a local offline sales and accounting system to operate during internet outages.</div>
+          <div class="upgrade-target">→ Next Level: Growth Dealership Package (Almostashar ERP)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE 3 — GROWTH PACKAGE (ALMOSTASHAR ERP)
+════════════════════════════════════════════════════════════ -->
+<div class="page inner-page page-break">
+  <div class="page-header">
+    <span class="brand">AutoFyon — Official Product Brochure 2026</span>
+    <span class="page-num">Page 3 of 8</span>
+  </div>
+
+  <div class="eyebrow" style="margin-bottom:2mm">Tier 2 of 4 · Most Popular</div>
+  <div class="pkg-card">
+    <div class="pkg-card-header">
+      <div>
+        <span class="pkg-badge pill-growth" style="padding:2px 8px;border-radius:100px;font-size:7pt;font-weight:800">Growth Dealership Package</span>
+        <h3 class="pkg-title" style="margin-top:2mm">Almostashar Auto ERP — 100% Offline System</h3>
+        <p style="font-size:8.5pt;color:var(--text-secondary);margin-top:1mm">Built for active showrooms managing 15 to 30 cars demanding zero internet downtime</p>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:12pt;font-weight:900;color:#f59e0b">Flexible Investment</div>
+        <div style="font-size:7.5pt;color:var(--text-muted);font-weight:700">30-Day Free Trial Included</div>
+      </div>
+    </div>
+    <div class="pkg-card-body">
+      <div class="pkg-cols">
+        <div>
+          <h4 class="sub-title" style="margin-bottom:2mm">Core Deliverables</h4>
+          <ul class="feat-list">
+            <li><span class="check">✓</span>Standalone Almostashar Auto ERP installed on your dealership PC</li>
+            <li><span class="check">✓</span>100% offline operation: invoices, contracts, installments, profit tracking</li>
+            <li><span class="check">✓</span>Smart cloud bridge: pulls buyer leads automatically when connected</li>
+            <li><span class="check">✓</span>Capacity up to 30 cars with vehicle exchange and trade-in contracts</li>
+            <li><span class="check">✓</span>2 licensed device activations per showroom (Laptop + Manager PC)</li>
+            <li><span class="check">✓</span>1.5× search boost across the AutoFyon vehicle marketplace</li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="sub-title" style="margin-bottom:2mm">Showroom Workflow</h4>
+          <ol class="step-list">
+            <li><span class="step-num">1</span><span><strong class="step-label">Instant PC Installation</strong><span class="step-desc">Runs locally without complex servers. Works on Windows 10/11.</span></span></li>
+            <li><span class="step-num">2</span><span><strong class="step-label">Print Bilingual Contracts</strong><span class="step-desc">Print Arabic/English vehicle sales agreements and deposit receipts in 1 click.</span></span></li>
+            <li><span class="step-num">3</span><span><strong class="step-label">Automated Installment Alerts</strong><span class="step-desc">Dashboard tracks monthly dues, overdue balances, and profit margins.</span></span></li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- Module Details Grid -->
+      <h4 class="sub-title" style="margin-top:4mm;margin-bottom:3mm">Almostashar ERP Module Specifications</h4>
+      <div class="bento-grid">
+        <div class="bento-card">
+          <div class="bento-title" style="font-size:10pt">📋 Sales & Contracts Engine</div>
+          <div class="bento-desc">
+            Standardized bilingual sales agreements, vehicle trade-in contracts, deposit receipts, and cash vouchers. Full legal disclaimer clauses reviewed by automotive attorneys.
+          </div>
+        </div>
+        <div class="bento-card">
+          <div class="bento-title" style="font-size:10pt">📆 Installment & Payment Manager</div>
+          <div class="bento-desc">
+            Flexible schedule creator for down payments and monthly installments. Automatic overdue notification panel, total portfolio balance, and per-deal profit calculations.
+          </div>
+        </div>
+        <div class="bento-card">
+          <div class="bento-title" style="font-size:10pt">🚗 Vehicle Inventory & Customs</div>
+          <div class="bento-desc">
+            Multi-photo registry, chassis/VIN tracking, chassis status (Available, Reserved, Sold), acquisition cost vs selling price, customs duties, and repair expense logs.
+          </div>
+        </div>
+        <div class="bento-card">
+          <div class="bento-title" style="font-size:10pt">🔒 5-Layer Security Core</div>
+          <div class="bento-desc">
+            Motherboard UUID and MAC hardware binding, anti-tamper HMAC-SHA256 signature, monotonic clock guard preventing system clock rollback, and immutable watermark contracts.
+          </div>
+        </div>
+      </div>
+
+      <div class="spec-grid" style="margin-top:4mm">
+        <div class="spec-cell"><div class="spec-label">Inventory Capacity</div><div class="spec-val">Up to 30 Vehicles</div></div>
+        <div class="spec-cell"><div class="spec-label">Device Licenses</div><div class="spec-val">2 Local Devices</div></div>
+        <div class="spec-cell"><div class="spec-label">Hero Slides</div><div class="spec-val">5 Custom Slides</div></div>
+        <div class="spec-cell"><div class="spec-label">Search Boost</div><div class="spec-val">1.5× Priority Ranking</div></div>
+      </div>
+
+      <div class="upgrade-box">
+        <div class="upgrade-icon">⬆</div>
+        <div>
+          <div class="upgrade-label">When to Upgrade</div>
+          <div class="upgrade-desc">When you employ multiple sales reps needing separate accounts, customer financing integration, or an inventory beyond 30 cars.</div>
+          <div class="upgrade-target">→ Next Level: Pro Dealership Package (Multi-Agent CRM)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE 4 — PRO PACKAGE
+════════════════════════════════════════════════════════════ -->
+<div class="page inner-page page-break">
+  <div class="page-header">
+    <span class="brand">AutoFyon — Official Product Brochure 2026</span>
+    <span class="page-num">Page 4 of 8</span>
+  </div>
+
+  <div class="eyebrow" style="margin-bottom:2mm">Tier 3 of 4 · Top-Tier Showroom Network</div>
+  <div class="pkg-card">
+    <div class="pkg-card-header">
+      <div>
+        <span class="pkg-badge pill-pro" style="padding:2px 8px;border-radius:100px;font-size:7pt;font-weight:800">Pro Dealership Package</span>
+        <h3 class="pkg-title" style="margin-top:2mm">Unlimited Fleet · Multi-Agent CRM · Bank Financing</h3>
+        <p style="font-size:8.5pt;color:var(--text-secondary);margin-top:1mm">Built for established dealerships with sales teams, high turnover, and financing services</p>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:12pt;font-weight:900;color:#ef4444">High-ROI Solution</div>
+        <div style="font-size:7.5pt;color:var(--text-muted);font-weight:700">Dedicated Onboarding Consultant</div>
+      </div>
+    </div>
+    <div class="pkg-card-body">
+      <div class="pkg-cols">
+        <div>
+          <h4 class="sub-title" style="margin-bottom:2mm">Advanced Capabilities</h4>
+          <ul class="feat-list">
+            <li><span class="check">✓</span>Unlimited vehicle fleet listing with priority social distribution</li>
+            <li><span class="check">✓</span>Up to 5 synchronized screens across showroom local network</li>
+            <li><span class="check">✓</span>Multi-agent CRM: sales reps manage assigned leads independently</li>
+            <li><span class="check">✓</span>Direct bank financing and auto leasing integration</li>
+            <li><span class="check">✓</span>Interactive Media Studio: create video reels and flyers on mobile</li>
+            <li><span class="check">✓</span>Custom domain support (e.g. showroom-name.com)</li>
+            <li><span class="check">✓</span>2.5× top search placement across all marketplace categories</li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="sub-title" style="margin-bottom:2mm">Team Operation Playbook</h4>
+          <ol class="step-list">
+            <li><span class="step-num">1</span><span><strong class="step-label">Assign Rep Accounts</strong><span class="step-desc">Each sales consultant manages their own buyer pipeline without overlapping leads.</span></span></li>
+            <li><span class="step-num">2</span><span><strong class="step-label">Receive Bank Financing Leads</strong><span class="step-desc">Buyers submit installment requests directly from your online car page.</span></span></li>
+            <li><span class="step-num">3</span><span><strong class="step-label">Publish Media Reels</strong><span class="step-desc">Produce high-engagement car reels with customized dealership watermark.</span></span></li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- Pro Modules Bento Grid -->
+      <h4 class="sub-title" style="margin-top:4mm;margin-bottom:3mm">Pro-Exclusive Modules</h4>
+      <div class="bento-grid">
+        <div class="bento-card">
+          <div class="bento-title" style="font-size:10pt">👥 Multi-Agent CRM & Reservations</div>
+          <div class="bento-desc">
+            Independent lead boards for each sales rep, vehicle reservation deposits, customer call logs, automated follow-up reminders, and general manager oversight dashboard.
+          </div>
+        </div>
+        <div class="bento-card">
+          <div class="bento-title" style="font-size:10pt">🏦 Bank & Leasing Integration</div>
+          <div class="bento-desc">
+            Direct connection to partner auto finance banks in Egypt. Real-time installment calculator on your car pages allows buyers to apply for bank financing in seconds.
+          </div>
+        </div>
+        <div class="bento-card">
+          <div class="bento-title" style="font-size:10pt">🎬 Mobile Media Studio</div>
+          <div class="bento-desc">
+            Generate promotional car flyers, price-drop banners, and vertical video reels directly from your phone. Formatted for instant WhatsApp Status and Instagram Stories.
+          </div>
+        </div>
+        <div class="bento-card">
+          <div class="bento-title" style="font-size:10pt">🖥️ 5-Screen Showroom Sync</div>
+          <div class="bento-desc">
+            Connects up to 5 PCs and tablets inside your showroom on local Wi-Fi. Manager, sales reps, and reception display identical live inventory and reservation status.
+          </div>
+        </div>
+      </div>
+
+      <div class="spec-grid" style="margin-top:4mm">
+        <div class="spec-cell"><div class="spec-label">Fleet Size</div><div class="spec-val">Unlimited Fleet</div></div>
+        <div class="spec-cell"><div class="spec-label">Staff Stations</div><div class="spec-val">Up to 5 Synchronized Devices</div></div>
+        <div class="spec-cell"><div class="spec-label">Domain</div><div class="spec-val">Custom Domain Supported</div></div>
+        <div class="spec-cell"><div class="spec-label">Search Boost</div><div class="spec-val">2.5× Top Placement</div></div>
+      </div>
+
+      <div class="upgrade-box">
+        <div class="upgrade-icon">⬆</div>
+        <div>
+          <div class="upgrade-label">When to Upgrade</div>
+          <div class="upgrade-desc">When expanding into multiple branches across governorates, distributing quotas to sub-dealers, or holding official brand agency rights.</div>
+          <div class="upgrade-target">→ Next Level: Enterprise Agency Membership</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE 5 — ENTERPRISE PACKAGE
+════════════════════════════════════════════════════════════ -->
+<div class="page inner-page page-break">
+  <div class="page-header">
+    <span class="brand">AutoFyon — Official Product Brochure 2026</span>
+    <span class="page-num">Page 5 of 8</span>
+  </div>
+
+  <div class="eyebrow" style="margin-bottom:2mm">Tier 4 of 4 · The Apex</div>
+  <div class="pkg-card">
+    <div class="pkg-card-header">
+      <div>
+        <span class="pkg-badge pill-ent" style="padding:2px 8px;border-radius:100px;font-size:7pt;font-weight:800">Enterprise Agency Membership</span>
+        <h3 class="pkg-title" style="margin-top:2mm">Official Agency & Multi-Branch Network</h3>
+        <p style="font-size:8.5pt;color:var(--text-secondary);margin-top:1mm">Tailored infrastructure for official car agencies, certified distributors, and multi-governorate chains</p>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:12pt;font-weight:900;color:#a855f7">Custom SLA Contract</div>
+        <div style="font-size:7.5pt;color:var(--text-muted);font-weight:700">Dedicated Cloudflare Edge Infrastructure</div>
+      </div>
+    </div>
+    <div class="pkg-card-body">
+      <div class="pkg-cols">
+        <div>
+          <h4 class="sub-title" style="margin-bottom:2mm">Enterprise Features</h4>
+          <ul class="feat-list">
+            <li><span class="check">✓</span>Unified multi-branch dashboard: centralize all showrooms and warehouses</li>
+            <li><span class="check">✓</span>Inter-branch vehicle transfer engine with approval workflows</li>
+            <li><span class="check">✓</span>Sub-dealer quota distribution and wholesale inventory clearance</li>
+            <li><span class="check">✓</span>Automated nightly cloud archiving with 4-hour disaster recovery SLA</li>
+            <li><span class="check">✓</span>Egyptian automotive registry and insurance carrier direct API integration</li>
+            <li><span class="check">✓</span>24/7 dedicated VIP hotline and enterprise engineering support</li>
+            <li><span class="check">✓</span>5.0× Maximum search authority across the entire platform</li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="sub-title" style="margin-bottom:2mm">Enterprise Deployment</h4>
+          <ol class="step-list">
+            <li><span class="step-num">1</span><span><strong class="step-label">Centralize Inventory</strong><span class="step-desc">Consolidate all stock, locations, and branch managers into one central dashboard.</span></span></li>
+            <li><span class="step-num">2</span><span><strong class="step-label">Authorize Sub-Dealers</strong><span class="step-desc">Distribute wholesale vehicle quotas through governed relationship tiers.</span></span></li>
+            <li><span class="step-num">3</span><span><strong class="step-label">Executive Analytics</strong><span class="step-desc">Track real-time model velocity, turnover rates, and branch-level margins.</span></span></li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- Enterprise Infrastructure Bento Grid -->
+      <h4 class="sub-title" style="margin-top:4mm;margin-bottom:3mm">Dedicated Enterprise Infrastructure</h4>
+      <div class="bento-grid">
+        <div class="bento-card">
+          <div class="bento-title" style="font-size:10pt">🏢 Multi-Branch Central Control</div>
+          <div class="bento-desc">
+            Single sign-on view of all branch locations in Egypt. Track vehicle movements, transfer requests, branch cash reconciliations, and staff quotas in real time.
+          </div>
+        </div>
+        <div class="bento-card">
+          <div class="bento-title" style="font-size:10pt">🔗 Registry & Insurance APIs</div>
+          <div class="bento-desc">
+            Direct technical bridges to Egyptian automotive databases, partner banking systems, and insurance providers for automated instant quote generation and policy binding.
+          </div>
+        </div>
+        <div class="bento-card">
+          <div class="bento-title" style="font-size:10pt">🛡️ Dedicated Cloudflare Edge</div>
+          <div class="bento-desc">
+            Isolated edge deployment with 99.9% uptime SLA, nightly database snapshots to secure object storage, DDoS mitigation, and enterprise compliance reporting.
+          </div>
+        </div>
+        <div class="bento-card">
+          <div class="bento-title" style="font-size:10pt">📊 Executive Intelligence</div>
+          <div class="bento-desc">
+            Model-by-model turnover heatmaps, customer demographic trends, seasonal demand forecasts, and automated PDF executive briefings delivered weekly to board directors.
+          </div>
+        </div>
+      </div>
+
+      <div class="spec-grid" style="margin-top:4mm">
+        <div class="spec-cell"><div class="spec-label">Fleet Capacity</div><div class="spec-val">Unlimited Multi-Branch</div></div>
+        <div class="spec-cell"><div class="spec-label">Device Stations</div><div class="spec-val">Unlimited Licensed Seats</div></div>
+        <div class="spec-cell"><div class="spec-label">Support</div><div class="spec-val">24/7 Dedicated VIP Team</div></div>
+        <div class="spec-cell"><div class="spec-label">Search Boost</div><div class="spec-val">5.0× Maximum Authority</div></div>
+      </div>
+
+      <div class="upgrade-box" style="background:rgba(168,85,247,0.06);border-color:rgba(168,85,247,0.25)">
+        <div class="upgrade-icon">👑</div>
+        <div>
+          <div class="upgrade-label" style="color:#a855f7">The Industry Benchmark</div>
+          <div class="upgrade-desc">Enterprise membership is the definitive standard for Egypt's official agency distributors and certified brand importers.</div>
+          <div class="upgrade-target" style="color:#a855f7">Contact our corporate solutions desk to review your customized deployment SLA.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE 6 — COMPARISON MATRIX
+════════════════════════════════════════════════════════════ -->
+<div class="page inner-page page-break">
+  <div class="page-header">
+    <span class="brand">AutoFyon — Official Product Brochure 2026</span>
+    <span class="page-num">Page 6 of 8</span>
+  </div>
+
+  <div class="eyebrow" style="margin-bottom:2mm">Comprehensive Feature Matrix</div>
+  <h2 class="section-title" style="margin-bottom:2mm">All Four Tiers Side-by-Side</h2>
+  <p class="body" style="margin-bottom:4mm">Use this reference matrix to identify exactly which features align with your current operational scale and future expansion roadmap.</p>
+
+  <table class="comp-table">
+    <thead>
+      <tr>
+        <th style="width:34%">Feature / Capability</th>
+        <th style="color:#10b981">Free Starter</th>
+        <th style="color:#f59e0b">Growth ERP</th>
+        <th style="color:#ef4444">Pro Multi-Agent</th>
+        <th style="color:#a855f7">Enterprise</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td colspan="5" style="background:var(--bg-card-subtle);font-size:7.5pt;font-weight:800;color:var(--gold);padding:2.5mm 4mm;text-transform:uppercase;letter-spacing:0.08em">Digital Presence & Marketplace</td></tr>
+      <tr><td>Verified Showroom Profile</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      <tr><td>Active Vehicle Listing</td><td>Up to 10</td><td>Up to 30</td><td>Unlimited</td><td>Unlimited</td></tr>
+      <tr><td>Hero Banner Slides</td><td>3 slides</td><td>5 slides</td><td>10 slides</td><td>Unlimited</td></tr>
+      <tr><td>Custom Domain (yourbrand.com)</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      <tr><td>Search Priority Ranking</td><td>1.0×</td><td>1.5×</td><td>2.5×</td><td>5.0× Top</td></tr>
+      <tr><td>Google Search Indexing</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      <tr><td>Marketing Social Templates</td><td>4/month</td><td>8/month</td><td>Unlimited</td><td>Unlimited</td></tr>
+
+      <tr><td colspan="5" style="background:var(--bg-card-subtle);font-size:7.5pt;font-weight:800;color:var(--gold);padding:2.5mm 4mm;text-transform:uppercase;letter-spacing:0.08em">ERP Operations & Security</td></tr>
+      <tr><td>100% Offline Almostashar ERP</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      <tr><td>Bilingual Sales Contracts (AR/EN)</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      <tr><td>Installment Management & Overdue Alerts</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      <tr><td>Vehicle Trade-In & Exchange Contracts</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      <tr><td>Cloud Bridge Sync</td><td class="partial">Basic</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      <tr><td>Showroom Device Licenses</td><td>1</td><td>2 (PC+Laptop)</td><td>5 Local Screens</td><td>Unlimited</td></tr>
+      <tr><td>5-Layer Hardware Security Engine</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+
+      <tr><td colspan="5" style="background:var(--bg-card-subtle);font-size:7.5pt;font-weight:800;color:var(--gold);padding:2.5mm 4mm;text-transform:uppercase;letter-spacing:0.08em">CRM, Financing & Multi-Branch</td></tr>
+      <tr><td>Direct WhatsApp Inquiry Funnel</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      <tr><td>Multi-Agent Sales Pipelines</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      <tr><td>Vehicle Reservation Deposits</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      <tr><td>Bank Financing Direct Integration</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      <tr><td>Mobile Media Studio (Reels & Flyers)</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      <tr><td>Multi-Branch Unified Central Console</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td></tr>
+      <tr><td>Automotive Registry & Insurance APIs</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td></tr>
+      <tr><td>Dedicated Cloudflare Edge Infrastructure</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td></tr>
+      <tr><td>24/7 Dedicated VIP Support SLA</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE 7 — UPGRADE ROADMAP & FREE TRIAL
+════════════════════════════════════════════════════════════ -->
+<div class="page inner-page page-break">
+  <div class="page-header">
+    <span class="brand">AutoFyon — Official Product Brochure 2026</span>
+    <span class="page-num">Page 7 of 8</span>
+  </div>
+
+  <div class="pkg-cols">
+    <div>
+      <div class="eyebrow" style="margin-bottom:2mm">Growth Progression</div>
+      <h2 class="section-title" style="margin-bottom:4mm">Scale at Your Own Pace</h2>
+
+      <div class="roadmap">
+        <div class="roadmap-line"></div>
+
+        <div class="roadmap-item">
+          <div class="roadmap-dot active"></div>
+          <div class="roadmap-label">Stage 1 · Zero Financial Commitment</div>
+          <div class="roadmap-title">Free Starter Membership</div>
+          <div class="roadmap-desc">Start today with up to 10 vehicles. Establish your verified presence and direct WhatsApp inquiries without upfront investment.</div>
+        </div>
+
+        <div class="roadmap-item">
+          <div class="roadmap-dot"></div>
+          <div class="roadmap-label">Stage 2 · Trigger: 10+ Cars or Offline Contracts Needed</div>
+          <div class="roadmap-title">Growth ERP Package</div>
+          <div class="roadmap-desc">Activate Almostashar ERP on your PC. Issue instant bilingual contracts and manage customer installment dues completely offline.</div>
+        </div>
+
+        <div class="roadmap-item">
+          <div class="roadmap-dot"></div>
+          <div class="roadmap-label">Stage 3 · Trigger: Sales Rep Team or Bank Financing</div>
+          <div class="roadmap-title">Pro Dealership Package</div>
+          <div class="roadmap-desc">Equip up to 5 showroom screens. Sales reps manage assigned leads, while customers apply for bank financing directly from your pages.</div>
+        </div>
+
+        <div class="roadmap-item">
+          <div class="roadmap-dot"></div>
+          <div class="roadmap-label">Stage 4 · Trigger: Multi-Branch Chain or Official Importer</div>
+          <div class="roadmap-title">Enterprise Agency Membership</div>
+          <div class="roadmap-desc">Connect every showroom and warehouse under a single command center with dedicated Cloudflare infrastructure and 24/7 SLA.</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <!-- 30-Day Free Trial Bento Box -->
+      <div style="border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--bg-card);box-shadow:var(--shadow-card)">
+        <div style="background:linear-gradient(135deg,var(--gold-glow) 0%,transparent 100%);padding:6mm 5mm;text-align:center">
+          <div style="font-size:24pt;margin-bottom:2mm">🚀</div>
+          <div class="eyebrow" style="margin-bottom:1mm">Instant Activation</div>
+          <h3 style="font-size:14pt;font-weight:900;color:var(--text-primary);line-height:1.2">30-Day All-Inclusive Trial</h3>
+          <p class="body" style="margin-top:2mm;margin-bottom:4mm;max-width:70mm;margin-left:auto;margin-right:auto">
+            Test the Growth or Pro offline ERP for 30 full days on your dealership laptop. No credit card required.
+          </p>
+          <div style="background:var(--gold);color:#000;font-weight:900;font-size:10pt;padding:4mm 8mm;border-radius:8px;display:inline-block">
+            autofyon.com/packages
+          </div>
+          <div style="margin-top:2mm;font-size:7.5pt;color:var(--text-muted)">or visit autofyon.com/download</div>
+        </div>
+        <div style="background:var(--bg-card-subtle);padding:4mm 5mm;border-top:1px solid var(--border-subtle)">
+          <div style="font-size:7.5pt;font-weight:800;color:var(--text-primary);margin-bottom:2mm">Trial includes:</div>
+          <ul class="feat-list">
+            <li><span class="check">✓</span>Complete ERP suite unlocked with all modules</li>
+            <li><span class="check">✓</span>Instant SMS verification code delivered in 10 seconds</li>
+            <li><span class="check">✓</span>100% offline functionality without internet</li>
+            <li><span class="check">✓</span>Personal setup assistance and onboarding guide</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Readiness Checklist -->
+      <div style="border:1px solid var(--border);border-radius:10px;padding:4.5mm;background:var(--bg-card);margin-top:4mm;box-shadow:var(--shadow-card)">
+        <h4 class="sub-title" style="margin-bottom:2mm">Showroom Growth Checklist</h4>
+        <div style="font-size:7.5pt;color:var(--text-secondary);margin-bottom:2.5mm">Check the boxes that apply to your business:</div>
+        <ul class="feat-list">
+          <li><span style="width:12px;height:12px;border:1.5px solid var(--gold);border-radius:3px;display:inline-block;flex-shrink:0;margin-top:1px"></span>Showroom inventory regularly exceeds 10 vehicles</li>
+          <li><span style="width:12px;height:12px;border:1.5px solid var(--gold);border-radius:3px;display:inline-block;flex-shrink:0;margin-top:1px"></span>Need printed sales contracts & deposit receipts</li>
+          <li><span style="width:12px;height:12px;border:1.5px solid var(--gold);border-radius:3px;display:inline-block;flex-shrink:0;margin-top:1px"></span>Manage 2 or more sales consultants</li>
+          <li><span style="width:12px;height:12px;border:1.5px solid var(--gold);border-radius:3px;display:inline-block;flex-shrink:0;margin-top:1px"></span>Buyers regularly request bank financing options</li>
+          <li><span style="width:12px;height:12px;border:1.5px solid var(--gold);border-radius:3px;display:inline-block;flex-shrink:0;margin-top:1px"></span>Operate across multiple branches or governorates</li>
+        </ul>
+        <div style="margin-top:2.5mm;padding:2.5mm 3.5mm;background:var(--pill-bg);border:1px solid var(--border);border-radius:6px;font-size:7.5pt;color:var(--text-secondary)">
+          <strong style="color:var(--gold)">Checked 2 or more?</strong> You are ready for the Growth or Pro tier. Start your free trial today.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="gold-rule wide" style="margin:5mm 0 4mm"></div>
+
+  <!-- What AutoFyon is Delivering Next -->
+  <div class="eyebrow" style="margin-bottom:1.5mm">Innovation Pipeline</div>
+  <h2 class="section-title" style="margin-bottom:2mm">Upcoming Platform Capabilities</h2>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:3.5mm">
+    <div style="border:1px solid var(--border);border-radius:8px;padding:3.5mm;background:var(--bg-card)">
+      <div style="font-size:14pt;margin-bottom:1mm">🤖</div>
+      <div style="font-size:7pt;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:1mm">Coming Soon</div>
+      <h4 style="font-size:9pt;font-weight:900;color:var(--text-primary);margin-bottom:1mm">AI Price Valuation Advisor</h4>
+      <p class="body" style="font-size:7.5pt">Automated market price recommendations based on make, model, year, and live Egyptian market transaction velocity.</p>
+    </div>
+    <div style="border:1px solid var(--border);border-radius:8px;padding:3.5mm;background:var(--bg-card)">
+      <div style="font-size:14pt;margin-bottom:1mm">📱</div>
+      <div style="font-size:7pt;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:1mm">Coming Soon</div>
+      <h4 style="font-size:9pt;font-weight:900;color:var(--text-primary);margin-bottom:1mm">Dealers Mobile App</h4>
+      <p class="body" style="font-size:7.5pt">Native iOS & Android app for showroom managers: upload inventory, review installment alerts, and reply to buyer leads on the move.</p>
+    </div>
+    <div style="border:1px solid var(--border);border-radius:8px;padding:3.5mm;background:var(--bg-card)">
+      <div style="font-size:14pt;margin-bottom:1mm">🎯</div>
+      <div style="font-size:7pt;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:1mm">In Development</div>
+      <h4 style="font-size:9pt;font-weight:900;color:var(--text-primary);margin-bottom:1mm">Intelligent Buyer Matcher</h4>
+      <p class="body" style="font-size:7.5pt">Proactively matches verified buyers searching for specific models with authorized dealers holding matching inventory in stock.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE 8 — BACK COVER
+════════════════════════════════════════════════════════════ -->
+<div class="page back-cover">
+  <div class="back-top">
+    <div style="text-align:center;position:relative;z-index:1">
+      <div class="eyebrow" style="margin-bottom:2mm">Take the Next Step</div>
+      <div style="font-size:32pt;font-weight:900;color:var(--gold);letter-spacing:-0.03em;line-height:1">AutoFyon</div>
+      <div style="font-size:13pt;color:var(--text-primary);margin-top:2mm;font-weight:400;opacity:0.9">Egypt's Automotive Dealership Platform</div>
+      <div style="margin-top:4mm;font-size:9pt;color:var(--text-secondary);max-width:125mm;margin-left:auto;margin-right:auto;line-height:1.7">
+        Every Egyptian dealership deserves a professional, verified digital showroom 
+        and an operational system that never stops working — even during internet outages.
+        Start free today or launch your 30-day comprehensive offline ERP trial.
+      </div>
+
+      <div style="display:flex;gap:5mm;justify-content:center;margin-top:7mm;flex-wrap:wrap">
+        <div style="background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#000;font-weight:900;font-size:10pt;padding:4.5mm 9mm;border-radius:8px;box-shadow:0 4px 16px var(--gold-glow)">
+          🚀 Start Free Trial — autofyon.com/packages
+        </div>
+        <div style="background:var(--bg-card);color:var(--text-primary);font-weight:800;font-size:10pt;padding:4.5mm 9mm;border-radius:8px;border:1px solid var(--border)">
+          ⬇ Download Desktop ERP — autofyon.com/download
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-grid">
+      <div class="contact-card">
+        <span class="contact-icon">🌐</span>
+        <div class="contact-label">Main Portal</div>
+        <div class="contact-val"><a href="https://autofyon.com">autofyon.com</a></div>
+      </div>
+      <div class="contact-card">
+        <span class="contact-icon">📦</span>
+        <div class="contact-label">Packages & Trial</div>
+        <div class="contact-val"><a href="https://autofyon.com/packages">autofyon.com/packages</a></div>
+      </div>
+      <div class="contact-card">
+        <span class="contact-icon">🏢</span>
+        <div class="contact-label">Dealers Directory</div>
+        <div class="contact-val"><a href="https://autofyon.com/dealers">autofyon.com/dealers</a></div>
+      </div>
+      <div class="contact-card">
+        <span class="contact-icon">🚗</span>
+        <div class="contact-label">Vehicle Marketplace</div>
+        <div class="contact-val"><a href="https://autofyon.com/cars">autofyon.com/cars</a></div>
+      </div>
+      <div class="contact-card">
+        <span class="contact-icon">💬</span>
+        <div class="contact-label">Dealer Registration</div>
+        <div class="contact-val"><a href="https://autofyon.com/join">autofyon.com/join</a></div>
+      </div>
+      <div class="contact-card">
+        <span class="contact-icon">🛡️</span>
+        <div class="contact-label">Enterprise SLA</div>
+        <div class="contact-val"><a href="https://autofyon.com/join">Corporate Solutions</a></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="back-bottom">
+    <div>
+      <div class="back-brand">AutoFyon</div>
+      <div style="font-size:7.5pt;color:var(--text-secondary);margin-top:1.5mm">أوتوفيون — المنصة الأولى للسيارات ومعارض السيارات في مصر</div>
+    </div>
+    <div class="back-copy">
+      <div>© 2026 AutoFyon. All Rights Reserved.</div>
+      <div style="margin-top:1mm">Official Product Brochure · 8 Pages · Light/Dark Compatible</div>
+      <div style="margin-top:1mm">Version 2.0 · November 2026</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

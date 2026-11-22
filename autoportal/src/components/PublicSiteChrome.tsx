@@ -287,6 +287,8 @@ export default function PublicSiteChrome({
             <Link href={localePath(locale, ['cars'])}>{isAr ? 'السيارات' : 'Vehicles'}</Link>
             <Link href={localePath(locale, ['brands'])}>{isAr ? 'الماركات' : 'Brands'}</Link>
             <Link href={localePath(locale, ['dealers'])}>{isAr ? 'المعارض' : 'Dealers'}</Link>
+            <Link href={localePath(locale, ['packages'])}>{isAr ? 'باقات وحلول المعارض' : 'Dealership Packages'}</Link>
+            <a href="/brochure/autofyon-brochure-en.html" target="_blank" rel="noopener noreferrer">{isAr ? 'البروشور الرسمي (PDF)' : 'Official Brochure (PDF)'}</a>
             <Link href={localePath(locale, ['blog'])}>{isAr ? 'المقالات' : 'Journal'}</Link>
             <Link href="/join">{isAr ? 'انضم كمعرض' : 'List Your Showroom'}</Link>
             <Link href="/admin" prefetch={false}>{isAr ? 'دخول الإدارة' : 'Admin'}</Link>

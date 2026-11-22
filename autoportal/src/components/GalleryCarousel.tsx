@@ -589,16 +589,45 @@ export default function GalleryCarousel({
  * or a value nobody authored. Stating it is better than an empty frame, which a
  * visitor reads as a broken page rather than as work in progress.
  */
-function PendingPane({ isAr, hasValue }: { isAr: boolean; hasValue: boolean }) {
+function PendingPane({
+  isAr,
+  hasValue,
+  watermark,
+  brand,
+}: {
+  isAr: boolean;
+  hasValue: boolean;
+  watermark?: string | null;
+  brand?: string;
+}) {
+  const displayMark = (watermark || (brand ? `${brand} · autofyon.com` : 'autofyon.com')).toUpperCase();
   return (
-    <div className="pending">
-      <span className="pending-plate">
-        <IconCamera size={26} />
-        <span className="pending-line">{isAr ? UI.photoPending.ar : UI.photoPending.en}</span>
-        {!hasValue ? (
-          <span className="pending-sub">{isAr ? UI.valuePending.ar : UI.valuePending.en}</span>
-        ) : null}
-        <span className="pending-sub" style={{ opacity: 0.6, letterSpacing: '0.08em', marginTop: '4px', fontWeight: 600 }}>autofyon.com</span>
+    <div className="pending relative overflow-hidden bg-gradient-to-br from-[#07090c] via-[#0d1219] to-[#040608] flex items-center justify-center">
+      {/* Decorative luxury watermark & grid */}
+      <div
+        className="absolute inset-0 opacity-[0.06] pointer-events-none"
+        style={{
+          backgroundImage: 'radial-gradient(rgba(255,255,255,0.4) 1px, transparent 1px)',
+          backgroundSize: '24px 24px',
+        }}
+      />
+      {/* Large subtle diagonal watermark */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
+        <span className="text-[14vw] font-black tracking-widest text-white/[0.03] uppercase rotate-[-8deg] whitespace-nowrap">
+          {displayMark.split('·')[0].trim() || 'AUTOFYON'}
+        </span>
+      </div>
+
+      <span className="pending-plate relative z-10 backdrop-blur-md bg-black/40 border border-white/10 rounded-2xl px-6 py-4 shadow-2xl max-w-md mx-4">
+        <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/25 flex items-center justify-center text-amber-400 mb-2 shadow-[0_0_15px_rgba(245,158,11,0.2)]">
+          <IconCamera size={20} />
+        </div>
+        <span className="pending-line text-xs font-bold tracking-widest text-amber-400/90 uppercase">
+          {isAr ? 'بيانات ومواصفات الوكيل الرسمي معتمدة' : 'Official Agency Data & Specs Verified'}
+        </span>
+        <span className="pending-sub text-[11px] font-semibold text-slate-300/80 mt-1">
+          {watermark || (brand ? `${brand} · autofyon.com` : 'AutoFyon Egypt · أوتوفيون')}
+        </span>
       </span>
     </div>
   );
@@ -641,22 +670,42 @@ function PaneBody({
   // number is real authoring, so it gets the branded glass. A field nobody has
   // answered has no number to print, so it says what is missing instead of
   // presenting a headline that is really a question.
+  const currentWatermark = slide.watermark ?? defaults.watermark;
+
   if (slide.mediaType === 'branded') {
-    if (!slide.title.trim()) return <PendingPane isAr={isAr} hasValue={false} />;
+    if (!slide.title.trim()) {
+      return (
+        <PendingPane
+          isAr={isAr}
+          hasValue={false}
+          watermark={currentWatermark}
+          brand={brand}
+        />
+      );
+    }
     return (
       <div className="branded" style={slide.bgColor ? { background: slide.bgColor } : undefined}>
         <span className="branded-rule" aria-hidden />
         <span className="branded-rule branded-rule--2" aria-hidden />
-        {(slide.watermark ?? defaults.watermark ?? brand)?.trim() ? (
+        {(currentWatermark ?? brand)?.trim() ? (
           <span className="branded-mark" aria-hidden>
-            {(slide.watermark ?? defaults.watermark ?? brand)!.trim()}
+            {(currentWatermark ?? brand)!.trim()}
           </span>
         ) : null}
       </div>
     );
   }
 
-  if (!slide.url) return <PendingPane isAr={isAr} hasValue={Boolean(slide.title.trim())} />;
+  if (!slide.url) {
+    return (
+      <PendingPane
+        isAr={isAr}
+        hasValue={Boolean(slide.title.trim())}
+        watermark={currentWatermark}
+        brand={brand}
+      />
+    );
+  }
 
   switch (slide.mediaType) {
     case 'youtube':
@@ -699,7 +748,14 @@ function PaneBody({
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture; fullscreen"
           allowFullScreen
         />
-      ) : <PendingPane isAr={isAr} hasValue={Boolean(slide.title.trim())} />;
+      ) : (
+        <PendingPane
+          isAr={isAr}
+          hasValue={Boolean(slide.title.trim())}
+          watermark={currentWatermark}
+          brand={brand}
+        />
+      );
 
     case 'image':
     default:

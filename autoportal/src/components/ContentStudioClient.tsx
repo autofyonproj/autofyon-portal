@@ -106,9 +106,9 @@ export default function ContentStudioClient({ initialData, businessId }: Props) 
         <SubTabBtn active={subTab === 'fields'} onClick={() => setSubTab('fields')}>
           📝 Fields
         </SubTabBtn>
-        {activeSection?.enable_blog ? (
+        {(activeSection?.enable_blog || activeSection?.id.startsWith('sec_auto_') || activeSection?.id === 'sec_1_identity') ? (
           <SubTabBtn active={subTab === 'blog'} onClick={() => setSubTab('blog')}>
-            📰 Blog
+            📰 Blog & Articles
           </SubTabBtn>
         ) : null}
         <SubTabBtn active={subTab === 'social'} onClick={() => setSubTab('social')}>

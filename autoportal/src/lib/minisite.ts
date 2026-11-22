@@ -1272,6 +1272,38 @@ async function buildNetworkShowreel(businessId: string, locale: SiteLocale): Pro
   return slides;
 }
 
+function buildModelSpecSummary(
+  customData: Record<string, Record<string, unknown>>,
+  locale: SiteLocale,
+): string | null {
+  const specs = (customData['sec_auto_specs'] ?? customData['sec_auto_engine'] ?? {}) as Record<string, unknown>;
+  const isAr = locale === 'ar';
+  const parts: string[] = [];
+
+  const engine = specs['engine'] || specs['engine_cc'] || specs['displacement'];
+  if (engine) parts.push(isAr ? `محرك ${engine}` : `${engine}`);
+
+  const power = specs['power_hp'] || specs['horse_power'] || specs['power'];
+  if (power) parts.push(isAr ? `${power} حصان` : `${power} hp`);
+
+  const torque = specs['torque_nm'] || specs['torque'];
+  if (torque) parts.push(isAr ? `${torque} ن.م` : `${torque} Nm`);
+
+  const acc = specs['acceleration_0_100'] || specs['acceleration'] || specs['0_100'];
+  if (acc) parts.push(isAr ? `تسارع 0-100: ${acc} ث` : `0-100: ${acc}s`);
+
+  const trans = specs['transmission'];
+  if (trans && parts.length < 4) parts.push(String(trans));
+
+  const price = specs['official_price_egp'] || specs['price'] || customData['sec_listing_price']?.['official_price_egp'];
+  if (price && typeof price === 'number') {
+    const formattedPrice = price.toLocaleString(isAr ? 'ar-EG' : 'en-US');
+    parts.push(isAr ? `السعر الرسمي: ${formattedPrice} ج.م` : `Price: ${formattedPrice} EGP`);
+  }
+
+  return parts.length ? parts.join(' · ') : null;
+}
+
 /**
  * The highlight reel for a shelf that carries no media of its own.
  *
@@ -1303,35 +1335,62 @@ async function buildOwnHighlightReel(
 
   const owner = loc(business.name, business.name_ar, locale) ?? '';
   const cta = localePath(locale, [business.slug]);
+  const defaultSpecSummary = buildModelSpecSummary(customData, locale);
 
   if (rows.length) {
-    return rows.slice(0, HIGHLIGHT_MAX).map((r) => (r.field_key
-      ? {
+    return rows.slice(0, HIGHLIGHT_MAX).map((r) => {
+      if (r.field_key) {
+        return {
           ...makeSlide(r, targetOf(r.section_id ?? '', r), fieldsBySection, customData, locale),
           targetSectionId: r.section_id ?? null,
-        }
-      : {
-          ...readStage(r.media_data),
-          ...mediaOf(r),
-          id: r.id,
-          fieldKey: '',
-          fieldSectionId: '',
-          eyebrow: owner,
-          // An unbound frame has no value to headline, so its own caption leads.
-          title: loc(r.caption, r.caption_ar, locale) ?? '',
-          note: null,
-          url: r.url,
-          isHero: r.is_hero,
-          placeholder: false,
-          targetSectionId: r.section_id ?? null,
-          ctaLink: cta,
-        }));
+          watermark: 'AutoFyon · autofyon.com',
+        };
+      }
+      const stage = readStage(r.media_data);
+      const rowCaption = loc(r.caption, r.caption_ar, locale) ?? '';
+      return {
+        ...stage,
+        ...mediaOf(r),
+        id: r.id,
+        fieldKey: '',
+        fieldSectionId: '',
+        eyebrow: owner,
+        title: rowCaption || owner,
+        note: (stage as Record<string, unknown>).note as string | undefined || defaultSpecSummary,
+        url: r.url,
+        isHero: r.is_hero,
+        placeholder: false,
+        watermark: stage.watermark || 'AutoFyon · autofyon.com',
+        targetSectionId: r.section_id ?? null,
+        ctaLink: cta,
+        ctaText: locale === 'ar' ? 'عرض المواصفات والأسعار ←' : 'View Specs & Prices →',
+      };
+    });
   }
 
   // Nothing photographed anywhere: the facts the owner did type carry the hero.
   const facts = advertiseFirst([...fieldsBySection.values()].flat().filter(carouselEligible));
-  return factFrames(facts, customData, locale, HIGHLIGHT_FACTS,
+  const frames = factFrames(facts, customData, locale, HIGHLIGHT_FACTS,
     { owner, idPrefix: `highlight-fact-${business.id}`, ctaLink: cta, local: true });
+  if (frames.length) return frames;
+
+  // Synthesize an official verified slide if no facts were individual slide flags
+  return [{
+    id: `highlight-empty-${business.id}`,
+    fieldKey: '',
+    fieldSectionId: '',
+    eyebrow: owner,
+    title: owner,
+    note: defaultSpecSummary || (locale === 'ar' ? 'المواصفات الفنية معتمدة من الوكيل الرسمي' : 'Official Agency Specs Verified'),
+    url: null,
+    videoId: null,
+    isHero: 1,
+    placeholder: true,
+    mediaType: 'branded',
+    watermark: 'AutoFyon · autofyon.com',
+    ctaLink: cta,
+    ctaText: locale === 'ar' ? 'عرض المواصفات والأسعار ←' : 'View Specs & Prices →',
+  }];
 }
 
 // ── blogs ────────────────────────────────────────────────────────────────────
@@ -1587,7 +1646,7 @@ export async function loadMinisite(
       slides = await buildOwnHighlightReel(business, fieldsBySection, customData, locale);
     }
 
-    const blogs = activeSection.enable_blog
+    const blogs = (activeSection.enable_blog || activeSection.id.startsWith('sec_auto_') || activeSection.id === 'sec_1_identity')
       ? await buildBlogs(business.id, activeSection.id, locale)
       : [];
     const shelves: GraphShelf[] = [];

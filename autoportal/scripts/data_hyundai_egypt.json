@@ -1,0 +1,372 @@
+{
+  "brand": {
+    "slug": "hyundai",
+    "name": "Hyundai",
+    "name_ar": "هيونداي",
+    "origin_country": "South Korea",
+    "logo_url": "https://cdn.jsdelivr.net/gh/filippofilip95/car-logos-dataset@master/logos/optimized/hyundai.svg",
+    "established_year": 1967,
+    "description": "South Korean automotive manufacturer known for quality, reliability, and advanced technology at competitive pricing.",
+    "description_ar": "شركة تصنيع سيارات كورية جنوبية معروفة بالجودة والموثوقية والتكنولوجيا المتقدمة بأسعار تنافسية."
+  },
+  "agency": {
+    "slug": "gb-auto-hyundai-egypt",
+    "name": "GB Auto — Hyundai Egypt",
+    "name_ar": "غبور أوتو — هيونداي مصر",
+    "type_id": "main_agency",
+    "phone": "19900",
+    "email": "customercare@hyundai.com.eg",
+    "website": "https://www.hyundai.com.eg",
+    "address": "Cairo-Alexandria Desert Road, Giza, Egypt",
+    "address_ar": "طريق القاهرة الإسكندرية الصحراوي، الجيزة، مصر",
+    "established_year": 1975
+  },
+  "models": [
+    {
+      "slug": "hyundai-elantra-cn7",
+      "name": "Hyundai Elantra CN7",
+      "name_ar": "هيونداي إيلانترا CN7",
+      "year": 2024,
+      "body_type": "Sedan",
+      "brochure_url": "https://www.hyundai.com.eg/content/dam/hyundai/eg/en/data/find-a-car/elantra/brochures/elantra-brochure-2024.pdf",
+      "images": [
+        { "url": "https://www.hyundai.com/content/dam/hyundai/ww/en/data/find-a-car/elantra-cn7/highlights/pc/202404/elantra-cn7-01-exterior-en.jpg", "section_id": "sec_1_identity", "caption": "Elantra CN7 — Parametric Design", "caption_ar": "إيلانترا CN7 — التصميم البارامتري" },
+        { "url": "https://www.hyundai.com/content/dam/hyundai/ww/en/data/find-a-car/elantra-cn7/highlights/pc/202404/elantra-cn7-02-exterior-en.jpg", "section_id": "sec_auto_exterior", "caption": "Aerodynamic Body", "caption_ar": "الهيكل الانسيابي" },
+        { "url": "https://www.hyundai.com/content/dam/hyundai/ww/en/data/find-a-car/elantra-cn7/highlights/pc/202404/elantra-cn7-04-interior-en.jpg", "section_id": "sec_auto_interior", "caption": "10.25\" Dual Screen Cockpit", "caption_ar": "قمرة قيادة بشاشتين 10.25 بوصة" },
+        { "url": "https://www.hyundai.com/content/dam/hyundai/ww/en/data/find-a-car/elantra-cn7/highlights/pc/202404/elantra-cn7-05-safety-en.jpg", "section_id": "sec_auto_safety", "caption": "SmartSense Safety Suite", "caption_ar": "منظومة الأمان SmartSense" },
+        { "url": "https://www.hyundai.com/content/dam/hyundai/ww/en/data/find-a-car/elantra-cn7/highlights/pc/202404/elantra-cn7-06-engine-en.jpg", "section_id": "sec_auto_engine", "caption": "Smartstream Engine", "caption_ar": "محرك Smartstream" }
+      ],
+      "trims": [
+        {
+          "slug": "hyundai-elantra-smart",
+          "name": "Elantra Smart",
+          "name_ar": "إيلانترا سمارت",
+          "price_egp": 1095000,
+          "price_note": "Official GB Auto agency price, locally assembled in Abu Rawash",
+          "price_note_ar": "السعر الرسمي من غبور أوتو، تجميع محلي بأبو رواش",
+          "specs": {
+            "engine": "1.6L Smartstream G (MPI)",
+            "engine_ar": "1.6 لتر Smartstream G (MPI)",
+            "power_hp": 123,
+            "torque_nm": 151,
+            "acceleration_0_100": 10.9,
+            "top_speed_kmh": 185,
+            "transmission": "6-Speed Manual",
+            "drive": "FWD",
+            "fuel_type": "Petrol",
+            "fuel_economy_combined": 6.6,
+            "assembly": "Local — Abu Rawash Plant",
+            "assembly_ar": "تجميع محلي — مصنع أبو رواش"
+          }
+        },
+        {
+          "slug": "hyundai-elantra-gls",
+          "name": "Elantra GLS",
+          "name_ar": "إيلانترا GLS",
+          "price_egp": 1245000,
+          "price_note": "Official GB Auto agency price, locally assembled in Abu Rawash",
+          "price_note_ar": "السعر الرسمي من غبور أوتو، تجميع محلي بأبو رواش",
+          "specs": {
+            "engine": "1.6L Smartstream G (MPI)",
+            "engine_ar": "1.6 لتر Smartstream G (MPI)",
+            "power_hp": 123,
+            "torque_nm": 151,
+            "acceleration_0_100": 10.9,
+            "top_speed_kmh": 185,
+            "transmission": "6-Speed Automatic",
+            "drive": "FWD",
+            "fuel_type": "Petrol",
+            "fuel_economy_combined": 6.9,
+            "assembly": "Local — Abu Rawash Plant",
+            "assembly_ar": "تجميع محلي — مصنع أبو رواش"
+          }
+        },
+        {
+          "slug": "hyundai-elantra-ultra",
+          "name": "Elantra Ultra",
+          "name_ar": "إيلانترا ألترا",
+          "price_egp": 1485000,
+          "price_note": "Official GB Auto agency price, locally assembled in Abu Rawash",
+          "price_note_ar": "السعر الرسمي من غبور أوتو، تجميع محلي بأبو رواش",
+          "specs": {
+            "engine": "1.6L Smartstream G (MPI) + 48V Mild Hybrid",
+            "engine_ar": "1.6 لتر Smartstream G + هجين خفيف 48 فولت",
+            "power_hp": 123,
+            "torque_nm": 151,
+            "acceleration_0_100": 10.9,
+            "top_speed_kmh": 185,
+            "transmission": "7-DCT Automatic",
+            "drive": "FWD",
+            "fuel_type": "Petrol Mild Hybrid",
+            "fuel_economy_combined": 5.8,
+            "assembly": "Local — Abu Rawash Plant",
+            "assembly_ar": "تجميع محلي — مصنع أبو رواش"
+          }
+        }
+      ],
+      "relations": [
+        { "type": "sold_by", "target_slug": "gb-auto-hyundai-egypt" }
+      ]
+    },
+    {
+      "slug": "hyundai-accent-rb",
+      "name": "Hyundai Accent RB",
+      "name_ar": "هيونداي أكسنت RB",
+      "year": 2024,
+      "body_type": "Sedan",
+      "brochure_url": "https://www.hyundai.com.eg/content/dam/hyundai/eg/en/data/find-a-car/accent/brochures/accent-brochure-2024.pdf",
+      "images": [
+        { "url": "https://www.hyundai.com/content/dam/hyundai/ww/en/data/find-a-car/accent-rb/highlights/pc/202305/accent-rb-01-exterior.jpg", "section_id": "sec_1_identity", "caption": "Accent RB — Economical Excellence", "caption_ar": "أكسنت RB — التميز الاقتصادي" },
+        { "url": "https://www.hyundai.com/content/dam/hyundai/ww/en/data/find-a-car/accent-rb/highlights/pc/202305/accent-rb-02-exterior.jpg", "section_id": "sec_auto_exterior", "caption": "Sporty Exterior Lines", "caption_ar": "الخطوط الخارجية الرياضية" },
+        { "url": "https://www.hyundai.com/content/dam/hyundai/ww/en/data/find-a-car/accent-rb/highlights/pc/202305/accent-rb-03-interior.jpg", "section_id": "sec_auto_interior", "caption": "Comfort Interior", "caption_ar": "المقصورة الداخلية المريحة" }
+      ],
+      "trims": [
+        {
+          "slug": "hyundai-accent-manual",
+          "name": "Accent 1.4 Manual",
+          "name_ar": "أكسنت 1.4 يدوي",
+          "price_egp": 745000,
+          "price_note": "Official GB Auto agency price, locally assembled in Abu Rawash",
+          "price_note_ar": "السعر الرسمي من غبور أوتو، تجميع محلي بأبو رواش",
+          "specs": {
+            "engine": "1.4L Gamma MPI",
+            "engine_ar": "1.4 لتر Gamma MPI",
+            "power_hp": 100,
+            "torque_nm": 132,
+            "acceleration_0_100": 12.5,
+            "top_speed_kmh": 170,
+            "transmission": "6-Speed Manual",
+            "drive": "FWD",
+            "fuel_type": "Petrol",
+            "fuel_economy_combined": 6.0,
+            "assembly": "Local — Abu Rawash Plant",
+            "assembly_ar": "تجميع محلي — مصنع أبو رواش"
+          }
+        },
+        {
+          "slug": "hyundai-accent-automatic",
+          "name": "Accent 1.4 Automatic",
+          "name_ar": "أكسنت 1.4 أوتوماتيك",
+          "price_egp": 865000,
+          "price_note": "Official GB Auto agency price, locally assembled in Abu Rawash",
+          "price_note_ar": "السعر الرسمي من غبور أوتو، تجميع محلي بأبو رواش",
+          "specs": {
+            "engine": "1.4L Gamma MPI",
+            "engine_ar": "1.4 لتر Gamma MPI",
+            "power_hp": 100,
+            "torque_nm": 132,
+            "acceleration_0_100": 12.8,
+            "top_speed_kmh": 170,
+            "transmission": "6-Speed Automatic (DCT)",
+            "drive": "FWD",
+            "fuel_type": "Petrol",
+            "fuel_economy_combined": 6.3,
+            "assembly": "Local — Abu Rawash Plant",
+            "assembly_ar": "تجميع محلي — مصنع أبو رواش"
+          }
+        }
+      ],
+      "relations": [
+        { "type": "sold_by", "target_slug": "gb-auto-hyundai-egypt" }
+      ]
+    },
+    {
+      "slug": "hyundai-tucson-nx4",
+      "name": "Hyundai Tucson NX4",
+      "name_ar": "هيونداي توسان NX4",
+      "year": 2024,
+      "body_type": "SUV",
+      "brochure_url": "https://www.hyundai.com.eg/content/dam/hyundai/eg/en/data/find-a-car/tucson/brochures/tucson-brochure-2024.pdf",
+      "images": [
+        { "url": "https://www.hyundai.com/content/dam/hyundai/ww/en/data/find-a-car/tucson-nx4/highlights/pc/202208/tucson-nx4-01-exterior.jpg", "section_id": "sec_1_identity", "caption": "Tucson NX4 — Bold Parametric Design", "caption_ar": "توسان NX4 — التصميم البارامتري الجريء" },
+        { "url": "https://www.hyundai.com/content/dam/hyundai/ww/en/data/find-a-car/tucson-nx4/highlights/pc/202208/tucson-nx4-02-exterior.jpg", "section_id": "sec_auto_exterior", "caption": "Diamond-Cut Geometric Exterior", "caption_ar": "الهيكل الخارجي الهندسي المقطوع بالماس" },
+        { "url": "https://www.hyundai.com/content/dam/hyundai/ww/en/data/find-a-car/tucson-nx4/highlights/pc/202208/tucson-nx4-04-interior.jpg", "section_id": "sec_auto_interior", "caption": "10.25\" Wide Screen Interior", "caption_ar": "المقصورة الداخلية بشاشة 10.25 بوصة عريضة" },
+        { "url": "https://www.hyundai.com/content/dam/hyundai/ww/en/data/find-a-car/tucson-nx4/highlights/pc/202208/tucson-nx4-05-safety.jpg", "section_id": "sec_auto_safety", "caption": "Full SmartSense Package", "caption_ar": "حزمة SmartSense الكاملة" }
+      ],
+      "trims": [
+        {
+          "slug": "hyundai-tucson-smart",
+          "name": "Tucson Smart",
+          "name_ar": "توسان سمارت",
+          "price_egp": 1795000,
+          "price_note": "Official GB Auto agency price",
+          "price_note_ar": "السعر الرسمي من غبور أوتو",
+          "specs": {
+            "engine": "2.0L Smartstream G (MPI)",
+            "engine_ar": "2.0 لتر Smartstream G (MPI)",
+            "power_hp": 155,
+            "torque_nm": 192,
+            "acceleration_0_100": 10.0,
+            "top_speed_kmh": 195,
+            "transmission": "6-Speed Automatic",
+            "drive": "FWD",
+            "fuel_type": "Petrol",
+            "fuel_economy_combined": 8.2
+          }
+        },
+        {
+          "slug": "hyundai-tucson-ultra",
+          "name": "Tucson Ultra AWD",
+          "name_ar": "توسان ألترا دفع رباعي",
+          "price_egp": 2150000,
+          "price_note": "Official GB Auto agency price",
+          "price_note_ar": "السعر الرسمي من غبور أوتو",
+          "specs": {
+            "engine": "1.6L T-GDi Turbo",
+            "engine_ar": "1.6 لتر توربو T-GDi",
+            "power_hp": 180,
+            "torque_nm": 265,
+            "acceleration_0_100": 8.5,
+            "top_speed_kmh": 210,
+            "transmission": "7-DCT Automatic",
+            "drive": "HTRAC AWD",
+            "fuel_type": "Petrol",
+            "fuel_economy_combined": 8.8
+          }
+        }
+      ],
+      "relations": [
+        { "type": "sold_by", "target_slug": "gb-auto-hyundai-egypt" }
+      ]
+    },
+    {
+      "slug": "hyundai-creta-su2i",
+      "name": "Hyundai Creta SU2i",
+      "name_ar": "هيونداي كريتا SU2i",
+      "year": 2024,
+      "body_type": "Crossover SUV",
+      "brochure_url": "https://www.hyundai.com.eg/content/dam/hyundai/eg/en/data/find-a-car/creta/brochures/creta-brochure-2024.pdf",
+      "images": [
+        { "url": "https://www.hyundai.com/content/dam/hyundai/ww/en/data/find-a-car/creta-su2i/highlights/pc/202401/creta-su2i-01-exterior.jpg", "section_id": "sec_1_identity", "caption": "Creta SU2i — Urban Crossover", "caption_ar": "كريتا SU2i — الكروس أوفر الحضري" },
+        { "url": "https://www.hyundai.com/content/dam/hyundai/ww/en/data/find-a-car/creta-su2i/highlights/pc/202401/creta-su2i-02-exterior.jpg", "section_id": "sec_auto_exterior", "caption": "Geometric Parametric Grille", "caption_ar": "الشبكة الأمامية الهندسية البارامترية" },
+        { "url": "https://www.hyundai.com/content/dam/hyundai/ww/en/data/find-a-car/creta-su2i/highlights/pc/202401/creta-su2i-03-interior.jpg", "section_id": "sec_auto_interior", "caption": "Panoramic Dual Screen", "caption_ar": "الشاشة المزدوجة البانورامية" }
+      ],
+      "trims": [
+        {
+          "slug": "hyundai-creta-smart",
+          "name": "Creta Smart",
+          "name_ar": "كريتا سمارت",
+          "price_egp": 1395000,
+          "price_note": "Official GB Auto agency price",
+          "price_note_ar": "السعر الرسمي من غبور أوتو",
+          "specs": {
+            "engine": "1.5L Smartstream G",
+            "engine_ar": "1.5 لتر Smartstream G",
+            "power_hp": 115,
+            "torque_nm": 144,
+            "acceleration_0_100": 11.2,
+            "top_speed_kmh": 175,
+            "transmission": "6-Speed Manual",
+            "drive": "FWD",
+            "fuel_type": "Petrol",
+            "fuel_economy_combined": 6.4
+          }
+        },
+        {
+          "slug": "hyundai-creta-ultra",
+          "name": "Creta Ultra",
+          "name_ar": "كريتا ألترا",
+          "price_egp": 1685000,
+          "price_note": "Official GB Auto agency price",
+          "price_note_ar": "السعر الرسمي من غبور أوتو",
+          "specs": {
+            "engine": "1.5L Smartstream G (IVT)",
+            "engine_ar": "1.5 لتر Smartstream G (IVT)",
+            "power_hp": 115,
+            "torque_nm": 144,
+            "acceleration_0_100": 11.0,
+            "top_speed_kmh": 175,
+            "transmission": "IVT Automatic",
+            "drive": "FWD",
+            "fuel_type": "Petrol",
+            "fuel_economy_combined": 6.1
+          }
+        },
+        {
+          "slug": "hyundai-creta-turbo",
+          "name": "Creta 1.5T Turbo",
+          "name_ar": "كريتا 1.5 توربو",
+          "price_egp": 1895000,
+          "price_note": "Official GB Auto agency price",
+          "price_note_ar": "السعر الرسمي من غبور أوتو",
+          "specs": {
+            "engine": "1.5L T-GDi Turbo",
+            "engine_ar": "1.5 لتر توربو T-GDi",
+            "power_hp": 160,
+            "torque_nm": 253,
+            "acceleration_0_100": 7.9,
+            "top_speed_kmh": 195,
+            "transmission": "7-DCT Automatic",
+            "drive": "FWD",
+            "fuel_type": "Petrol",
+            "fuel_economy_combined": 7.1
+          }
+        }
+      ],
+      "relations": [
+        { "type": "sold_by", "target_slug": "gb-auto-hyundai-egypt" }
+      ]
+    },
+    {
+      "slug": "hyundai-ioniq-5",
+      "name": "Hyundai IONIQ 5",
+      "name_ar": "هيونداي أيونيك 5",
+      "year": 2024,
+      "body_type": "Electric CUV",
+      "brochure_url": "https://www.hyundai.com.eg/content/dam/hyundai/eg/en/data/find-a-car/ioniq-5/brochures/ioniq5-brochure-2024.pdf",
+      "images": [
+        { "url": "https://www.hyundai.com/content/dam/hyundai/ww/en/data/find-a-car/ioniq5/highlights/pc/202205/ioniq5-01-exterior.jpg", "section_id": "sec_1_identity", "caption": "IONIQ 5 — Retro Futuristic Design", "caption_ar": "أيونيك 5 — التصميم الرجعي المستقبلي" },
+        { "url": "https://www.hyundai.com/content/dam/hyundai/ww/en/data/find-a-car/ioniq5/highlights/pc/202205/ioniq5-02-exterior.jpg", "section_id": "sec_auto_exterior", "caption": "Parametric Pixel Design", "caption_ar": "التصميم البكسلي البارامتري" },
+        { "url": "https://www.hyundai.com/content/dam/hyundai/ww/en/data/find-a-car/ioniq5/highlights/pc/202205/ioniq5-03-interior.jpg", "section_id": "sec_auto_interior", "caption": "Eco-Process Relaxation Living Space", "caption_ar": "مساحة المعيشة بالمواد الصديقة للبيئة" },
+        { "url": "https://www.hyundai.com/content/dam/hyundai/ww/en/data/find-a-car/ioniq5/highlights/pc/202205/ioniq5-05-tech.jpg", "section_id": "sec_auto_technology", "caption": "Vehicle-to-Load V2L Technology", "caption_ar": "تقنية V2L للشحن من السيارة" }
+      ],
+      "trims": [
+        {
+          "slug": "hyundai-ioniq5-standard-rwd",
+          "name": "IONIQ 5 Standard RWD",
+          "name_ar": "أيونيك 5 ستاندرد دفع خلفي",
+          "price_egp": 3250000,
+          "price_note": "Official GB Auto agency price",
+          "price_note_ar": "السعر الرسمي من غبور أوتو",
+          "specs": {
+            "engine": "Electric Motor (Rear)",
+            "engine_ar": "محرك كهربائي (خلفي)",
+            "power_hp": 170,
+            "torque_nm": 350,
+            "acceleration_0_100": 8.5,
+            "top_speed_kmh": 185,
+            "transmission": "Single-Speed Automatic",
+            "drive": "RWD",
+            "fuel_type": "Electric",
+            "battery_kwh": 58,
+            "range_km": 384
+          }
+        },
+        {
+          "slug": "hyundai-ioniq5-long-range-awd",
+          "name": "IONIQ 5 Long Range AWD",
+          "name_ar": "أيونيك 5 لونج رينج دفع رباعي",
+          "price_egp": 3950000,
+          "price_note": "Official GB Auto agency price",
+          "price_note_ar": "السعر الرسمي من غبور أوتو",
+          "specs": {
+            "engine": "Dual Electric Motors (AWD)",
+            "engine_ar": "محركان كهربائيان (دفع رباعي)",
+            "power_hp": 325,
+            "torque_nm": 605,
+            "acceleration_0_100": 5.1,
+            "top_speed_kmh": 185,
+            "transmission": "Single-Speed Automatic",
+            "drive": "AWD",
+            "fuel_type": "Electric",
+            "battery_kwh": 77.4,
+            "range_km": 507
+          }
+        }
+      ],
+      "relations": [
+        { "type": "sold_by", "target_slug": "gb-auto-hyundai-egypt" }
+      ]
+    }
+  ]
+}

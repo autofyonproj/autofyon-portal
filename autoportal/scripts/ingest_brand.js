@@ -438,9 +438,30 @@ function generateSql(payload) {
       ...(m.year ? { year: m.year } : {}),
       ...(m.brochure_url ? { brochure_url: m.brochure_url } : {}),
     };
+    // Roll up first trim's specs to model level so carousel summary works
+    const firstTrimSpecs = (Array.isArray(m.trims) && m.trims.length > 0 && m.trims[0].specs)
+      ? m.trims[0].specs : null;
+    const firstTrimPrice = (Array.isArray(m.trims) && m.trims.length > 0 && m.trims[0].price_egp)
+      ? m.trims[0].price_egp : null;
+
     const modelCustomData = JSON.stringify({
       sec_1_identity: identity,
       ...sectionSpecs,
+      // Model-level spec rollup from first trim — powers the carousel spec summary note
+      ...(firstTrimSpecs && !sectionSpecs.sec_auto_specs ? { sec_auto_specs: firstTrimSpecs } : {}),
+      ...(firstTrimPrice ? {
+        sec_listing_price: {
+          official_price_egp: firstTrimPrice,
+          currency: 'EGP',
+          price_note: (Array.isArray(m.trims) && m.trims[0].price_note) || null,
+          price_note_ar: (Array.isArray(m.trims) && m.trims[0].price_note_ar) || null,
+          trim_range: Array.isArray(m.trims) ? {
+            min: Math.min(...m.trims.filter(t => t.price_egp).map(t => t.price_egp)),
+            max: Math.max(...m.trims.filter(t => t.price_egp).map(t => t.price_egp)),
+            count: m.trims.filter(t => t.price_egp).length,
+          } : null,
+        },
+      } : {}),
       ...(m.brochure_url ? { sec_overview: { brochure_url: m.brochure_url } } : {}),
       ...(m.source_refs || m.source_ids ? {
         _data_provenance: {

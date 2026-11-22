@@ -305,14 +305,14 @@ export default function PackagesShowcasePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#07090c] text-white selection:bg-[#c4a265] selection:text-black" dir="rtl">
+    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-[#07090c] dark:text-white selection:bg-[#c4a265] selection:text-black transition-colors duration-200" dir="rtl">
       
       {/* ── Hero Section ──────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden border-b border-white/10 py-16 px-4 md:px-8">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-[#c4a265]/15 via-transparent to-transparent pointer-events-none" />
+      <section className="relative overflow-hidden border-b border-slate-200 dark:border-white/10 py-16 px-4 md:px-8">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-amber-500/10 dark:from-[#c4a265]/15 via-transparent to-transparent pointer-events-none" />
         
         <div className="max-w-6xl mx-auto text-center relative z-10">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#c4a265]/10 border border-[#c4a265]/30 text-xs font-bold text-[#c4a265] mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 dark:bg-[#c4a265]/10 border border-amber-500/30 dark:border-[#c4a265]/30 text-xs font-bold text-amber-700 dark:text-[#c4a265] mb-6">
             <span>دليل الحلول والخدمات لمعارض وتجار السيارات في مصر</span>
           </div>
 
@@ -320,7 +320,7 @@ export default function PackagesShowcasePage() {
             اختر الباقة المثالية التي تضاعف مبيعاتك وتدير معرضك باحترافية
           </h1>
 
-          <p className="max-w-3xl mx-auto text-sm md:text-base text-neutral-400 mb-8 leading-relaxed">
+          <p className="max-w-3xl mx-auto text-sm md:text-base text-slate-600 dark:text-neutral-400 mb-8 leading-relaxed">
             من المعارض الناشئة الراغبة في التواجد الرقمي المجاني، وحتى التوكيلات الكبرى ذات الفروع المتعددة.
             اكتشف مزايا كل باقة، وطريقة استغلالها عملياً في معرضك، وكيف ترقي بسلاسة مع نمو أرباحك.
           </p>
@@ -334,13 +334,21 @@ export default function PackagesShowcasePage() {
             </a>
             <button
               onClick={openTrialModal}
-              className="px-6 py-3 rounded-xl border border-amber-500/40 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 font-extrabold text-sm transition-all flex items-center gap-2"
+              className="px-6 py-3 rounded-xl border border-amber-500/40 bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-300 font-extrabold text-sm transition-all flex items-center gap-2"
             >
               <span>⭐ تجربة حقيقية شاملة لمدة 30 يوماً</span>
             </button>
+            <a
+              href="/brochure/autofyon-brochure-en.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-6 py-3 rounded-xl border border-amber-600/30 dark:border-[#c4a265]/30 bg-amber-500/10 dark:bg-[#c4a265]/10 hover:bg-amber-500/20 text-amber-800 dark:text-[#c4a265] font-bold text-sm transition-all flex items-center gap-2"
+            >
+              <span>⬇ تحميل البروشور الرسمي (PDF)</span>
+            </a>
             <Link
               href="/download"
-              className="px-6 py-3 rounded-xl border border-white/20 bg-white/5 hover:bg-white/10 text-white font-bold text-sm transition-all flex items-center gap-2"
+              className="px-6 py-3 rounded-xl border border-slate-300 dark:border-white/20 bg-white dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-900 dark:text-white font-bold text-sm transition-all flex items-center gap-2"
             >
               <span>معك كود تحميل من الإدارة؟ حمّل باقتك فوراً</span>
               <span className="text-[#c4a265]">←</span>
@@ -349,9 +357,197 @@ export default function PackagesShowcasePage() {
         </div>
       </section>
 
+      {/* ── Modern Sales Points Bento Grid (Arabic) ───────────────────── */}
+      <section className="max-w-7xl mx-auto px-4 md:px-8 py-12">
+        <div className="text-center mb-8">
+          <span className="text-xs font-bold text-amber-600 dark:text-[#c4a265] uppercase tracking-widest block mb-1">
+            مصممة خصيصاً لسوق السيارات المصري
+          </span>
+          <h2 className="text-2xl md:text-3xl font-black">
+            أربعة ركائز تحول معرضك إلى منظومة مبيعات متكاملة
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="p-6 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0e1117] shadow-sm dark:shadow-none hover:border-amber-500/50 transition-all text-right">
+            <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-xl mb-4">
+              💻
+            </div>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 uppercase">
+              100% أوفلاين
+            </span>
+            <h3 className="text-base font-black mt-2 mb-1">سيستم المستشار ERP</h3>
+            <p className="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed">
+              فواتيرك، عقودك، وأقساطك لا تتوقف إطلاقاً عند انقطاع الإنترنت. مثبت محلياً على جهاز المعرض.
+            </p>
+          </div>
+
+          <div className="p-6 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0e1117] shadow-sm dark:shadow-none hover:border-amber-500/50 transition-all text-right">
+            <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-xl mb-4">
+              💬
+            </div>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 uppercase">
+              0% عمولة
+            </span>
+            <h3 className="text-base font-black mt-2 mb-1">واتساب مباشر مع المشتري</h3>
+            <p className="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed">
+              العميل يضغط نقرة واحدة فتفتح محادثة واتساب بمواصفات وسعر السيارة دون وسيط أو خصم عمولات.
+            </p>
+          </div>
+
+          <div className="p-6 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0e1117] shadow-sm dark:shadow-none hover:border-amber-500/50 transition-all text-right">
+            <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-xl mb-4">
+              📑
+            </div>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 uppercase">
+              صياغة قانونية
+            </span>
+            <h3 className="text-base font-black mt-2 mb-1">عقود وفواتير فورية</h3>
+            <p className="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed">
+              طباعة فورية لعقود بيع السيارات، اتفاقيات الاستبدال، وإيصالات الأمانة وسندات القبض بضغطة زر.
+            </p>
+          </div>
+
+          <div className="p-6 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0e1117] shadow-sm dark:shadow-none hover:border-amber-500/50 transition-all text-right">
+            <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-xl mb-4">
+              🔒
+            </div>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 uppercase">
+              حماية خماسية
+            </span>
+            <h3 className="text-base font-black mt-2 mb-1">تأمين هاردوير ضد النسخ</h3>
+            <p className="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed">
+              ربط الترخيص ببصمة اللوحة الأم وكارت الشبكة، مع حارس زمني يمنع التلاعب بتاريخ الجهاز وسرقة النسخ.
+            </p>
+          </div>
+        </div>
+
+        {/* Before vs After comparison in Arabic */}
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 rounded-2xl border border-slate-200 dark:border-white/10 overflow-hidden shadow-sm dark:shadow-none text-right">
+          <div className="p-6 bg-red-500/5 border-b md:border-b-0 md:border-l border-slate-200 dark:border-white/10">
+            <div className="flex items-center gap-2 text-sm font-black text-red-600 dark:text-red-400 mb-3">
+              <span>⚠️</span>
+              <span>الوضع التقليدي العشوائي للمعارض</span>
+            </div>
+            <ul className="space-y-2 text-xs text-slate-600 dark:text-neutral-400">
+              <li className="flex items-start gap-2">
+                <span className="text-red-500 font-bold">✕</span>
+                <span>إرسال 50 صورة مشتتة للعميل على واتساب وضياع تفاصيل السيارات.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-red-500 font-bold">✕</span>
+                <span>عقود ورقية ضائعة في الأدراج وأخطاء في حساب الأقساط والأرباح يدوياً.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-red-500 font-bold">✕</span>
+                <span>انقطاع الإنترنت يعطل حركة المعرض وإصدار الفواتير وسندات القبض.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-red-500 font-bold">✕</span>
+                <span>غياب تام عن نتائج محرك البحث Google وفقدان ثقة المشتري الجديد.</span>
+              </li>
+            </ul>
+          </div>
+
+          <div className="p-6 bg-emerald-500/5">
+            <div className="flex items-center gap-2 text-sm font-black text-emerald-600 dark:text-emerald-400 mb-3">
+              <span>✨</span>
+              <span>المعيار الاحترافي مع أوتوفيون</span>
+            </div>
+            <ul className="space-y-2 text-xs text-slate-600 dark:text-neutral-400">
+              <li className="flex items-start gap-2">
+                <span className="text-emerald-500 font-bold">✓</span>
+                <span>رابط واحد راقٍ ومعتمد باسم معرضك (autofyon.com/اسم-معرضك).</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-emerald-500 font-bold">✓</span>
+                <span>عقود بيع موثقة قانونياً وتنبيهات تلقائية للأقساط المتأخرة وهوامش الربح.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-emerald-500 font-bold">✓</span>
+                <span>سيستم ديسكتوب يعمل 100% بدون إنترنت مع حماية رقمية متطورة.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-emerald-500 font-bold">✓</span>
+                <span>طلبات مشترين جادين مباشرة على واتساب وأرشفة فورية على Google.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Quick Sizing Profiler in Arabic ───────────────────────────── */}
+      <section className="max-w-7xl mx-auto px-4 md:px-8 py-2">
+        <div className="p-6 rounded-2xl border border-amber-500/30 bg-amber-500/5 dark:bg-[#c4a265]/5 text-right">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+            <div>
+              <span className="text-xs font-bold text-amber-700 dark:text-[#c4a265] uppercase tracking-wider block">
+                محدد الحجم السريع لمعرضك
+              </span>
+              <h3 className="text-lg font-black text-slate-900 dark:text-white">
+                اختر عدد السيارات في معرضك لإبراز الباقة والمنظومة الأنسب لك فوراً:
+              </h3>
+            </div>
+            <span className="text-xs text-slate-500 dark:text-neutral-400">
+              اضغط على أي حجم لاستعراض مسار العمل وخطة الترقية
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
+            <button
+              onClick={() => setSelectedId('free')}
+              className={`p-3 rounded-xl border text-right transition-all ${
+                selectedId === 'free'
+                  ? 'border-emerald-500 bg-emerald-500/15 shadow-md text-emerald-800 dark:text-emerald-300 font-black'
+                  : 'border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 hover:border-slate-400 text-slate-700 dark:text-neutral-300'
+              }`}
+            >
+              <div className="text-xs font-bold">1–10 سيارات</div>
+              <div className="text-[11px] opacity-75">معرض ناشئ / وسيط حر</div>
+            </button>
+
+            <button
+              onClick={() => setSelectedId('growth')}
+              className={`p-3 rounded-xl border text-right transition-all ${
+                selectedId === 'growth'
+                  ? 'border-amber-500 bg-amber-500/15 shadow-md text-amber-800 dark:text-amber-300 font-black'
+                  : 'border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 hover:border-slate-400 text-slate-700 dark:text-neutral-300'
+              }`}
+            >
+              <div className="text-xs font-bold">15–30 سيارة</div>
+              <div className="text-[11px] opacity-75">معرض نشط (سيستم ERP)</div>
+            </button>
+
+            <button
+              onClick={() => setSelectedId('pro')}
+              className={`p-3 rounded-xl border text-right transition-all ${
+                selectedId === 'pro'
+                  ? 'border-red-500 bg-red-500/15 shadow-md text-red-800 dark:text-red-300 font-black'
+                  : 'border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 hover:border-slate-400 text-slate-700 dark:text-neutral-300'
+              }`}
+            >
+              <div className="text-xs font-bold">30–100 سيارة</div>
+              <div className="text-[11px] opacity-75">فريق مبيعات وتمويل بنكي</div>
+            </button>
+
+            <button
+              onClick={() => setSelectedId('enterprise')}
+              className={`p-3 rounded-xl border text-right transition-all ${
+                selectedId === 'enterprise'
+                  ? 'border-purple-500 bg-purple-500/15 shadow-md text-purple-800 dark:text-purple-300 font-black'
+                  : 'border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 hover:border-slate-400 text-slate-700 dark:text-neutral-300'
+              }`}
+            >
+              <div className="text-xs font-bold">100+ فروع وتوكيلات</div>
+              <div className="text-[11px] opacity-75">توكيل رسمي وشبكة موزعين</div>
+            </button>
+          </div>
+        </div>
+      </section>
+
       {/* ── Package Navigation Tabs ───────────────────────────────────── */}
-      <section id="packages-explorer" className="max-w-7xl mx-auto px-4 md:px-8 py-12 scroll-mt-24 md:scroll-mt-28">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-10">
+      <section id="packages-explorer" className="max-w-7xl mx-auto px-4 md:px-8 py-10 scroll-mt-24 md:scroll-mt-28">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
           {PACKAGES.map((pkg) => {
             const isSelected = pkg.id === selectedId;
             return (
@@ -360,41 +556,41 @@ export default function PackagesShowcasePage() {
                 onClick={() => setSelectedId(pkg.id)}
                 className={`text-right p-4 rounded-2xl border transition-all relative overflow-hidden ${
                   isSelected
-                    ? 'bg-gradient-to-b from-[#c4a265]/15 to-white/[0.03] border-[#c4a265] shadow-xl shadow-[#c4a265]/10 scale-[1.02]'
-                    : 'bg-white/[0.02] border-white/10 hover:border-white/25 hover:bg-white/[0.04]'
+                    ? 'bg-amber-500/10 dark:bg-gradient-to-b dark:from-[#c4a265]/15 dark:to-white/[0.03] border-amber-500 dark:border-[#c4a265] shadow-lg shadow-amber-500/10 scale-[1.02]'
+                    : 'bg-white dark:bg-white/[0.02] border-slate-200 dark:border-white/10 hover:border-slate-400 hover:bg-slate-50 dark:hover:bg-white/[0.04]'
                 }`}
               >
                 <div className="flex justify-between items-start mb-2">
                   <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${pkg.badgeColor}`}>
                     {pkg.badge}
                   </span>
-                  {isSelected && <span className="text-[#c4a265] text-xs font-black">● نشط الآن</span>}
+                  {isSelected && <span className="text-amber-600 dark:text-[#c4a265] text-xs font-black">● نشط الآن</span>}
                 </div>
-                <h3 className="font-extrabold text-sm md:text-base text-white mb-1">{pkg.title}</h3>
-                <div className="text-xs font-bold text-[#c4a265]">{pkg.price}</div>
+                <h3 className="font-extrabold text-sm md:text-base text-slate-900 dark:text-white mb-1">{pkg.title}</h3>
+                <div className="text-xs font-bold text-amber-700 dark:text-[#c4a265]">{pkg.price}</div>
               </button>
             );
           })}
         </div>
 
         {/* ── Active Package Deep Dive ──────────────────────────────────── */}
-        <div className="bg-white/[0.02] border border-white/10 rounded-3xl p-6 md:p-10 backdrop-blur-md relative overflow-hidden">
+        <div className="rounded-3xl border border-amber-500/30 dark:border-[#c4a265]/30 bg-white dark:bg-gradient-to-b dark:from-[#12151c] dark:to-[#07090c] p-6 md:p-10 shadow-xl dark:shadow-2xl relative overflow-hidden">
           
           {/* Header Banner */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 pb-8 border-b border-white/10">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 pb-8 border-b border-slate-200 dark:border-white/10">
             <div>
               <div className="flex items-center gap-3 mb-2">
                 <span className={`text-xs font-extrabold px-3 py-1 rounded-full border ${currentPkg.badgeColor}`}>
                   {currentPkg.badge}
                 </span>
-                <span className="text-xs text-neutral-400">الفئة المستهدفة: {currentPkg.targetAudience}</span>
+                <span className="text-xs text-slate-500 dark:text-neutral-400">الفئة المستهدفة: {currentPkg.targetAudience}</span>
               </div>
-              <h2 className="text-2xl md:text-3xl font-black text-white">{currentPkg.title}</h2>
-              <p className="text-sm text-neutral-300 mt-1">{currentPkg.subtitle}</p>
+              <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white">{currentPkg.title}</h2>
+              <p className="text-sm text-slate-600 dark:text-neutral-300 mt-1">{currentPkg.subtitle}</p>
             </div>
 
             <div className="flex flex-col items-start md:items-end gap-2">
-              <div className="text-xl md:text-2xl font-black text-[#c4a265]">{currentPkg.price}</div>
+              <div className="text-xl md:text-2xl font-black text-amber-700 dark:text-[#c4a265]">{currentPkg.price}</div>
               <button
                 onClick={() => openRequestModal(currentPkg.id)}
                 className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#c4a265] to-[#8b7340] text-black font-extrabold text-sm hover:from-[#d1b072] shadow-lg shadow-[#c4a265]/20 transition-all"
@@ -411,21 +607,21 @@ export default function PackagesShowcasePage() {
             <div className="lg:col-span-7 space-y-6">
               
               {/* Problem Solved */}
-              <div className="p-4 rounded-xl bg-red-500/5 border border-red-500/20 text-xs text-neutral-300 leading-relaxed">
-                <strong className="text-red-400 font-bold block mb-1">المشكلة التي تقضي عليها هذه الباقة تماماً:</strong>
+              <div className="p-4 rounded-xl bg-red-500/5 border border-red-500/20 text-xs text-slate-700 dark:text-neutral-300 leading-relaxed">
+                <strong className="text-red-500 dark:text-red-400 font-bold block mb-1">المشكلة التي تقضي عليها هذه الباقة تماماً:</strong>
                 {currentPkg.painPoint}
               </div>
 
               {/* Core Selling Points */}
               <div>
-                <h4 className="text-sm font-black text-[#c4a265] uppercase tracking-wider mb-3">
+                <h4 className="text-sm font-black text-amber-700 dark:text-[#c4a265] uppercase tracking-wider mb-3">
                   أبرز المزايا ونقاط القوة التي تزيد مبيعاتك:
                 </h4>
                 <div className="grid gap-2.5">
                   {currentPkg.sellingPoints.map((pt, idx) => (
-                    <div key={idx} className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/5">
-                      <span className="text-emerald-400 font-black text-base leading-none">✓</span>
-                      <span className="text-xs md:text-sm text-neutral-200">{pt}</span>
+                    <div key={idx} className="flex items-start gap-3 p-3 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/5">
+                      <span className="text-emerald-500 font-black text-base leading-none">✓</span>
+                      <span className="text-xs md:text-sm text-slate-800 dark:text-neutral-200">{pt}</span>
                     </div>
                   ))}
                 </div>
@@ -433,28 +629,28 @@ export default function PackagesShowcasePage() {
 
               {/* Operational Playbook */}
               <div>
-                <h4 className="text-sm font-black text-white mb-3">
+                <h4 className="text-sm font-black text-slate-900 dark:text-white mb-3">
                   دليل تشغيل الباقة عملياً داخل معرضك:
                 </h4>
                 <div className="grid gap-3">
                   {currentPkg.playbook.map((step, idx) => (
-                    <div key={idx} className="p-3.5 rounded-xl bg-neutral-900/60 border border-white/10">
-                      <div className="text-xs font-bold text-[#c4a265] mb-1">{step.step}</div>
-                      <div className="text-xs text-neutral-400 leading-relaxed">{step.desc}</div>
+                    <div key={idx} className="p-3.5 rounded-xl bg-slate-50 dark:bg-neutral-900/60 border border-slate-200 dark:border-white/10">
+                      <div className="text-xs font-bold text-amber-700 dark:text-[#c4a265] mb-1">{step.step}</div>
+                      <div className="text-xs text-slate-600 dark:text-neutral-400 leading-relaxed">{step.desc}</div>
                     </div>
                   ))}
                 </div>
               </div>
 
               {/* Included Bonuses */}
-              <div className="p-5 rounded-2xl bg-[#c4a265]/5 border border-[#c4a265]/20">
-                <h4 className="text-xs font-extrabold text-[#c4a265] uppercase mb-2">
+              <div className="p-5 rounded-2xl bg-amber-500/5 dark:bg-[#c4a265]/5 border border-amber-500/20 dark:border-[#c4a265]/20">
+                <h4 className="text-xs font-extrabold text-amber-700 dark:text-[#c4a265] uppercase mb-2">
                   الهدايا والمزايا الإضافية المشمولة مجاناً مع الباقة:
                 </h4>
-                <ul className="space-y-1.5 text-xs text-neutral-300">
+                <ul className="space-y-1.5 text-xs text-slate-700 dark:text-neutral-300">
                   {currentPkg.bonuses.map((b, idx) => (
                     <li key={idx} className="flex items-center gap-2">
-                      <span className="text-[#c4a265]">✦</span>
+                      <span className="text-amber-600 dark:text-[#c4a265]">✦</span>
                       <span>{b}</span>
                     </li>
                   ))}
@@ -466,16 +662,16 @@ export default function PackagesShowcasePage() {
             {/* Right 5 Columns: Interactive Sandbox & Live Simulation */}
             <div className="lg:col-span-5 space-y-6">
               
-              <div className="rounded-2xl border border-white/15 bg-black/60 p-5 shadow-2xl">
-                <div className="flex items-center justify-between pb-3 border-b border-white/10 text-xs text-neutral-400">
-                  <span className="font-bold text-white">محاكاة تجربة العميل والمعرض</span>
-                  <span className="px-2 py-0.5 rounded bg-white/10 text-[10px]">LIVE DEMO</span>
+              <div className="rounded-2xl border border-slate-200 dark:border-white/15 bg-slate-50 dark:bg-black/60 p-5 shadow-sm dark:shadow-2xl">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-white/10 text-xs text-slate-500 dark:text-neutral-400">
+                  <span className="font-bold text-slate-900 dark:text-white">محاكاة تجربة العميل والمعرض</span>
+                  <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-700 dark:text-amber-300 font-bold text-[10px]">LIVE DEMO</span>
                 </div>
 
                 {/* Simulated Car Card Preview */}
-                <div className="my-4 rounded-xl border border-white/10 bg-neutral-900 overflow-hidden">
-                  <div className="h-32 bg-gradient-to-r from-neutral-800 to-neutral-700 relative flex items-center justify-center text-xs text-neutral-400">
-                    <span className="px-3 py-1 rounded-full bg-black/50 backdrop-blur-md text-[11px] text-white font-bold">
+                <div className="my-4 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-neutral-900 overflow-hidden shadow-sm">
+                  <div className="h-32 bg-gradient-to-r from-slate-200 to-slate-300 dark:from-neutral-800 dark:to-neutral-700 relative flex items-center justify-center text-xs text-slate-700 dark:text-neutral-400">
+                    <span className="px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-[11px] text-white font-bold">
                       {currentPkg.specs.heroSlides}
                     </span>
                     {currentPkg.id === 'pro' || currentPkg.id === 'enterprise' ? (
@@ -486,13 +682,13 @@ export default function PackagesShowcasePage() {
                   </div>
                   <div className="p-3.5 space-y-2">
                     <div className="flex justify-between items-center">
-                      <span className="font-bold text-xs text-white">مرسيدس C200 موديل 2024</span>
-                      <span className="text-xs font-extrabold text-[#c4a265]">3,450,000 ج.م</span>
+                      <span className="font-bold text-xs text-slate-900 dark:text-white">مرسيدس C200 موديل 2024</span>
+                      <span className="text-xs font-extrabold text-amber-700 dark:text-[#c4a265]">3,450,000 ج.م</span>
                     </div>
-                    <div className="flex flex-wrap gap-1 text-[10px] text-neutral-400">
-                      <span className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10">عداد: 12,000 كم</span>
-                      <span className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10">فابريكا بالكامل</span>
-                      <span className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10">ضمان وكيل</span>
+                    <div className="flex flex-wrap gap-1 text-[10px] text-slate-600 dark:text-neutral-400">
+                      <span className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10">عداد: 12,000 كم</span>
+                      <span className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10">فابريكا بالكامل</span>
+                      <span className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10">ضمان وكيل</span>
                     </div>
                     <button className="w-full mt-2 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all">
                       <span>تواصل مع المعرض عبر واتساب</span>
@@ -502,46 +698,46 @@ export default function PackagesShowcasePage() {
                 </div>
 
                 {/* Simulated CRM Lead Card */}
-                <div className="p-3 rounded-xl bg-white/[0.03] border border-white/10 space-y-2">
+                <div className="p-3 rounded-xl bg-white dark:bg-white/[0.03] border border-slate-200 dark:border-white/10 space-y-2">
                   <div className="flex justify-between items-center text-[11px]">
-                    <span className="text-neutral-400">شاشة مبيعات المعرض (CRM)</span>
-                    <span className="text-emerald-400 font-bold">عميل مهتم جديد ✓</span>
+                    <span className="text-slate-500 dark:text-neutral-400">شاشة مبيعات المعرض (CRM)</span>
+                    <span className="text-emerald-600 dark:text-emerald-400 font-bold">عميل مهتم جديد ✓</span>
                   </div>
-                  <div className="text-xs text-white font-bold">م/ طارق عبد العزيز — مهتم بسيارة C200</div>
-                  <div className="text-[11px] text-neutral-400 flex justify-between">
+                  <div className="text-xs text-slate-900 dark:text-white font-bold">م/ طارق عبد العزيز — مهتم بسيارة C200</div>
+                  <div className="text-[11px] text-slate-600 dark:text-neutral-400 flex justify-between">
                     <span>حالة المتابعة: تفاوض على التقسيط</span>
-                    <span className="text-[#c4a265]">{currentPkg.specs.crm}</span>
+                    <span className="text-amber-700 dark:text-[#c4a265] font-semibold">{currentPkg.specs.crm}</span>
                   </div>
                 </div>
 
                 {/* Specs Matrix */}
-                <div className="mt-4 pt-4 border-t border-white/10 grid grid-cols-2 gap-2 text-[11px]">
+                <div className="mt-4 pt-4 border-t border-slate-200 dark:border-white/10 grid grid-cols-2 gap-2 text-[11px]">
                   <div>
-                    <span className="text-neutral-500 block">سعة السيارات:</span>
-                    <strong className="text-white">{currentPkg.specs.cars}</strong>
+                    <span className="text-slate-500 dark:text-neutral-500 block">سعة السيارات:</span>
+                    <strong className="text-slate-900 dark:text-white">{currentPkg.specs.cars}</strong>
                   </div>
                   <div>
-                    <span className="text-neutral-500 block">النطاق والدومين:</span>
-                    <strong className="text-white">{currentPkg.specs.domain}</strong>
+                    <span className="text-slate-500 dark:text-neutral-500 block">النطاق والدومين:</span>
+                    <strong className="text-slate-900 dark:text-white">{currentPkg.specs.domain}</strong>
                   </div>
                   <div>
-                    <span className="text-neutral-500 block">مضاعفة البحث:</span>
-                    <strong className="text-white">{currentPkg.specs.searchBoost}</strong>
+                    <span className="text-slate-500 dark:text-neutral-500 block">مضاعفة البحث:</span>
+                    <strong className="text-slate-900 dark:text-white">{currentPkg.specs.searchBoost}</strong>
                   </div>
                   <div>
-                    <span className="text-neutral-500 block">مستوى الدعم:</span>
-                    <strong className="text-white">{currentPkg.specs.support}</strong>
+                    <span className="text-slate-500 dark:text-neutral-500 block">مستوى الدعم:</span>
+                    <strong className="text-slate-900 dark:text-white">{currentPkg.specs.support}</strong>
                   </div>
                 </div>
 
               </div>
 
               {/* Upgrade Trigger Banner */}
-              <div className="p-5 rounded-2xl bg-gradient-to-br from-white/[0.04] to-[#c4a265]/10 border border-[#c4a265]/30">
-                <div className="text-xs font-bold text-[#c4a265] mb-1">
+              <div className="p-5 rounded-2xl bg-amber-500/5 dark:bg-gradient-to-br dark:from-white/[0.04] dark:to-[#c4a265]/10 border border-amber-500/30 dark:border-[#c4a265]/30">
+                <div className="text-xs font-bold text-amber-700 dark:text-[#c4a265] mb-1">
                   مسار الترقية القادم ↗ ({currentPkg.upgradeTarget})
                 </div>
-                <div className="text-xs text-neutral-300 leading-relaxed mb-3">
+                <div className="text-xs text-slate-700 dark:text-neutral-300 leading-relaxed mb-3">
                   <strong>متى ترقي؟</strong> {currentPkg.upgradeWhy}
                 </div>
                 <button
@@ -549,7 +745,7 @@ export default function PackagesShowcasePage() {
                     const idx = PACKAGES.findIndex((p) => p.id === currentPkg.id);
                     if (idx < PACKAGES.length - 1) setSelectedId(PACKAGES[idx + 1].id);
                   }}
-                  className="text-xs font-bold text-[#c4a265] hover:underline flex items-center gap-1"
+                  className="text-xs font-bold text-amber-700 dark:text-[#c4a265] hover:underline flex items-center gap-1"
                 >
                   <span>استعرض مميزات الترقية التالية</span>
                   <span>←</span>
@@ -1005,6 +1201,35 @@ export default function PackagesShowcasePage() {
           </div>
         </div>
       )}
+
+      {/* ── Brochure Download Bar (Arabic) ─────────────── */}
+      <section className="border-t border-white/10 bg-[#07090c] py-10 px-4 md:px-8">
+        <div className="max-w-4xl mx-auto flex flex-col md:flex-row-reverse items-center justify-between gap-6 rounded-2xl border border-[#c4a265]/20 bg-[#c4a265]/5 px-8 py-7" dir="rtl">
+          <div className="text-right">
+            <div className="text-xs font-bold text-[#c4a265] uppercase tracking-widest mb-2">وثائق رسمية</div>
+            <h3 className="text-xl font-black text-white leading-tight">حمّل البروشور الرسمي الكامل</h3>
+            <p className="text-sm text-neutral-400 mt-1.5 max-w-lg">
+              بروشور احترافي من 8 صفحات — تفاصيل كل وحدة، مسارات الترقية، جدول المقارنة الكامل، وخارطة طريق المنصة. جاهز للطباعة كـ PDF.
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-3 flex-shrink-0">
+            <a
+              href="/brochure/autofyon-brochure-en.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-7 py-3 rounded-xl bg-gradient-to-r from-[#c4a265] to-[#9e7d3b] text-black font-extrabold text-sm shadow-lg hover:from-[#d6b578] transition-all text-center"
+            >
+              ⬇ فتح البروشور (طباعة → PDF)
+            </a>
+            <a
+              href="/brochure/ar"
+              className="px-7 py-3 rounded-xl border border-[#c4a265]/30 bg-[#c4a265]/8 hover:bg-[#c4a265]/15 text-[#c4a265] font-bold text-sm transition-all text-center"
+            >
+              🇪🇬 النسخة العربية
+            </a>
+          </div>
+        </div>
+      </section>
 
     </div>
   );

@@ -73,6 +73,7 @@ function buildTree(
 
 const TABS = [
   { key: 'overview',       label: '📊 Overview' },
+  { key: 'cars',           label: '🚗 Car Models & Category Blogs (الأساطيل والمقالات والمواصفات)' },
   { key: 'tree',           label: '🌳 Topology Tree' },
   { key: 'relationships',  label: '🔗 Relationships' },
   { key: 'setup',          label: '⚙️ Platform Setup' },
@@ -177,6 +178,23 @@ export default async function PlatformAdminDashboard({
       query<typeof setupTypes[number]>(`SELECT id, name, name_ar, icon, description, allowed_child_kinds, is_parent, parent_id, market_id, vendor_claimable, sort_order, sections, own_sections FROM business_types ORDER BY sort_order, id`),
       query<typeof setupSections[number]>(`SELECT id, name, name_ar, icon, sort_order, enable_gallery, enable_blog, options FROM sections ORDER BY sort_order, id`),
     ]);
+  }
+
+  // ── Cars tab: all vehicle_model businesses with their sections ────────────────
+  let carModels: {
+    id: string; name: string; name_ar: string | null; slug: string;
+    parent_name: string | null; parent_name_ar: string | null;
+  }[] = [];
+
+  if (activeTab === 'cars') {
+    carModels = await query<typeof carModels[number]>(
+      `SELECT b.id, b.name, b.name_ar, b.slug,
+              p.name as parent_name, p.name_ar as parent_name_ar
+         FROM businesses b
+         LEFT JOIN businesses p ON p.id = b.parent_business_id
+        WHERE b.type_id = 'vehicle_model' AND b.status = 'active'
+        ORDER BY p.name, b.name`
+    );
   }
 
   if (activeTab === 'relationships') {
@@ -395,6 +413,94 @@ export default async function PlatformAdminDashboard({
             initialTypes={setupTypes}
             initialSections={setupSections}
           />
+        </div>
+      )}
+
+      {activeTab === 'cars' && (
+        <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-black/10">
+            <div>
+              <h2 className="text-lg font-bold">🚗 موديلات السيارات — المواصفات والمقالات</h2>
+              <p className="text-xs opacity-60 mt-0.5">
+                انقر على أي موديل للدخول إلى Content Studio وإدارة صور الكاروسيل والمواصفات ومقالات (محرك، تصميم، راحة، تقنية...) بشكل كامل
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <span className="text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 font-bold px-3 py-1.5 rounded-lg">
+                {carModels.length} موديل
+              </span>
+            </div>
+          </div>
+
+          {/* Legend */}
+          <div className="flex flex-wrap gap-3 text-xs font-semibold">
+            <span className="flex items-center gap-1.5 text-slate-500">
+              <span className="w-2 h-2 rounded-full bg-green-500 inline-block" /> Gallery &amp; Carousel — رفع صور مع كابشن المواصفات
+            </span>
+            <span className="flex items-center gap-1.5 text-slate-500">
+              <span className="w-2 h-2 rounded-full bg-blue-500 inline-block" /> Fields — بيانات المحرك، الأداء، الأبعاد
+            </span>
+            <span className="flex items-center gap-1.5 text-slate-500">
+              <span className="w-2 h-2 rounded-full bg-purple-500 inline-block" /> Blog &amp; Articles — مقالات تفصيلية لكل فئة
+            </span>
+          </div>
+
+          {/* Instructions card */}
+          <div className="rounded-2xl border border-amber-500/20 bg-amber-50/50 dark:bg-amber-900/5 p-4 text-sm space-y-2">
+            <p className="font-bold text-amber-800 dark:text-amber-400">📋 تعليمات إدارة كل موديل:</p>
+            <ul className="list-disc list-inside space-y-1 text-amber-900/80 dark:text-amber-300/80 text-xs">
+              <li>اضغط على <strong>Content Studio</strong> بجانب أي موديل</li>
+              <li>اختر القسم المطلوب من التبويبات (المحرك، الأداء، الخارج، الداخل...)</li>
+              <li>في <strong>Gallery &amp; Carousel</strong>: ارفع الصور وأضف كابشن المواصفة (مثل: "محرك 2.0 تيربو | 258 حصان")</li>
+              <li>في <strong>Fields</strong>: أدخل البيانات الرقمية التفصيلية (تظهر تلقائياً فوق الشرائح)</li>
+              <li>في <strong>Blog &amp; Articles</strong>: اكتب مقالاً تفصيلياً عن المحرك أو التقنية أو الراحة (بالعربية والإنجليزية)</li>
+            </ul>
+          </div>
+
+          {/* Model grid */}
+          <div className="divide-y divide-black/8 border border-black/10 rounded-2xl overflow-hidden bg-white dark:bg-neutral-900 shadow-sm">
+            {carModels.length === 0 ? (
+              <p className="p-6 text-center text-sm opacity-50">لا توجد موديلات سيارات مسجلة بعد</p>
+            ) : carModels.map((m) => (
+              <div key={m.id} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-black/[.02] transition">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-bold text-base">{m.name_ar || m.name}</span>
+                    <span className="text-[10px] font-bold bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300 px-2 py-0.5 rounded-full">
+                      {m.name}
+                    </span>
+                  </div>
+                  <div className="text-xs opacity-55">
+                    {m.parent_name_ar || m.parent_name ? (
+                      <span>🏢 {m.parent_name_ar || m.parent_name}</span>
+                    ) : null}
+                    <span className="ml-3 opacity-60">/{m.slug}</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2 mt-1">
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400 font-semibold">🖼️ Gallery</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400 font-semibold">📝 Fields</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400 font-semibold">📰 Blog</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <a
+                    href={`/${m.slug}`}
+                    target="_blank"
+                    rel="noopener"
+                    className="text-xs px-3 py-1.5 rounded-lg border border-black/15 font-semibold hover:bg-black/5 dark:hover:bg-white/5"
+                  >
+                    معاينة ↗
+                  </a>
+                  <a
+                    href={`/admin/showroom/${m.id}/content`}
+                    className="text-xs px-4 py-2 rounded-lg bg-black text-white dark:bg-white dark:text-black font-bold hover:opacity-85 shadow-sm"
+                  >
+                    Content Studio ←
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>

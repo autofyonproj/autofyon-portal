@@ -1,0 +1,282 @@
+{
+  "brand": {
+    "slug": "mercedes-benz",
+    "name": "Mercedes-Benz",
+    "name_ar": "مرسيدس-بنز",
+    "origin_country": "Germany",
+    "logo_url": "https://cdn.jsdelivr.net/gh/filippofilip95/car-logos-dataset@master/logos/optimized/mercedes-benz.svg",
+    "established_year": 1926,
+    "description": "German luxury automotive brand, the world's oldest automobile manufacturer and a pioneer in engineering excellence.",
+    "description_ar": "علامة تجارية ألمانية فاخرة، أقدم مصنع للسيارات في العالم ورائدة في التميز الهندسي."
+  },
+  "agency": {
+    "slug": "mercedes-benz-egypt",
+    "name": "Mercedes-Benz Egypt S.A.E.",
+    "name_ar": "شركة مرسيدس-بنز مصر",
+    "type_id": "main_agency",
+    "phone": "16666",
+    "email": "customercare@mercedes-benz.com.eg",
+    "website": "https://www.mercedes-benz.com.eg",
+    "address": "90 Mohamed Farid Street, Downtown Cairo, Egypt",
+    "address_ar": "90 شارع محمد فريد، وسط القاهرة، مصر",
+    "established_year": 1952
+  },
+  "models": [
+    {
+      "slug": "mercedes-benz-c-class-w206",
+      "name": "Mercedes-Benz C-Class W206",
+      "name_ar": "مرسيدس-بنز الفئة C W206",
+      "year": 2024,
+      "body_type": "Sedan",
+      "brochure_url": "https://www.mercedes-benz.com.eg/content/dam/hq/passengercars/cars/c-class/c-class-saloon-w206-fl/pdf/c-class-brochure.pdf",
+      "images": [
+        { "url": "https://www.mercedes-benz.com/content/dam/hq/passengercars/cars/c-class/c-class-saloon-w206-fl/modeloverview/01-2024/images/mercedes-benz-c-class-w206-fl-modeloverview-696x392-01-2024.png", "section_id": "sec_1_identity", "caption": "C-Class W206 — Official Front View", "caption_ar": "الفئة C W206 — المظهر الأمامي الرسمي" },
+        { "url": "https://www.mercedes-benz.com/content/dam/hq/passengercars/cars/c-class/c-class-saloon-w206-fl/modeloverview/01-2024/images/mercedes-benz-c-class-w206-fl-exterior-696x392-01-2024.png", "section_id": "sec_auto_exterior", "caption": "Exterior Design", "caption_ar": "التصميم الخارجي" },
+        { "url": "https://www.mercedes-benz.com/content/dam/hq/passengercars/cars/c-class/c-class-saloon-w206-fl/modeloverview/01-2024/images/mercedes-benz-c-class-w206-fl-interior-696x392-01-2024.png", "section_id": "sec_auto_interior", "caption": "MBUX Interior", "caption_ar": "المقصورة الداخلية MBUX" },
+        { "url": "https://www.mercedes-benz.com/content/dam/hq/passengercars/cars/c-class/c-class-saloon-w206-fl/modeloverview/01-2024/images/mercedes-benz-c-class-w206-fl-engine-696x392-01-2024.png", "section_id": "sec_auto_engine", "caption": "2.0L Turbo Engine", "caption_ar": "محرك 2.0 توربو" },
+        { "url": "https://www.mercedes-benz.com/content/dam/hq/passengercars/cars/c-class/c-class-saloon-w206-fl/modeloverview/01-2024/images/mercedes-benz-c-class-w206-fl-safety-696x392-01-2024.png", "section_id": "sec_auto_safety", "caption": "Active Safety Systems", "caption_ar": "أنظمة الأمان النشطة" },
+        { "url": "https://www.mercedes-benz.com/content/dam/hq/passengercars/cars/c-class/c-class-saloon-w206-fl/modeloverview/01-2024/images/mercedes-benz-c-class-w206-fl-technology-696x392-01-2024.png", "section_id": "sec_auto_technology", "caption": "MBUX Digital Cockpit", "caption_ar": "قمرة القيادة الرقمية MBUX" }
+      ],
+      "trims": [
+        {
+          "slug": "mercedes-benz-c200-progressive",
+          "name": "C200 Progressive",
+          "name_ar": "C200 بروجريسيف",
+          "price_egp": 3850000,
+          "price_note": "Official agency price, subject to change",
+          "price_note_ar": "السعر الرسمي من الوكيل، قابل للتغيير",
+          "specs": {
+            "engine": "2.0L Inline-4 Turbo (M254)",
+            "engine_ar": "4 سلندر توربو 2.0 لتر",
+            "power_hp": 204,
+            "torque_nm": 300,
+            "acceleration_0_100": 7.3,
+            "top_speed_kmh": 240,
+            "transmission": "9G-Tronic Automatic",
+            "drive": "RWD",
+            "fuel_type": "Petrol",
+            "fuel_economy_combined": 7.1
+          }
+        },
+        {
+          "slug": "mercedes-benz-c300-amg-line",
+          "name": "C300 AMG Line",
+          "name_ar": "C300 AMG لاين",
+          "price_egp": 4450000,
+          "price_note": "Official agency price, subject to change",
+          "price_note_ar": "السعر الرسمي من الوكيل، قابل للتغيير",
+          "specs": {
+            "engine": "2.0L Inline-4 Turbo (M254)",
+            "engine_ar": "4 سلندر توربو 2.0 لتر",
+            "power_hp": 258,
+            "torque_nm": 400,
+            "acceleration_0_100": 5.9,
+            "top_speed_kmh": 250,
+            "transmission": "9G-Tronic Automatic",
+            "drive": "RWD",
+            "fuel_type": "Petrol",
+            "fuel_economy_combined": 7.6
+          }
+        }
+      ],
+      "relations": [
+        { "type": "sold_by", "target_slug": "mercedes-benz-egypt" }
+      ]
+    },
+    {
+      "slug": "mercedes-benz-e-class-w214",
+      "name": "Mercedes-Benz E-Class W214",
+      "name_ar": "مرسيدس-بنز الفئة E W214",
+      "year": 2024,
+      "body_type": "Sedan",
+      "brochure_url": "https://www.mercedes-benz.com.eg/content/dam/hq/passengercars/cars/e-class/e-class-saloon-w214/pdf/e-class-brochure.pdf",
+      "images": [
+        { "url": "https://www.mercedes-benz.com/content/dam/hq/passengercars/cars/e-class/e-class-saloon-w214/modeloverview/06-2023/images/mercedes-benz-e-class-w214-modeloverview-696x392-06-2023.png", "section_id": "sec_1_identity", "caption": "E-Class W214 — Official Front View", "caption_ar": "الفئة E W214 — المظهر الأمامي الرسمي" },
+        { "url": "https://www.mercedes-benz.com/content/dam/hq/passengercars/cars/e-class/e-class-saloon-w214/modeloverview/06-2023/images/mercedes-benz-e-class-w214-exterior-696x392-06-2023.png", "section_id": "sec_auto_exterior", "caption": "Aerodynamic Exterior", "caption_ar": "الهيكل الخارجي الانسيابي" },
+        { "url": "https://www.mercedes-benz.com/content/dam/hq/passengercars/cars/e-class/e-class-saloon-w214/modeloverview/06-2023/images/mercedes-benz-e-class-w214-interior-696x392-06-2023.png", "section_id": "sec_auto_interior", "caption": "Hyperscreen Interior", "caption_ar": "المقصورة بالشاشة الفائقة" },
+        { "url": "https://www.mercedes-benz.com/content/dam/hq/passengercars/cars/e-class/e-class-saloon-w214/modeloverview/06-2023/images/mercedes-benz-e-class-w214-engine-696x392-06-2023.png", "section_id": "sec_auto_engine", "caption": "Mild-Hybrid Engine", "caption_ar": "المحرك الهجين الخفيف" }
+      ],
+      "trims": [
+        {
+          "slug": "mercedes-benz-e200-avantgarde",
+          "name": "E200 Avantgarde",
+          "name_ar": "E200 أفانتجارد",
+          "price_egp": 5250000,
+          "price_note": "Official agency price, subject to change",
+          "price_note_ar": "السعر الرسمي من الوكيل، قابل للتغيير",
+          "specs": {
+            "engine": "2.0L Inline-4 Turbo + 48V Mild Hybrid",
+            "engine_ar": "4 سلندر توربو 2.0 لتر + هجين خفيف 48 فولت",
+            "power_hp": 204,
+            "torque_nm": 320,
+            "acceleration_0_100": 7.3,
+            "top_speed_kmh": 240,
+            "transmission": "9G-Tronic Automatic",
+            "drive": "RWD",
+            "fuel_type": "Petrol Mild Hybrid",
+            "fuel_economy_combined": 6.7
+          }
+        },
+        {
+          "slug": "mercedes-benz-e300-exclusive",
+          "name": "E300 Exclusive",
+          "name_ar": "E300 إكسكلوسيف",
+          "price_egp": 6150000,
+          "price_note": "Official agency price, subject to change",
+          "price_note_ar": "السعر الرسمي من الوكيل، قابل للتغيير",
+          "specs": {
+            "engine": "2.0L Inline-4 Turbo + 48V Mild Hybrid",
+            "engine_ar": "4 سلندر توربو 2.0 لتر + هجين خفيف 48 فولت",
+            "power_hp": 258,
+            "torque_nm": 400,
+            "acceleration_0_100": 6.0,
+            "top_speed_kmh": 250,
+            "transmission": "9G-Tronic Automatic",
+            "drive": "RWD",
+            "fuel_type": "Petrol Mild Hybrid",
+            "fuel_economy_combined": 7.1
+          }
+        }
+      ],
+      "relations": [
+        { "type": "sold_by", "target_slug": "mercedes-benz-egypt" }
+      ]
+    },
+    {
+      "slug": "mercedes-benz-glc-x254",
+      "name": "Mercedes-Benz GLC X254",
+      "name_ar": "مرسيدس-بنز GLC X254",
+      "year": 2024,
+      "body_type": "SUV",
+      "brochure_url": "https://www.mercedes-benz.com.eg/content/dam/hq/passengercars/cars/glc/glc-suv-x254/pdf/glc-brochure.pdf",
+      "images": [
+        { "url": "https://www.mercedes-benz.com/content/dam/hq/passengercars/cars/glc/glc-suv-x254/modeloverview/09-2022/images/mercedes-benz-glc-x254-modeloverview-696x392-09-2022.png", "section_id": "sec_1_identity", "caption": "GLC X254 — Official Front View", "caption_ar": "GLC X254 — المظهر الأمامي الرسمي" },
+        { "url": "https://www.mercedes-benz.com/content/dam/hq/passengercars/cars/glc/glc-suv-x254/modeloverview/09-2022/images/mercedes-benz-glc-x254-exterior-696x392-09-2022.png", "section_id": "sec_auto_exterior", "caption": "SUV Exterior Design", "caption_ar": "التصميم الخارجي الرياضي" },
+        { "url": "https://www.mercedes-benz.com/content/dam/hq/passengercars/cars/glc/glc-suv-x254/modeloverview/09-2022/images/mercedes-benz-glc-x254-interior-696x392-09-2022.png", "section_id": "sec_auto_interior", "caption": "Premium Interior", "caption_ar": "المقصورة الداخلية الفاخرة" },
+        { "url": "https://www.mercedes-benz.com/content/dam/hq/passengercars/cars/glc/glc-suv-x254/modeloverview/09-2022/images/mercedes-benz-glc-x254-engine-696x392-09-2022.png", "section_id": "sec_auto_engine", "caption": "Plug-in Hybrid Drivetrain", "caption_ar": "نظام الدفع الهجين القابل للشحن" }
+      ],
+      "trims": [
+        {
+          "slug": "mercedes-benz-glc200-progressive",
+          "name": "GLC 200 Progressive",
+          "name_ar": "GLC 200 بروجريسيف",
+          "price_egp": 5950000,
+          "price_note": "Official agency price, subject to change",
+          "price_note_ar": "السعر الرسمي من الوكيل، قابل للتغيير",
+          "specs": {
+            "engine": "2.0L Inline-4 Turbo",
+            "engine_ar": "4 سلندر توربو 2.0 لتر",
+            "power_hp": 204,
+            "torque_nm": 320,
+            "acceleration_0_100": 7.5,
+            "top_speed_kmh": 234,
+            "transmission": "9G-Tronic Automatic",
+            "drive": "4MATIC AWD",
+            "fuel_type": "Petrol",
+            "fuel_economy_combined": 8.2
+          }
+        },
+        {
+          "slug": "mercedes-benz-glc300-amg-line",
+          "name": "GLC 300 AMG Line",
+          "name_ar": "GLC 300 AMG لاين",
+          "price_egp": 7250000,
+          "price_note": "Official agency price, subject to change",
+          "price_note_ar": "السعر الرسمي من الوكيل، قابل للتغيير",
+          "specs": {
+            "engine": "2.0L Inline-4 Turbo",
+            "engine_ar": "4 سلندر توربو 2.0 لتر",
+            "power_hp": 258,
+            "torque_nm": 400,
+            "acceleration_0_100": 6.1,
+            "top_speed_kmh": 240,
+            "transmission": "9G-Tronic Automatic",
+            "drive": "4MATIC AWD",
+            "fuel_type": "Petrol",
+            "fuel_economy_combined": 8.5
+          }
+        }
+      ],
+      "relations": [
+        { "type": "sold_by", "target_slug": "mercedes-benz-egypt" }
+      ]
+    },
+    {
+      "slug": "mercedes-benz-s-class-w223",
+      "name": "Mercedes-Benz S-Class W223",
+      "name_ar": "مرسيدس-بنز الفئة S W223",
+      "year": 2024,
+      "body_type": "Luxury Sedan",
+      "brochure_url": "https://www.mercedes-benz.com.eg/content/dam/hq/passengercars/cars/s-class/s-class-saloon-w223/pdf/s-class-brochure.pdf",
+      "images": [
+        { "url": "https://www.mercedes-benz.com/content/dam/hq/passengercars/cars/s-class/s-class-saloon-w223/modeloverview/09-2020/images/mercedes-benz-s-class-w223-modeloverview-696x392-09-2020.png", "section_id": "sec_1_identity", "caption": "S-Class W223 — The Pinnacle of Luxury", "caption_ar": "الفئة S W223 — قمة الفخامة" },
+        { "url": "https://www.mercedes-benz.com/content/dam/hq/passengercars/cars/s-class/s-class-saloon-w223/modeloverview/09-2020/images/mercedes-benz-s-class-w223-exterior-696x392-09-2020.png", "section_id": "sec_auto_exterior", "caption": "Iconic Exterior Design", "caption_ar": "التصميم الخارجي الأيقوني" },
+        { "url": "https://www.mercedes-benz.com/content/dam/hq/passengercars/cars/s-class/s-class-saloon-w223/modeloverview/09-2020/images/mercedes-benz-s-class-w223-interior-696x392-09-2020.png", "section_id": "sec_auto_interior", "caption": "Luxury Rear Suite", "caption_ar": "الجناح الخلفي الفاخر" },
+        { "url": "https://www.mercedes-benz.com/content/dam/hq/passengercars/cars/s-class/s-class-saloon-w223/modeloverview/09-2020/images/mercedes-benz-s-class-w223-technology-696x392-09-2020.png", "section_id": "sec_auto_technology", "caption": "MBUX Hyperscreen", "caption_ar": "الشاشة الفائقة MBUX" }
+      ],
+      "trims": [
+        {
+          "slug": "mercedes-benz-s450-exclusive",
+          "name": "S 450 L Exclusive",
+          "name_ar": "S 450 L إكسكلوسيف",
+          "price_egp": 12500000,
+          "price_note": "Official agency price, subject to change",
+          "price_note_ar": "السعر الرسمي من الوكيل، قابل للتغيير",
+          "specs": {
+            "engine": "3.0L V6 Turbo + 48V Mild Hybrid (M256)",
+            "engine_ar": "V6 توربو 3.0 لتر + هجين خفيف 48 فولت",
+            "power_hp": 367,
+            "torque_nm": 500,
+            "acceleration_0_100": 4.9,
+            "top_speed_kmh": 250,
+            "transmission": "9G-Tronic Automatic",
+            "drive": "4MATIC AWD",
+            "fuel_type": "Petrol Mild Hybrid",
+            "fuel_economy_combined": 9.1
+          }
+        }
+      ],
+      "relations": [
+        { "type": "sold_by", "target_slug": "mercedes-benz-egypt" }
+      ]
+    },
+    {
+      "slug": "mercedes-benz-gle-v167",
+      "name": "Mercedes-Benz GLE V167",
+      "name_ar": "مرسيدس-بنز GLE V167",
+      "year": 2024,
+      "body_type": "SUV",
+      "brochure_url": "https://www.mercedes-benz.com.eg/content/dam/hq/passengercars/cars/gle/gle-suv-v167/pdf/gle-brochure.pdf",
+      "images": [
+        { "url": "https://www.mercedes-benz.com/content/dam/hq/passengercars/cars/gle/gle-suv-v167/modeloverview/01-2023/images/mercedes-benz-gle-v167-fl-modeloverview-696x392-01-2023.png", "section_id": "sec_1_identity", "caption": "GLE V167 — Flagship SUV", "caption_ar": "GLE V167 — سيارة الدفع الرباعي الرائدة" },
+        { "url": "https://www.mercedes-benz.com/content/dam/hq/passengercars/cars/gle/gle-suv-v167/modeloverview/01-2023/images/mercedes-benz-gle-v167-fl-exterior-696x392-01-2023.png", "section_id": "sec_auto_exterior", "caption": "Commanding Exterior", "caption_ar": "الهيكل الخارجي الفارض" },
+        { "url": "https://www.mercedes-benz.com/content/dam/hq/passengercars/cars/gle/gle-suv-v167/modeloverview/01-2023/images/mercedes-benz-gle-v167-fl-interior-696x392-01-2023.png", "section_id": "sec_auto_interior", "caption": "7-Seat Luxury Interior", "caption_ar": "المقصورة الفاخرة 7 مقاعد" }
+      ],
+      "trims": [
+        {
+          "slug": "mercedes-benz-gle450-amg",
+          "name": "GLE 450 AMG Line",
+          "name_ar": "GLE 450 AMG لاين",
+          "price_egp": 9750000,
+          "price_note": "Official agency price, subject to change",
+          "price_note_ar": "السعر الرسمي من الوكيل، قابل للتغيير",
+          "specs": {
+            "engine": "3.0L Inline-6 Turbo + 48V Mild Hybrid",
+            "engine_ar": "6 سلندر توربو 3.0 لتر + هجين خفيف 48 فولت",
+            "power_hp": 367,
+            "torque_nm": 500,
+            "acceleration_0_100": 5.7,
+            "top_speed_kmh": 250,
+            "transmission": "9G-Tronic Automatic",
+            "drive": "4MATIC AWD",
+            "fuel_type": "Petrol Mild Hybrid",
+            "fuel_economy_combined": 9.5
+          }
+        }
+      ],
+      "relations": [
+        { "type": "sold_by", "target_slug": "mercedes-benz-egypt" }
+      ]
+    }
+  ]
+}

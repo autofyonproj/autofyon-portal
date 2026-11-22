@@ -1,0 +1,788 @@
+{
+  "brand": {
+    "slug": "bmw",
+    "name": "BMW",
+    "name_ar": "بي إم دبليو",
+    "origin_country": "Germany",
+    "logo_url": "https://cdn.jsdelivr.net/gh/filippofilip95/car-logos-dataset@master/logos/optimized/bmw.svg",
+    "established_year": 1916,
+    "description": "Bayerische Motoren Werke — German luxury automobile and motorcycle manufacturer, synonymous with performance and driving pleasure.",
+    "description_ar": "بايريشه موتورن فيرке — شركة ألمانية فاخرة لصناعة السيارات والدراجات النارية، مرادفة للأداء ومتعة القيادة."
+  },
+  "agency": {
+    "slug": "global-auto-bmw-egypt",
+    "name": "Global Auto — BMW Egypt (Exclusive Importer)",
+    "name_ar": "جلوبال أوتو — بي إم دبليو مصر (المستورد الحصري)",
+    "type_id": "main_agency",
+    "phone": "19269",
+    "website": "https://www.bmw-egypt.com",
+    "address": "Cairo, Egypt — Exclusive BMW Group Importer since November 2022",
+    "address_ar": "القاهرة، مصر — المستورد الحصري لمجموعة BMW منذ نوفمبر 2022",
+    "established_year": 2022,
+    "note": "Replaced Al Bavariya Group as exclusive importer. Operates assembly plant (6 October City) and 9 BMW Centers across Egypt."
+  },
+  "showrooms": [
+    {
+      "slug": "bmw-center-qattamiya",
+      "name": "BMW Center القطامية",
+      "name_ar": "مركز BMW القطامية",
+      "type_id": "showroom",
+      "phone": "19269",
+      "address": "المنطقة 1، منطقة 10A، المعادي، الطريق الدائري، القطامية، القاهرة",
+      "address_ar": "المنطقة 1، منطقة 10A، المعادي، الطريق الدائري، القطامية، القاهرة",
+      "city": "القطامية",
+      "governorate": "القاهرة"
+    },
+    {
+      "slug": "bmw-center-motor-city",
+      "name": "BMW Center Motor City",
+      "name_ar": "مركز BMW موتور سيتي",
+      "type_id": "showroom",
+      "phone": "19269",
+      "address": "موتور سيتي، القطامية، الطريق الدائري، القاهرة",
+      "address_ar": "موتور سيتي، القطامية، الطريق الدائري، القاهرة",
+      "city": "القطامية",
+      "governorate": "القاهرة"
+    },
+    {
+      "slug": "bmw-center-glory-square",
+      "name": "BMW Center Glory Square (Heliopolis)",
+      "name_ar": "مركز BMW ميدان جلوري (مصر الجديدة)",
+      "type_id": "showroom",
+      "phone": "19269",
+      "address": "25 تقسيم المروحة، ميدان جلوري، مصر الجديدة، القاهرة",
+      "address_ar": "25 تقسيم المروحة، ميدان جلوري، مصر الجديدة، القاهرة",
+      "city": "مصر الجديدة",
+      "governorate": "القاهرة"
+    },
+    {
+      "slug": "bmw-center-alexandria",
+      "name": "BMW Center Alexandria",
+      "name_ar": "مركز BMW الإسكندرية",
+      "type_id": "showroom",
+      "phone": "19269",
+      "address": "القباري، ميناء البصل، الإسكندرية",
+      "address_ar": "القباري، ميناء البصل، الإسكندرية",
+      "city": "الإسكندرية",
+      "governorate": "الإسكندرية"
+    },
+    {
+      "slug": "bmw-service-abu-rawash",
+      "name": "BMW Service Center Abu Rawash",
+      "name_ar": "مركز BMW للخدمة أبو رواش",
+      "type_id": "service_center",
+      "phone": "19269",
+      "address": "المنطقة 31، طريق أبو رواش، الجيزة",
+      "address_ar": "المنطقة 31، طريق أبو رواش، الجيزة",
+      "city": "أبو رواش",
+      "governorate": "الجيزة"
+    },
+    {
+      "slug": "bmw-showroom-desert-road",
+      "name": "BMW Showroom Desert Road (km 28)",
+      "name_ar": "معرض BMW الطريق الصحراوي (كيلو 28)",
+      "type_id": "showroom",
+      "phone": "19269",
+      "address": "الكيلو 28، طريق القاهرة–الإسكندرية الصحراوي، الجيزة",
+      "address_ar": "الكيلو 28، طريق القاهرة–الإسكندرية الصحراوي، الجيزة",
+      "city": "الطريق الصحراوي",
+      "governorate": "الجيزة"
+    },
+    {
+      "slug": "bmw-center-almaza",
+      "name": "BMW Center Almaza",
+      "name_ar": "مركز BMW ألماظة",
+      "type_id": "showroom",
+      "phone": "19269",
+      "address": "258 حي الملتقى العربي، طريق النصر، ألماظة، القاهرة",
+      "address_ar": "258 حي الملتقى العربي، طريق النصر، ألماظة، القاهرة",
+      "city": "ألماظة",
+      "governorate": "القاهرة"
+    },
+    {
+      "slug": "bmw-center-obour",
+      "name": "BMW Center El-Obour",
+      "name_ar": "مركز BMW العبور",
+      "type_id": "showroom",
+      "phone": "19269",
+      "address": "المنطقة الصناعية الأولى، قطعة 13004، العبور، القليوبية",
+      "address_ar": "المنطقة الصناعية الأولى، قطعة 13004، العبور، القليوبية",
+      "city": "العبور",
+      "governorate": "القليوبية"
+    },
+    {
+      "slug": "bmw-showroom-new-cairo",
+      "name": "BMW Showroom New Cairo",
+      "name_ar": "معرض BMW القاهرة الجديدة",
+      "type_id": "showroom",
+      "phone": "19269",
+      "address": "شارع التسعين الشمالي، القاهرة الجديدة، القاهرة",
+      "address_ar": "شارع التسعين الشمالي، القاهرة الجديدة، القاهرة",
+      "city": "القاهرة الجديدة",
+      "governorate": "القاهرة"
+    },
+    {
+      "slug": "bmw-assembly-6october",
+      "name": "Global Auto BMW Assembly Plant (6th October City)",
+      "name_ar": "مصنع تجميع جلوبال أوتو BMW (مدينة السادس من أكتوبر)",
+      "type_id": "factory",
+      "phone": "19269",
+      "address": "مدينة السادس من أكتوبر، الجيزة",
+      "address_ar": "مدينة السادس من أكتوبر، الجيزة",
+      "city": "السادس من أكتوبر",
+      "governorate": "الجيزة"
+    }
+  ],
+  "models": [
+    {
+      "slug": "bmw-3-series",
+      "name": "BMW 3 Series (G20)",
+      "name_ar": "بي إم دبليو الفئة الثالثة (G20)",
+      "year": 2027,
+      "body_type": "Sedan",
+      "brochure_url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/brochure-pool/jan2025/The%203%20Series%20Brochure%202025%20v2.pdf.asset.1737358373695.pdf",
+      "images": [
+        { "url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/models/3-series/3-series-sedan/PI_32754726_G20_BMW_3series_01.jpg", "section_id": "sec_1_identity", "caption": "BMW 3 Series — The Ultimate Sports Sedan", "caption_ar": "بي إم دبليو الفئة الثالثة — سيدان الأداء الأمثل" },
+        { "url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/models/3-series/3-series-sedan/PI_32754726_G20_BMW_3series_02.jpg", "section_id": "sec_auto_exterior", "caption": "Iconic Kidney Grille Design", "caption_ar": "الشبكة الأمامية الكلوية الأيقونية" },
+        { "url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/models/3-series/3-series-sedan/PI_32754726_G20_BMW_3series_03.jpg", "section_id": "sec_auto_interior", "caption": "Curved Display & BMW iDrive 8", "caption_ar": "الشاشة المنحنية ونظام BMW iDrive 8" },
+        { "url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/models/3-series/3-series-sedan/PI_32754726_G20_BMW_3series_04.jpg", "section_id": "sec_auto_engine", "caption": "TwinPower Turbo Engine", "caption_ar": "محرك TwinPower Turbo" }
+      ],
+      "trims": [
+        {
+          "slug": "bmw-320i-advantage",
+          "name": "320i Advantage",
+          "name_ar": "320i أدفانتاج",
+          "price_egp": 3500000,
+          "price_note": "Official Global Auto agency price (Hatla2ee, Jun 2026)",
+          "price_note_ar": "السعر الرسمي من جلوبال أوتو (هتلعي، يونيو 2026)",
+          "specs": {
+            "engine": "1.6L 4-Cyl TwinPower Turbo (B48)",
+            "engine_ar": "4 سلندر توربو مزدوج 1.6 لتر",
+            "engine_cc": 1597,
+            "cylinders": "4/4 صمام",
+            "power_hp": 170,
+            "torque_nm": 250,
+            "torque_rpm": "2000-4700",
+            "acceleration_0_100": 8.1,
+            "top_speed_kmh": 228,
+            "transmission": "8-Speed Steptronic Automatic",
+            "transmission_ar": "أوتوماتيك ستيبترونيك 8 سرعات",
+            "drive": "RWD",
+            "fuel_type": "Petrol",
+            "fuel_economy_combined": 6.9,
+            "trunk_liters": 480,
+            "fuel_tank_liters": 59,
+            "weight_kg": 1515,
+            "wheels": "17-inch V-spoke 775 Run-flat",
+            "wheels_ar": "جنوط 17 بوصة V-spoke 775 Run-flat",
+            "seats": 5,
+            "dimensions_mm": "4713L x 1827W x 1440H | WB: 2851"
+          }
+        },
+        {
+          "slug": "bmw-320i-luxury-line",
+          "name": "320i Luxury Line",
+          "name_ar": "320i لاكشري لاين",
+          "price_egp": 3500000,
+          "price_note": "Official Global Auto agency price",
+          "price_note_ar": "السعر الرسمي من جلوبال أوتو",
+          "specs": {
+            "engine": "1.6L 4-Cyl TwinPower Turbo",
+            "engine_ar": "4 سلندر توربو مزدوج 1.6 لتر",
+            "engine_cc": 1597,
+            "power_hp": 170,
+            "torque_nm": 250,
+            "acceleration_0_100": 8.1,
+            "top_speed_kmh": 228,
+            "transmission": "8-Speed Steptronic Automatic",
+            "drive": "RWD",
+            "fuel_type": "Petrol",
+            "fuel_economy_combined": 6.9,
+            "trunk_liters": 480,
+            "seats": 5,
+            "wheels": "18-inch Double-spoke 782 Run-flat",
+            "wheels_ar": "جنوط 18 بوصة Double-spoke 782 Run-flat"
+          }
+        },
+        {
+          "slug": "bmw-320i-m-sport",
+          "name": "320i M Sport",
+          "name_ar": "320i M سبورت",
+          "price_egp": 3750000,
+          "price_note": "Official Global Auto agency price (changed Jun 2026 from 3,350,000)",
+          "price_note_ar": "السعر الرسمي من جلوبال أوتو (تغيّر يونيو 2026 من 3,350,000)",
+          "specs": {
+            "engine": "1.6L 4-Cyl TwinPower Turbo",
+            "engine_ar": "4 سلندر توربو مزدوج 1.6 لتر",
+            "engine_cc": 1597,
+            "power_hp": 170,
+            "torque_nm": 250,
+            "acceleration_0_100": 8.1,
+            "top_speed_kmh": 228,
+            "transmission": "8-Speed Steptronic Automatic",
+            "drive": "RWD",
+            "fuel_type": "Petrol",
+            "fuel_economy_combined": 6.9,
+            "trunk_liters": 480,
+            "seats": 5,
+            "wheels": "18-inch M Double-spoke 848",
+            "wheels_ar": "جنوط 18 بوصة M Double-spoke 848"
+          }
+        },
+        {
+          "slug": "bmw-330i-m-sport",
+          "name": "330i M Sport",
+          "name_ar": "330i M سبورت",
+          "price_egp": 3750000,
+          "price_note": "Official Global Auto agency price",
+          "price_note_ar": "السعر الرسمي من جلوبال أوتو",
+          "specs": {
+            "engine": "2.0L 4-Cyl TwinPower Turbo",
+            "engine_ar": "4 سلندر توربو مزدوج 2.0 لتر",
+            "engine_cc": 1998,
+            "power_hp": 258,
+            "torque_nm": 400,
+            "torque_rpm": "1550-4400",
+            "acceleration_0_100": 5.9,
+            "top_speed_kmh": 250,
+            "transmission": "8-Speed Steptronic Automatic",
+            "drive": "RWD",
+            "fuel_type": "Petrol",
+            "fuel_economy_combined": 6.5,
+            "trunk_liters": 480,
+            "seats": 5,
+            "wheels": "18-inch M Double-spoke 848",
+            "wheels_ar": "جنوط 18 بوصة M Double-spoke 848"
+          }
+        },
+        {
+          "slug": "bmw-m340i-xdrive",
+          "name": "M340i xDrive",
+          "name_ar": "M340i xDrive دفع رباعي",
+          "price_egp": 6750000,
+          "price_note": "Official Global Auto agency price (changed Jun 2026 from 5,500,000)",
+          "price_note_ar": "السعر الرسمي من جلوبال أوتو (تغيّر يونيو 2026 من 5,500,000)",
+          "specs": {
+            "engine": "3.0L 6-Cyl TwinPower Turbo (B58)",
+            "engine_ar": "6 سلندر توربو مزدوج 3.0 لتر",
+            "engine_cc": 2998,
+            "power_hp": 387,
+            "torque_nm": 500,
+            "torque_rpm": "1900-5000",
+            "acceleration_0_100": 4.4,
+            "top_speed_kmh": 250,
+            "transmission": "8-Speed Steptronic Sport Automatic",
+            "drive": "xDrive AWD",
+            "fuel_type": "Petrol",
+            "fuel_economy_combined": 8.0,
+            "trunk_liters": 480,
+            "weight_kg": 1695,
+            "seats": 5,
+            "wheels": "19-inch M Double-spoke 792",
+            "wheels_ar": "جنوط 19 بوصة M Double-spoke 792"
+          }
+        }
+      ],
+      "relations": [
+        { "type": "sold_by", "target_slug": "global-auto-bmw-egypt" },
+        { "type": "serviced_by", "target_slug": "bmw-service-abu-rawash" }
+      ]
+    },
+    {
+      "slug": "bmw-5-series",
+      "name": "BMW 5 Series (G60)",
+      "name_ar": "بي إم دبليو الفئة الخامسة (G60)",
+      "year": 2027,
+      "body_type": "Sedan",
+      "brochure_url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/brochure-pool/The-5.pdf.asset.1681294407006.pdf",
+      "images": [
+        { "url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/models/5-series/5-series-sedan/bmw-5-series-01.jpg", "section_id": "sec_1_identity", "caption": "BMW 5 Series — Executive Luxury", "caption_ar": "بي إم دبليو الفئة الخامسة — الفخامة التنفيذية" },
+        { "url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/models/5-series/5-series-sedan/bmw-5-series-02.jpg", "section_id": "sec_auto_exterior", "caption": "Elegant Executive Exterior", "caption_ar": "الهيكل الخارجي التنفيذي الأنيق" },
+        { "url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/models/5-series/5-series-sedan/bmw-5-series-03.jpg", "section_id": "sec_auto_interior", "caption": "Panoramic Curved Display", "caption_ar": "الشاشة البانورامية المنحنية" }
+      ],
+      "trims": [
+        {
+          "slug": "bmw-520i-luxury",
+          "name": "520i Luxury Line",
+          "name_ar": "520i لاكشري لاين",
+          "price_egp": 4500000,
+          "price_note": "Official Global Auto agency price (changed Jun 2026 from 4,250,000)",
+          "price_note_ar": "السعر الرسمي من جلوبال أوتو (تغيّر يونيو 2026 من 4,250,000)",
+          "specs": {
+            "engine": "1.6L 4-Cyl TwinPower Turbo",
+            "engine_ar": "4 سلندر توربو مزدوج 1.6 لتر",
+            "engine_cc": 1597,
+            "power_hp": 170,
+            "torque_nm": 250,
+            "acceleration_0_100": 8.3,
+            "top_speed_kmh": 226,
+            "transmission": "8-Speed Steptronic Automatic",
+            "drive": "RWD",
+            "fuel_type": "Petrol",
+            "fuel_economy_combined": 7.1,
+            "trunk_liters": 530,
+            "fuel_tank_liters": 68,
+            "weight_kg": 1580,
+            "seats": 5,
+            "wheels": "18-inch Double-spoke 844 Run-flat",
+            "wheels_ar": "جنوط 18 بوصة Double-spoke 844 Run-flat"
+          }
+        },
+        {
+          "slug": "bmw-520i-m-sport",
+          "name": "520i M Sport",
+          "name_ar": "520i M سبورت",
+          "price_egp": 4900000,
+          "price_note": "Official Global Auto agency price (changed Jun 2026 from 4,650,000)",
+          "price_note_ar": "السعر الرسمي من جلوبال أوتو (تغيّر يونيو 2026 من 4,650,000)",
+          "specs": {
+            "engine": "1.6L 4-Cyl TwinPower Turbo",
+            "engine_ar": "4 سلندر توربو مزدوج 1.6 لتر",
+            "engine_cc": 1597,
+            "power_hp": 170,
+            "torque_nm": 250,
+            "acceleration_0_100": 8.3,
+            "top_speed_kmh": 226,
+            "transmission": "8-Speed Steptronic Automatic",
+            "drive": "RWD",
+            "fuel_type": "Petrol",
+            "fuel_economy_combined": 7.1,
+            "trunk_liters": 530,
+            "seats": 5,
+            "wheels": "18-inch W-spoke 632 Run-flat",
+            "wheels_ar": "جنوط 18 بوصة W-spoke 632 Run-flat"
+          }
+        }
+      ],
+      "relations": [
+        { "type": "sold_by", "target_slug": "global-auto-bmw-egypt" },
+        { "type": "serviced_by", "target_slug": "bmw-service-abu-rawash" }
+      ]
+    },
+    {
+      "slug": "bmw-x1",
+      "name": "BMW X1 (U11)",
+      "name_ar": "بي إم دبليو X1 (U11)",
+      "year": 2027,
+      "body_type": "SUV",
+      "brochure_url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/brochure-pool/jan-2026/X1%20Brochure%20Brochure%202025.pdf",
+      "images": [
+        { "url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/models/x1/bmw-x1-01.jpg", "section_id": "sec_1_identity", "caption": "BMW X1 — The Urban SAV", "caption_ar": "بي إم دبليو X1 — سيارة الدفع الرباعي الحضرية" },
+        { "url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/models/x1/bmw-x1-02.jpg", "section_id": "sec_auto_exterior", "caption": "Bold Kidney Grille SUV Stance", "caption_ar": "الهيكل SUV بالشبكة الكلوية الجريئة" },
+        { "url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/models/x1/bmw-x1-03.jpg", "section_id": "sec_auto_interior", "caption": "Spacious Panoramic Interior", "caption_ar": "المقصورة الداخلية البانورامية الواسعة" }
+      ],
+      "trims": [
+        {
+          "slug": "bmw-x1-xline",
+          "name": "X1 xLine",
+          "name_ar": "X1 xLine",
+          "price_egp": 3200000,
+          "price_note": "Official Global Auto agency price (changed Jun 2026 from 2,950,000)",
+          "price_note_ar": "السعر الرسمي من جلوبال أوتو (تغيّر يونيو 2026 من 2,950,000)",
+          "specs": {
+            "engine": "1.5L 3-Cyl TwinPower Turbo",
+            "engine_ar": "3 سلندر توربو مزدوج 1.5 لتر",
+            "engine_cc": 1499,
+            "power_hp": 156,
+            "torque_nm": 230,
+            "torque_rpm": "1500-4600",
+            "acceleration_0_100": 9.0,
+            "top_speed_kmh": 215,
+            "transmission": "7-Speed Steptronic DCT",
+            "drive": "sDrive (FWD)",
+            "fuel_type": "Petrol",
+            "fuel_economy_combined": 6.5,
+            "trunk_liters": 540,
+            "seats": 5,
+            "wheels": "19-inch V-spoke 867",
+            "wheels_ar": "جنوط 19 بوصة V-spoke 867"
+          }
+        },
+        {
+          "slug": "bmw-x1-m-sport",
+          "name": "X1 M Sport",
+          "name_ar": "X1 M سبورت",
+          "price_egp": 3500000,
+          "price_note": "Official Global Auto agency price",
+          "price_note_ar": "السعر الرسمي من جلوبال أوتو",
+          "specs": {
+            "engine": "1.5L 3-Cyl TwinPower Turbo",
+            "engine_ar": "3 سلندر توربو مزدوج 1.5 لتر",
+            "engine_cc": 1499,
+            "power_hp": 156,
+            "torque_nm": 230,
+            "acceleration_0_100": 9.0,
+            "top_speed_kmh": 215,
+            "transmission": "7-Speed Steptronic DCT",
+            "drive": "sDrive (FWD)",
+            "fuel_type": "Petrol",
+            "fuel_economy_combined": 6.5,
+            "trunk_liters": 540,
+            "seats": 5,
+            "wheels": "19-inch M Double-spoke 871",
+            "wheels_ar": "جنوط 19 بوصة M Double-spoke 871"
+          }
+        }
+      ],
+      "relations": [
+        { "type": "sold_by", "target_slug": "global-auto-bmw-egypt" },
+        { "type": "serviced_by", "target_slug": "bmw-service-abu-rawash" }
+      ]
+    },
+    {
+      "slug": "bmw-x3",
+      "name": "BMW X3 (G01/G45)",
+      "name_ar": "بي إم دبليو X3 (G01/G45)",
+      "year": 2027,
+      "body_type": "SUV",
+      "brochure_url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/brochure-pool/august-2026/The_ALL_New_X3_Brochure.pdf.asset.1786973207120.pdf",
+      "images": [
+        { "url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/models/x3/bmw-x3-01.jpg", "section_id": "sec_1_identity", "caption": "BMW X3 — The All-New Generation", "caption_ar": "بي إم دبليو X3 — الجيل الجديد الكلي" },
+        { "url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/models/x3/bmw-x3-02.jpg", "section_id": "sec_auto_exterior", "caption": "Curved Panoramic Display & BMW iDrive", "caption_ar": "شاشة 14.9 بوصة منحنية ونظام BMW iDrive" }
+      ],
+      "trims": [
+        {
+          "slug": "bmw-x3-xdrive30i-xline",
+          "name": "xDrive30i xLine",
+          "name_ar": "xDrive30i xLine",
+          "price_egp": 4350000,
+          "price_note": "Official Global Auto agency price (changed Jun 2026 from 4,100,000)",
+          "price_note_ar": "السعر الرسمي من جلوبال أوتو (تغيّر يونيو 2026 من 4,100,000)",
+          "specs": {
+            "engine": "2.0L 4-Cyl TwinPower Turbo",
+            "engine_ar": "4 سلندر توربو مزدوج 2.0 لتر",
+            "engine_cc": 1998,
+            "power_hp": 252,
+            "torque_nm": 350,
+            "acceleration_0_100": 6.6,
+            "top_speed_kmh": 240,
+            "transmission": "8-Speed Steptronic Automatic",
+            "drive": "xDrive AWD",
+            "fuel_type": "Petrol",
+            "fuel_economy_combined": 7.9,
+            "ground_clearance_mm": 204,
+            "trunk_liters": "550-1600",
+            "fuel_tank_liters": 65,
+            "weight_kg": 1810,
+            "wheels": "19-inch Y-spoke",
+            "wheels_ar": "جنوط 19 بوصة Y-spoke"
+          }
+        },
+        {
+          "slug": "bmw-x3-30-xdrive-m-sport",
+          "name": "30 xDrive M Sport (New Gen 2027)",
+          "name_ar": "30 xDrive M سبورت (الجيل الجديد 2027)",
+          "price_egp": 5300000,
+          "price_note": "Official Global Auto agency price (changed Jun 2026 from 4,990,000)",
+          "price_note_ar": "السعر الرسمي من جلوبال أوتو (تغيّر يونيو 2026 من 4,990,000)",
+          "specs": {
+            "engine": "New Gen Engine — Full specs pending brochure",
+            "engine_ar": "محرك الجيل الجديد — المواصفات الكاملة في انتظار البروشور",
+            "drive": "xDrive AWD",
+            "trunk_liters": "570-1700",
+            "display": "14.9-inch Curved Panoramic + 12.3-inch instruments",
+            "display_ar": "شاشة منحنية بانورامية 14.9 بوصة + عدادات 12.3 بوصة"
+          }
+        }
+      ],
+      "relations": [
+        { "type": "sold_by", "target_slug": "global-auto-bmw-egypt" },
+        { "type": "serviced_by", "target_slug": "bmw-service-abu-rawash" }
+      ]
+    },
+    {
+      "slug": "bmw-x5",
+      "name": "BMW X5 (G05)",
+      "name_ar": "بي إم دبليو X5 (G05)",
+      "year": 2027,
+      "body_type": "SUV",
+      "brochure_url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/brochure-pool/oct2024/The%20X5%20-%20MY2024.pdf.asset.1729094407795.pdf",
+      "images": [
+        { "url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/models/x5/bmw-x5-01.jpg", "section_id": "sec_1_identity", "caption": "BMW X5 — Locally Assembled in Egypt", "caption_ar": "بي إم دبليو X5 — مجمّعة محليًا في مصر" },
+        { "url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/models/x5/bmw-x5-02.jpg", "section_id": "sec_auto_exterior", "caption": "Commanding SUV Presence", "caption_ar": "الحضور الفارض لسيارة SUV" }
+      ],
+      "trims": [
+        {
+          "slug": "bmw-x5-xdrive40i-xline",
+          "name": "xDrive40i xLine",
+          "name_ar": "xDrive40i xLine",
+          "price_egp": 7300000,
+          "price_note": "Official Global Auto agency price (changed Jun 2026 from 7,100,000) — Locally assembled",
+          "price_note_ar": "السعر الرسمي من جلوبال أوتو (تغيّر يونيو 2026 من 7,100,000) — تجميع محلي",
+          "specs": {
+            "engine": "3.0L 6-Cyl TwinPower Turbo (B58)",
+            "engine_ar": "6 سلندر توربو مزدوج 3.0 لتر",
+            "engine_cc": 2998,
+            "power_hp": 381,
+            "torque_nm": 540,
+            "acceleration_0_100": 5.4,
+            "top_speed_kmh": 250,
+            "transmission": "8-Speed Steptronic Automatic",
+            "drive": "xDrive AWD",
+            "fuel_type": "Petrol",
+            "fuel_economy_combined": 9.2,
+            "trunk_liters": "650-1870",
+            "dimensions_mm": "4935L x 2004W x 1765H",
+            "assembly": "Local — Global Auto Plant, 6 October City",
+            "assembly_ar": "تجميع محلي — مصنع جلوبال أوتو، السادس من أكتوبر"
+          }
+        },
+        {
+          "slug": "bmw-x5-m60i",
+          "name": "X5 M60i xDrive",
+          "name_ar": "X5 M60i xDrive",
+          "price_egp": 9250000,
+          "price_note": "Official Global Auto agency price (ContactCars upper range)",
+          "price_note_ar": "السعر الرسمي من جلوبال أوتو (الحد الأعلى عند ContactCars)",
+          "specs": {
+            "engine": "4.4L V8 TwinPower Turbo + 48V Mild Hybrid",
+            "engine_ar": "V8 توربو مزدوج 4.4 لتر + هجين خفيف 48 فولت",
+            "engine_cc": 4395,
+            "power_hp": 530,
+            "torque_nm": 750,
+            "torque_rpm": "1800-4600",
+            "acceleration_0_100": 4.3,
+            "top_speed_kmh": 250,
+            "transmission": "8-Speed Steptronic Sport Automatic",
+            "drive": "xDrive AWD",
+            "fuel_type": "Petrol Mild Hybrid",
+            "fuel_economy_combined": 11.5,
+            "trunk_liters": "650-1870",
+            "dimensions_mm": "4935L x 2004W x 1765H"
+          }
+        }
+      ],
+      "relations": [
+        { "type": "sold_by", "target_slug": "global-auto-bmw-egypt" },
+        { "type": "manufactured_at", "target_slug": "bmw-assembly-6october" },
+        { "type": "serviced_by", "target_slug": "bmw-service-abu-rawash" }
+      ]
+    },
+    {
+      "slug": "bmw-x6",
+      "name": "BMW X6 (G06)",
+      "name_ar": "بي إم دبليو X6 (G06)",
+      "year": 2027,
+      "body_type": "Sports Activity Coupe",
+      "brochure_url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/brochure-pool/The_new_X6_Brochure.pdf.asset.1701147693683.pdf",
+      "images": [
+        { "url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/models/x6/bmw-x6-01.jpg", "section_id": "sec_1_identity", "caption": "BMW X6 — The Sports Activity Coupe", "caption_ar": "بي إم دبليو X6 — سيارة الكوبيه الرياضية" }
+      ],
+      "trims": [
+        {
+          "slug": "bmw-x6-xdrive40i",
+          "name": "xDrive40i",
+          "name_ar": "xDrive40i",
+          "price_egp": 7950000,
+          "price_note": "Official Global Auto agency price (changed Jun 2026)",
+          "price_note_ar": "السعر الرسمي من جلوبال أوتو (تغيّر يونيو 2026)",
+          "specs": {
+            "engine": "3.0L 6-Cyl TwinPower Turbo",
+            "engine_ar": "6 سلندر توربو مزدوج 3.0 لتر",
+            "drive": "xDrive AWD",
+            "fuel_type": "Petrol"
+          }
+        },
+        {
+          "slug": "bmw-x6-m60i",
+          "name": "X6 M60i xDrive",
+          "name_ar": "X6 M60i xDrive",
+          "price_egp": 9250000,
+          "price_note": "Official Global Auto agency price",
+          "price_note_ar": "السعر الرسمي من جلوبال أوتو",
+          "specs": {
+            "engine": "4.4L V8 TwinPower Turbo + 48V Mild Hybrid",
+            "engine_ar": "V8 توربو مزدوج 4.4 لتر + هجين خفيف 48 فولت",
+            "engine_cc": 4395,
+            "power_hp": 530,
+            "torque_nm": 750,
+            "torque_rpm": "1800-4600",
+            "acceleration_0_100": 4.3,
+            "top_speed_kmh": 250,
+            "transmission": "8-Speed Steptronic Sport Automatic",
+            "drive": "xDrive AWD",
+            "fuel_type": "Petrol Mild Hybrid 48V",
+            "fuel_economy_combined": 11.5,
+            "trunk_liters": "580-1530",
+            "ground_clearance_mm": 216,
+            "weight_kg": 2315,
+            "wheels": "21-inch M Y-spoke 741",
+            "wheels_ar": "جنوط 21 بوصة M Y-spoke 741"
+          }
+        }
+      ],
+      "relations": [
+        { "type": "sold_by", "target_slug": "global-auto-bmw-egypt" },
+        { "type": "serviced_by", "target_slug": "bmw-service-abu-rawash" }
+      ]
+    },
+    {
+      "slug": "bmw-7-series",
+      "name": "BMW 7 Series (G70)",
+      "name_ar": "بي إم دبليو الفئة السابعة (G70)",
+      "year": 2026,
+      "body_type": "Luxury Sedan",
+      "brochure_url": "https://eg.hatla2ee.com/en/new-car/bmw/7-series/48223",
+      "images": [
+        { "url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/models/7-series/bmw-7-series-01.jpg", "section_id": "sec_1_identity", "caption": "BMW 7 Series — Pinnacle of Luxury", "caption_ar": "بي إم دبليو الفئة السابعة — قمة الفخامة" }
+      ],
+      "trims": [
+        {
+          "slug": "bmw-740li-xdrive",
+          "name": "740Li xDrive",
+          "name_ar": "740Li xDrive",
+          "price_egp": 9900000,
+          "price_note": "Market price (Yallamotor)",
+          "price_note_ar": "سعر منصة (يلا موتور)",
+          "specs": {
+            "engine": "3.0L 6-Cyl Mild Hybrid (MHEV)",
+            "engine_ar": "6 سلندر هجين خفيف 3.0 لتر",
+            "drive": "xDrive AWD",
+            "fuel_type": "Petrol Mild Hybrid"
+          }
+        },
+        {
+          "slug": "bmw-760li-mhev",
+          "name": "760Li xDrive MHEV",
+          "name_ar": "760Li xDrive هجين خفيف",
+          "price_egp": 13400000,
+          "price_note": "Market price (Yallamotor) — 5-year/200,000km warranty",
+          "price_note_ar": "سعر منصة (يلا موتور) — ضمان 5 سنوات/200 ألف كم",
+          "specs": {
+            "engine": "4.4L V8 Mild Hybrid (MHEV) 48V",
+            "engine_ar": "V8 هجين خفيف 4.4 لتر 48 فولت",
+            "engine_cc": 4400,
+            "cylinders": "8",
+            "power_hp": 544,
+            "torque_nm": 750,
+            "acceleration_0_100": 4.2,
+            "top_speed_kmh": 250,
+            "transmission": "8-Speed Automatic",
+            "drive": "xDrive AWD",
+            "fuel_type": "Petrol Mild Hybrid 48V",
+            "dimensions_mm": "5391L x 1950W x 1544H | WB: 3215"
+          }
+        }
+      ],
+      "relations": [
+        { "type": "sold_by", "target_slug": "global-auto-bmw-egypt" }
+      ]
+    },
+    {
+      "slug": "bmw-i4",
+      "name": "BMW i4 (G26 BEV)",
+      "name_ar": "بي إم دبليو i4 (كهربائي)",
+      "year": 2026,
+      "body_type": "Electric Gran Coupe",
+      "brochure_url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/brochure-pool/august2024/The_New_4_Series_Brochure_August2024.pdf.asset.1723800538554.pdf",
+      "images": [
+        { "url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/models/i4/bmw-i4-01.jpg", "section_id": "sec_1_identity", "caption": "BMW i4 — Electric Gran Coupe", "caption_ar": "بي إم دبليو i4 — جران كوبيه كهربائي" }
+      ],
+      "trims": [
+        {
+          "slug": "bmw-i4-edrive40-m-sport",
+          "name": "i4 eDrive40 M Sport",
+          "name_ar": "i4 eDrive40 M سبورت",
+          "price_egp": 5100000,
+          "price_note": "Official Global Auto agency price (ContactCars)",
+          "price_note_ar": "السعر الرسمي من جلوبال أوتو (ContactCars)",
+          "specs": {
+            "engine": "Electric Motor (Rear Axle)",
+            "engine_ar": "محرك كهربائي (المحور الخلفي)",
+            "power_hp": 340,
+            "torque_nm": 430,
+            "acceleration_0_100": 5.6,
+            "top_speed_kmh": 190,
+            "transmission": "Single-Speed Automatic",
+            "drive": "RWD",
+            "fuel_type": "Electric",
+            "battery_kwh": 83.9,
+            "range_km": "491-600 km (WLTP)",
+            "charging_ac": "11kW AC: 8h 30min",
+            "charging_dc": "50kW DC: 1h 13min",
+            "trunk_liters": "470-1290",
+            "weight_kg": 2050,
+            "seats": 5,
+            "wheels": "18-inch M 858",
+            "wheels_ar": "جنوط 18 بوصة M 858"
+          }
+        }
+      ],
+      "relations": [
+        { "type": "sold_by", "target_slug": "global-auto-bmw-egypt" },
+        { "type": "serviced_by", "target_slug": "bmw-service-abu-rawash" }
+      ]
+    },
+    {
+      "slug": "bmw-ix1",
+      "name": "BMW iX1 (U11 BEV)",
+      "name_ar": "بي إم دبليو iX1 (كهربائي)",
+      "year": 2026,
+      "body_type": "Electric SUV",
+      "brochure_url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/brochure-pool/jan-2026/X1%20Brochure%20Brochure%202025.pdf",
+      "images": [
+        { "url": "https://www.bmw-egypt.com/content/dam/bmw/marketEG/bmw-eg_com/models/ix1/bmw-ix1-01.jpg", "section_id": "sec_1_identity", "caption": "BMW iX1 — Electric SAV", "caption_ar": "بي إم دبليو iX1 — سيارة الدفع الرباعي الكهربائية" }
+      ],
+      "trims": [
+        {
+          "slug": "bmw-ix1-edrive20-m-sport",
+          "name": "iX1 eDrive20 M Sport",
+          "name_ar": "iX1 eDrive20 M سبورت",
+          "price_egp": 3800000,
+          "price_note": "Official Global Auto agency price (ContactCars)",
+          "price_note_ar": "السعر الرسمي من جلوبال أوتو (ContactCars)",
+          "specs": {
+            "engine": "Electric Motor (Front Axle)",
+            "engine_ar": "محرك كهربائي (المحور الأمامي)",
+            "power_hp": 204,
+            "torque_nm": 250,
+            "acceleration_0_100": 8.6,
+            "top_speed_kmh": 170,
+            "transmission": "Single-Speed Automatic",
+            "drive": "FWD (eDrive)",
+            "fuel_type": "Electric",
+            "battery_kwh": 66.5,
+            "range_km": "430-474 km (WLTP)",
+            "charging_ac_11kw": "6h 30min",
+            "charging_dc_50kw": "1h 14min (10-80%)",
+            "trunk_liters": "490-1495",
+            "weight_kg": 1865,
+            "wheels": "19-inch M Double-spoke 871",
+            "wheels_ar": "جنوط 19 بوصة M Double-spoke 871"
+          }
+        }
+      ],
+      "relations": [
+        { "type": "sold_by", "target_slug": "global-auto-bmw-egypt" },
+        { "type": "serviced_by", "target_slug": "bmw-service-abu-rawash" }
+      ]
+    },
+    {
+      "slug": "bmw-1-series",
+      "name": "BMW 1 Series (F70)",
+      "name_ar": "بي إم دبليو الفئة الأولى (F70)",
+      "year": 2027,
+      "body_type": "Hatchback",
+      "brochure_url": "https://www.bmw-egypt.com",
+      "images": [],
+      "trims": [
+        {
+          "slug": "bmw-118i-m-sport",
+          "name": "118 M Sport",
+          "name_ar": "118 M سبورت",
+          "price_egp": 2550000,
+          "price_note": "Official Global Auto agency price (changed Jun 2026 from 2,450,000)",
+          "price_note_ar": "السعر الرسمي من جلوبال أوتو (تغيّر يونيو 2026 من 2,450,000)",
+          "specs": {
+            "engine": "Specs pending official brochure",
+            "engine_ar": "في انتظار البروشور الرسمي",
+            "fuel_type": "Petrol"
+          }
+        }
+      ],
+      "relations": [
+        { "type": "sold_by", "target_slug": "global-auto-bmw-egypt" }
+      ]
+    }
+  ]
+}

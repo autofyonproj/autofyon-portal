@@ -30,7 +30,21 @@ export default function BrochureAr() {
               --border: rgba(255,255,255,0.08);
             }
 
-            html { direction: rtl; font-family: 'Cairo', 'Segoe UI', Arial, sans-serif; background: var(--bg-dark); color: var(--text); font-size: 15px; }
+            html.light {
+              --gold: #b48c36;
+              --gold-light: #c89f48;
+              --gold-dark: #8c6a21;
+              --bg-dark: #f8fafc;
+              --bg-card: #ffffff;
+              --bg-card2: #f1f5f9;
+              --text: #0f172a;
+              --muted: #475569;
+              --emerald: #059669;
+              --red: #dc2626;
+              --border: rgba(180,140,54,0.22);
+            }
+
+            html { direction: rtl; font-family: 'Cairo', 'Segoe UI', Arial, sans-serif; background: var(--bg-dark); color: var(--text); font-size: 15px; transition: background 0.2s, color 0.2s; }
 
             body { margin: 0; padding: 0; background: var(--bg-dark); }
 
@@ -214,13 +228,22 @@ export default function BrochureAr() {
         }}
       />
 
-      {/* PRINT / LANG BAR */}
+      {/* PRINT / LANG / THEME BAR */}
       <div className="print-bar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <span style={{ color: '#f59e0b', fontWeight: 800, fontSize: '15px', fontFamily: 'Cairo,sans-serif' }}>
-          📄 بروشور أوتوفيون
+          📄 بروشور أوتوفيون الرسمي 2026
         </span>
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-          <a href="/brochure/en" className="lang-link">English Version</a>
+          <button
+            type="button"
+            className="print-btn"
+            style={{ background: 'rgba(255,255,255,0.08)', color: 'var(--text)', border: '1px solid var(--border)' }}
+            suppressHydrationWarning
+            data-action="theme"
+          >
+            ☀️ الوضع الفاتح
+          </button>
+          <a href="/brochure/autofyon-brochure-en.html" className="lang-link">English Version</a>
           <button
             type="button"
             className="print-btn"
@@ -233,14 +256,24 @@ export default function BrochureAr() {
         </div>
       </div>
 
-      {/* Client script for print button */}
+      {/* Client script for print and theme buttons */}
       <script
         dangerouslySetInnerHTML={{
           __html: `
             document.addEventListener('DOMContentLoaded', function() {
-              document.querySelector('[data-action="print"]').addEventListener('click', function() {
-                window.print();
-              });
+              var printBtn = document.querySelector('[data-action="print"]');
+              if (printBtn) {
+                printBtn.addEventListener('click', function() {
+                  window.print();
+                });
+              }
+              var themeBtn = document.querySelector('[data-action="theme"]');
+              if (themeBtn) {
+                themeBtn.addEventListener('click', function() {
+                  var isLight = document.documentElement.classList.toggle('light');
+                  this.textContent = isLight ? '🌙 الوضع الداكن' : '☀️ الوضع الفاتح';
+                });
+              }
             });
           `,
         }}

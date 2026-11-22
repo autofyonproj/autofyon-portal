@@ -249,6 +249,15 @@ export default function HomeListing({
                 <span>{isAr ? 'استعراض الباقات والأسعار' : 'Explore Packages'}</span>
                 <ArrowStep direction="forward" size={13} />
               </Link>
+              <a
+                href="/brochure/autofyon-brochure-en.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-5 py-3 rounded-xl bg-[#dfbe7e]/10 border border-[#dfbe7e]/30 hover:border-[#dfbe7e] text-[#dfbe7e] font-bold text-xs md:text-sm hover:bg-[#dfbe7e]/20 transition-all flex items-center gap-2 whitespace-nowrap"
+              >
+                <span>⬇</span>
+                <span>{isAr ? 'البروشور الرسمي (PDF)' : 'Official Brochure (PDF)'}</span>
+              </a>
               <Link
                 href="/download"
                 className="px-5 py-3 rounded-xl bg-white/[0.05] border border-white/15 hover:border-[#dfbe7e] text-white font-bold text-xs md:text-sm hover:bg-white/[0.08] transition-all flex items-center gap-2 whitespace-nowrap"
@@ -492,6 +501,15 @@ export default function HomeListing({
                   <span>🚀</span>
                   <span>{isAr ? 'ابدأ نسختك التجريبية 30 يوماً الآن' : 'Start 30-Day Live Trial'}</span>
                 </Link>
+                <a
+                  href="/brochure/autofyon-brochure-en.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto px-6 py-4 rounded-xl bg-[#dfbe7e]/15 border border-[#dfbe7e]/40 hover:border-[#dfbe7e] text-[#dfbe7e] font-bold text-sm hover:bg-[#dfbe7e]/25 transition-all flex items-center justify-center gap-2 whitespace-nowrap"
+                >
+                  <span>⬇</span>
+                  <span>{isAr ? 'تحميل البروشور الرسمي (PDF)' : 'Download PDF Brochure'}</span>
+                </a>
                 <Link
                   href={localePath(locale, ['packages'])}
                   className="w-full sm:w-auto px-6 py-4 rounded-xl bg-white/[0.05] border border-white/20 hover:border-[#dfbe7e] text-white font-bold text-sm hover:bg-white/[0.1] transition-all flex items-center justify-center gap-2 whitespace-nowrap"

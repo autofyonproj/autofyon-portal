@@ -481,14 +481,20 @@ function SectionBody({ active, locale, identity, fieldsIndex, claimed, carousel,
       ) : null}
 
       {blogs.map((b) => (
-        <article className="panel" key={b.id} id={`${section.id}-blog-${b.id}`}>
-          <div className="panel-head">
-            <h2 className="panel-title">{b.title}</h2>
+        <article
+          className="panel border border-[var(--line)] rounded-2xl overflow-hidden bg-white dark:bg-neutral-900 shadow-sm"
+          key={b.id}
+          id={`${section.id}-blog-${b.id}`}
+        >
+          <div className="panel-head border-b border-[var(--line)] bg-gradient-to-r from-[var(--signal)]/5 to-transparent px-5 pt-4 pb-3">
+            <h2 className="panel-title text-lg font-bold">{b.title}</h2>
             <span className="panel-rule" />
           </div>
-          <p className="max-w-[68ch] whitespace-pre-wrap text-[15px] leading-[1.85] text-[var(--ink)]">
-            {b.content}
-          </p>
+          <div className="px-5 py-4">
+            <p className="max-w-[72ch] whitespace-pre-wrap text-[15px] leading-[1.9] text-[var(--ink)]">
+              {b.content}
+            </p>
+          </div>
         </article>
       ))}
 
