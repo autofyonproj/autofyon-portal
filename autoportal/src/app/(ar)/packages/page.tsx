@@ -350,7 +350,7 @@ export default function PackagesShowcasePage() {
       </section>
 
       {/* ── Package Navigation Tabs ───────────────────────────────────── */}
-      <section id="packages-explorer" className="max-w-7xl mx-auto px-4 md:px-8 py-12">
+      <section id="packages-explorer" className="max-w-7xl mx-auto px-4 md:px-8 py-12 scroll-mt-24 md:scroll-mt-28">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-10">
           {PACKAGES.map((pkg) => {
             const isSelected = pkg.id === selectedId;
