@@ -61,6 +61,61 @@ export default async function ShowroomDashboard({ params }: Params) {
         </a>
       </div>
 
+      {/* ── Upgrade Banner: English-only features not in Free ─────────── */}
+      <div
+        dir="rtl"
+        className="rounded-2xl border border-amber-500/30 bg-gradient-to-br from-amber-500/8 to-amber-500/3 p-5 space-y-4"
+      >
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <div>
+            <span className="text-[10px] font-black uppercase tracking-widest text-amber-600 dark:text-amber-400 block mb-0.5">
+              ترقية الباقة · Upgrade Your Package
+            </span>
+            <h3 className="text-sm font-black text-slate-900 dark:text-white">
+              مزايا حصرية في باقات النمو والاحترافية والمؤسسية
+              <span className="text-amber-600 dark:text-amber-400 mx-1">·</span>
+              <span className="font-bold text-amber-700 dark:text-amber-300">Exclusive in Growth, Pro &amp; Enterprise</span>
+            </h3>
+          </div>
+          <a
+            href="/packages"
+            className="shrink-0 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-black font-extrabold text-xs shadow hover:brightness-110 transition"
+          >
+            ترقية الآن · Upgrade Now ↗
+          </a>
+        </div>
+
+        {/* Feature grid — bilingual for paid tiers */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 text-xs">
+          {[
+            { icon: '🌐', ar: 'واجهة إنجليزية كاملة للتطبيق', en: 'Full English-language app interface' },
+            { icon: '📊', ar: 'تقارير إحصائيات الصفحة', en: 'Page analytics & visitor reports' },
+            { icon: '💻', ar: 'سيستم ERP أوفلاين للمحاسبة', en: 'Offline desktop ERP & accounting' },
+            { icon: '📋', ar: 'عقود البيع والفواتير الثنائية اللغة', en: 'Bilingual legal sales contracts' },
+            { icon: '🗂️', ar: 'CRM متابعة العملاء المحتملين', en: 'CRM lead tracking & follow-up pipeline' },
+            { icon: '🚗', ar: 'عرض أكثر من ١٠ سيارات', en: 'List more than 10 vehicles' },
+            { icon: '🎬', ar: 'استوديو فيديو ريلز وبوسترات', en: 'Video Reels & poster studio' },
+            { icon: '🌍', ar: 'دومين .com مستقل باسم معرضك', en: 'Your own independent .com domain' },
+            { icon: '🔝', ar: 'أولوية ظهور ×٢.٥ في نتائج البحث', en: '2.5× search priority placement' },
+          ].map(({ icon, ar, en }) => (
+            <div
+              key={ar}
+              className="flex items-start gap-2 p-2.5 rounded-xl bg-white/60 dark:bg-white/[0.04] border border-amber-500/15"
+            >
+              <span className="text-base leading-none shrink-0 mt-0.5">{icon}</span>
+              <div>
+                <div className="font-bold text-slate-800 dark:text-white leading-tight">{ar}</div>
+                <div className="text-slate-500 dark:text-neutral-400 leading-snug mt-0.5">{en}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <p className="text-[11px] text-slate-500 dark:text-neutral-500 text-center pt-1">
+          الباقة المجانية — واجهة عربية فقط · Free package is Arabic-only. Paid tiers unlock the full bilingual English + Arabic experience.
+        </p>
+      </div>
+
       {/* Stats Cards */}
       <div className="grid grid-cols-2 gap-4">
         <a

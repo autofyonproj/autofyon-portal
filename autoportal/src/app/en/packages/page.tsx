@@ -282,7 +282,7 @@ export default function EnglishPackagesPage() {
               <span>⭐ Start 30-Day All-Inclusive Trial</span>
             </button>
             <a
-              href="/brochure/autofyon-brochure-en.html"
+              href="/brochure/en"
               target="_blank"
               rel="noopener noreferrer"
               className="px-6 py-3 rounded-xl border border-amber-600/30 dark:border-[#c4a265]/30 bg-amber-500/10 dark:bg-[#c4a265]/10 hover:bg-amber-500/20 text-amber-800 dark:text-[#c4a265] font-bold text-sm transition-all flex items-center gap-2"
@@ -642,7 +642,7 @@ export default function EnglishPackagesPage() {
           </div>
           <div className="flex flex-col sm:flex-row gap-3 flex-shrink-0">
             <a
-              href="/brochure/autofyon-brochure-en.html"
+              href="/brochure/en"
               target="_blank"
               rel="noopener noreferrer"
               className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#c4a265] to-[#9e7d3b] text-black font-extrabold text-sm shadow-lg hover:from-[#d6b578] transition-all text-center"

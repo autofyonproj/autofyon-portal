@@ -638,6 +638,71 @@ export default function BrochureAr() {
             </div>
           </section>
 
+          {/* ══ SECTION 7: Free vs Paid — What you unlock ══ */}
+          <section className="section">
+            <div className="section-header">
+              <div className="section-icon">⬆️</div>
+              <div>
+                <span className="section-num">القسم السابع</span>
+                <div className="section-title">ماذا تكسب بالترقية من المجاني؟</div>
+              </div>
+            </div>
+
+            {/* Free-only note */}
+            <div style={{
+              background: 'rgba(16,185,129,0.07)', border: '1px solid rgba(16,185,129,0.3)',
+              borderRadius: 14, padding: '14px 18px', marginBottom: 20,
+              display: 'flex', alignItems: 'center', gap: 12,
+            }}>
+              <span style={{ fontSize: 24 }}>🎁</span>
+              <div>
+                <div style={{ fontWeight: 800, color: '#10b981', fontSize: 14 }}>الباقة المجانية — عربي فقط</div>
+                <div style={{ fontSize: 12, color: 'var(--muted)', lineHeight: 1.6, marginTop: 4 }}>
+                  الباقة المجانية مصممة بالكامل للسوق المصري باللغة العربية فقط.
+                  باقات النمو والاحترافية والمؤسسية تفتح الواجهة الإنجليزية الكاملة والأدوات الاحترافية التالية:
+                  <br />
+                  <span style={{ color: '#f59e0b', fontWeight: 700 }}>
+                    Free package is Arabic-only · Growth, Pro &amp; Enterprise unlock full English + Arabic bilingual software.
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Paid-exclusive feature grid */}
+            <div className="cards-grid">
+              {[
+                { icon: '🌐', ar: 'واجهة إنجليزية كاملة للتطبيق', en: 'Full English-language app & dashboard interface' },
+                { icon: '📊', ar: 'تقارير إحصائيات الصفحة والزوار', en: 'Page analytics, visitor stats & geo reports' },
+                { icon: '💻', ar: 'سيستم ERP محاسبة أوفلاين', en: 'Offline desktop ERP accounting system' },
+                { icon: '📋', ar: 'عقود بيع ثنائية اللغة (عربي + إنجليزي)', en: 'Bilingual legal sales contracts (Arabic + English)' },
+                { icon: '🗂️', ar: 'CRM متابعة العملاء المحتملين', en: 'Full CRM lead tracking & sales pipeline' },
+                { icon: '🚗', ar: 'عرض أكثر من ١٠ سيارات', en: 'List 25–500+ vehicles (beyond the 10-car free limit)' },
+                { icon: '🎬', ar: 'استوديو فيديو ريلز وبوسترات', en: 'Video Reels creator & professional poster studio' },
+                { icon: '🌍', ar: 'دومين .com مستقل', en: 'Your own independent .com domain (Pro+)' },
+                { icon: '🔝', ar: 'أولوية ظهور مضاعفة في البحث', en: '1.5× – 5.0× search priority boost' },
+              ].map(({ icon, ar, en }) => (
+                <div key={ar} className="card">
+                  <div className="card-icon">{icon}</div>
+                  <div className="card-title">{ar}</div>
+                  <div className="card-desc" style={{ color: 'var(--gold)', fontWeight: 600, fontSize: 11, marginBottom: 4 }}>{en}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* CTA */}
+            <div style={{ textAlign: 'center', marginTop: 24 }}>
+              <a
+                href="/packages"
+                style={{
+                  display: 'inline-block', padding: '12px 32px', borderRadius: 12,
+                  background: 'var(--gold)', color: '#07090c', fontWeight: 900, fontSize: 14, textDecoration: 'none',
+                }}
+              >
+                🚀 استعرض جميع الباقات والأسعار · View All Packages
+              </a>
+            </div>
+          </section>
+
           {/* ══ BACK COVER ══ */}
           <section className="back-cover">
             <div className="back-cover-logo">AutoFyon | أوتوفيون</div>

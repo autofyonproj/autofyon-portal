@@ -639,6 +639,108 @@ export default function BrochureEn() {
             </div>
           </section>
 
+          {/* ══ SECTION 7: Free vs Paid — What you unlock ══ */}
+          <section className="section">
+            <div className="section-header">
+              <div className="section-icon">⬆️</div>
+              <div>
+                <span className="section-num">SECTION SEVEN</span>
+                <div className="section-title">What do you unlock when you upgrade from Free?</div>
+              </div>
+            </div>
+
+            {/* Free-only note */}
+            <div style={{
+              background: 'rgba(16,185,129,0.07)', border: '1px solid rgba(16,185,129,0.3)',
+              borderRadius: 14, padding: '14px 18px', marginBottom: 20,
+              display: 'flex', alignItems: 'flex-start', gap: 12,
+            }}>
+              <span style={{ fontSize: 24, flexShrink: 0 }}>⚠️</span>
+              <div>
+                <div style={{ fontWeight: 800, color: '#f59e0b', fontSize: 14 }}>
+                  Free Package — Arabic Interface Only
+                </div>
+                <div style={{ fontSize: 12, color: 'var(--muted)', lineHeight: 1.65, marginTop: 4 }}>
+                  The Free package is designed exclusively for the Egyptian Arabic-speaking market.
+                  It operates entirely in Arabic — labels, menus, features, and notifications are Arabic-only.
+                  <br /><br />
+                  <strong style={{ color: 'var(--gold)' }}>
+                    Upgrading to Growth, Pro, or Enterprise unlocks the full bilingual English + Arabic software experience,
+                    plus all the professional features listed below.
+                  </strong>
+                  <br />
+                  <span style={{ color: 'var(--muted)', fontSize: 11 }}>
+                    الباقة المجانية — واجهة عربية فقط. الترقية تفتح الإنجليزية الكاملة.
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Paid-exclusive feature grid */}
+            <div className="cards-grid">
+              {[
+                { icon: '🌐', title: 'Full Bilingual Interface', desc: 'Complete English + Arabic software dashboard — menus, labels, notifications, and reports all in both languages.', badge: 'Growth+' },
+                { icon: '📊', title: 'Page Analytics & Geo Reports', desc: 'Visitor counts, click-through rates, WhatsApp leads, and geographic location reports per vehicle.', badge: 'Growth+' },
+                { icon: '💻', title: 'Offline Desktop ERP', desc: 'Almostashar ERP installed locally on your showroom PC — invoices, contracts, and installments run 100% without internet.', badge: 'Growth+' },
+                { icon: '📋', title: 'Bilingual Legal Contracts', desc: 'Print Arabic & English vehicle purchase agreements, trade-in contracts, and deposit vouchers with one click.', badge: 'Growth+' },
+                { icon: '🗂️', title: 'CRM Lead Tracking', desc: 'Full CRM sales pipeline: log buyer enquiries, set follow-up reminders, and track lead-to-sale conversion rates.', badge: 'Pro+' },
+                { icon: '🚗', title: '25 – 500+ Vehicle Listings', desc: 'List up to 25 vehicles (Growth), 50 (Pro), or 500+ (Enterprise) — far beyond the 10-car free limit.', badge: 'Growth+' },
+                { icon: '🎬', title: 'Video Reels & Poster Studio', desc: 'Create animated car video ads and professional promotional posters directly from your mobile phone.', badge: 'Pro+' },
+                { icon: '🌍', title: 'Independent .com Domain', desc: 'Full custom domain (yourbrand.com) with free SSL certificate — your own professional web identity.', badge: 'Pro+' },
+                { icon: '🔝', title: '1.5× – 5.0× Search Priority', desc: 'Boosted placement in AutoFyon search results — Growth (1.5×), Pro (2.5×), Enterprise (5.0×) maximum authority.', badge: 'Growth+' },
+              ].map(({ icon, title, desc, badge }) => (
+                <div key={title} className="card card-highlight">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                    <span style={{ fontSize: 28 }}>{icon}</span>
+                    <span style={{
+                      fontSize: 10, fontWeight: 800, padding: '2px 8px', borderRadius: 999,
+                      background: 'rgba(245,158,11,0.15)', border: '1px solid rgba(245,158,11,0.4)',
+                      color: 'var(--gold-light)',
+                    }}>{badge}</span>
+                  </div>
+                  <div className="card-title">{title}</div>
+                  <div className="card-desc">{desc}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Comparison strip */}
+            <div style={{
+              marginTop: 24, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12,
+              border: '1px solid var(--border)', borderRadius: 14, overflow: 'hidden',
+            }}>
+              <div style={{ padding: '16px 20px', background: 'rgba(239,68,68,0.05)' }}>
+                <div style={{ fontWeight: 800, color: '#ef4444', fontSize: 13, marginBottom: 10 }}>🆓 Free Package Only</div>
+                {['Arabic-only interface', 'Up to 10 vehicles', 'Basic subdomain link', 'Standard search ranking', 'Help centre support only', 'No analytics or CRM'].map(f => (
+                  <div key={f} style={{ display: 'flex', gap: 8, fontSize: 12, color: 'var(--muted)', marginBottom: 6 }}>
+                    <span style={{ color: '#ef4444', fontWeight: 700 }}>✕</span> {f}
+                  </div>
+                ))}
+              </div>
+              <div style={{ padding: '16px 20px', background: 'rgba(16,185,129,0.05)' }}>
+                <div style={{ fontWeight: 800, color: '#10b981', fontSize: 13, marginBottom: 10 }}>⭐ Growth, Pro &amp; Enterprise</div>
+                {['Full English + Arabic bilingual app', '25 to 500+ vehicles', 'Custom .com domain (Pro+)', '1.5× to 5.0× search boost', 'Direct WhatsApp &amp; account manager', 'Analytics, CRM, ERP &amp; Reels studio'].map(f => (
+                  <div key={f} style={{ display: 'flex', gap: 8, fontSize: 12, color: 'var(--muted)', marginBottom: 6 }}
+                    dangerouslySetInnerHTML={{ __html: `<span style="color:#10b981;font-weight:700">✓</span> ${f}` }}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* CTA */}
+            <div style={{ textAlign: 'center', marginTop: 24 }}>
+              <a
+                href="/en/packages"
+                style={{
+                  display: 'inline-block', padding: '12px 32px', borderRadius: 12,
+                  background: 'var(--gold)', color: '#07090c', fontWeight: 900, fontSize: 14, textDecoration: 'none',
+                }}
+              >
+                🚀 View All Packages &amp; Pricing
+              </a>
+            </div>
+          </section>
+
           {/* ══ BACK COVER ══ */}
           <section className="back-cover">
             <div className="back-cover-logo">AutoFyon | أوتوفيون</div>
