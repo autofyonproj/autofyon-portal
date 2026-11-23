@@ -243,7 +243,7 @@ export default function BrochureAr() {
           >
             ☀️ الوضع الفاتح
           </button>
-          <a href="/brochure/autofyon-brochure-en.html" className="lang-link">English Version</a>
+          <a href="/brochure/en" className="lang-link">English Version</a>
           <button
             type="button"
             className="print-btn"
