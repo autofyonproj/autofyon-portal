@@ -1,0 +1,390 @@
+{
+  "brand": {
+    "slug": "toyota",
+    "name": "Toyota",
+    "name_ar": "تويوتا",
+    "origin_country": "Japan",
+    "logo_url": "https://cdn.jsdelivr.net/gh/filippofilip95/car-logos-dataset@master/logos/optimized/toyota.svg",
+    "established_year": 1937,
+    "description": "Japanese automotive giant, the world's best-selling carmaker renowned for legendary reliability, build quality, and hybrid leadership.",
+    "description_ar": "عملاق صناعة السيارات الياباني، الأكثر مبيعاً في العالم والمعروف بالاعتمادية الأسطورية وجودة التصنيع وريادة التكنولوجيا الهجينة."
+  },
+  "agency": {
+    "id": "biz_agency_toyota_egypt",
+    "slug": "toyota-egypt",
+    "name": "Toyota Egypt (Exclusive Distributor)",
+    "name_ar": "تويوتا إيجيبت (الوكيل الحصري)",
+    "type_id": "main_agency",
+    "phone": "16550",
+    "website": "https://www.toyota.com.eg",
+    "address": "Cairo-Alexandria Desert Road, Abu Rawash, Giza, Egypt",
+    "address_ar": "طريق مصر إسكندرية الصحراوي، أبو رواش، الجيزة، مصر"
+  },
+  "showrooms": [
+    {
+      "id": "biz_branch_toyota_aburawash",
+      "slug": "toyota-aburawash",
+      "name": "Toyota Egypt Abu Rawash (Main Center)",
+      "name_ar": "تويوتا إيجيبت أبو رواش (المركز الرئيسي)",
+      "type_id": "showroom",
+      "phone": "16550",
+      "address": "طريق مصر إسكندرية الصحراوي، أبو رواش، الجيزة",
+      "city": "أبو رواش",
+      "governorate": "الجيزة"
+    },
+    {
+      "id": "biz_branch_toyota_cairo_festival",
+      "slug": "toyota-cfc",
+      "name": "Toyota Cairo Festival City (New Cairo)",
+      "name_ar": "تويوتا كايرو فيستيفال سيتي (التجمع الخامس)",
+      "type_id": "showroom",
+      "phone": "16550",
+      "address": "كايرو فيستيفال سيتي، التجمع الخامس، القاهرة الجديدة",
+      "city": "القاهرة الجديدة",
+      "governorate": "القاهرة"
+    }
+  ],
+  "models": [
+    {
+      "id": "biz_model_toyota_corolla",
+      "slug": "corolla",
+      "name": "Toyota Corolla",
+      "name_ar": "تويوتا كورولا",
+      "year": 2026,
+      "body_type": "Sedan",
+      "brochure_url": "https://www.toyota.com.eg/vehicles/corolla",
+      "images": [
+        { "url": "https://www.toyota.com.eg/media/corolla_ext_front.png", "section_id": "sec_1_identity", "caption": "Toyota Corolla — Legendary Reliability", "caption_ar": "تويوتا كورولا — الاعتمادية الأسطورية" },
+        { "url": "https://www.toyota.com.eg/media/corolla_ext_profile.png", "section_id": "sec_auto_exterior", "caption": "Exterior Aerodynamic Design", "caption_ar": "التصميم الخارجي الانسيابي" },
+        { "url": "https://www.toyota.com.eg/media/corolla_int_dash.png", "section_id": "sec_auto_interior", "caption": "12.3-inch Digital Cluster & Infotainment", "caption_ar": "شاشة عدادات 12.3 بوصة وشاشة ترفيه 8 بوصة" }
+      ],
+      "trims": [
+        {
+          "id": "biz_trim_corolla_active",
+          "slug": "corolla-active",
+          "name": "Active AT",
+          "name_ar": "أكتيف أوتوماتيك",
+          "price_egp": 1280000,
+          "price_note": "Official Toyota Egypt agency price",
+          "price_note_ar": "السعر الرسمي من تويوتا إيجيبت",
+          "specs": {
+            "engine": "1.6L 4-Cylinder Dual VVT-i (1598 cc)",
+            "engine_ar": "4 سلندر 1.6 لتر Dual VVT-i",
+            "power_hp": 120,
+            "torque_nm": 154,
+            "torque_rpm": "5200 RPM",
+            "acceleration_0_100": 11.0,
+            "top_speed_kmh": 190,
+            "transmission": "CVT (10-Speed Simulated)",
+            "drive": "FWD",
+            "fuel_type": "Petrol",
+            "dimensions_mm": "4630L x 1780W x 1435H | WB: 2700 | Clearance: 135mm",
+            "wheels": "15-inch Steel Wheels 195/65 R15",
+            "airbags": 2
+          }
+        },
+        {
+          "id": "biz_trim_corolla_comfort",
+          "slug": "corolla-comfort",
+          "name": "Comfort AT",
+          "name_ar": "كومفورت أوتوماتيك",
+          "price_egp": 1380000,
+          "price_note": "Official Toyota Egypt agency price (+100k: Dual Auto AC, 16-inch Alloys)",
+          "price_note_ar": "السعر الرسمي (+100,000 ج: تكييف ثنائي، جنوط 16)",
+          "specs": {
+            "engine": "1.6L 4-Cylinder Dual VVT-i (1598 cc)",
+            "engine_ar": "4 سلندر 1.6 لتر",
+            "power_hp": 120,
+            "torque_nm": 154,
+            "transmission": "CVT",
+            "drive": "FWD",
+            "fuel_type": "Petrol",
+            "wheels": "16-inch Alloy Wheels 205/55 R16",
+            "ac": "Dual-zone Automatic Air Conditioning",
+            "airbags": 2
+          }
+        },
+        {
+          "id": "biz_trim_corolla_smart",
+          "slug": "corolla-smart",
+          "name": "Smart AT",
+          "name_ar": "سمارت أوتوماتيك",
+          "price_egp": 1480000,
+          "price_note": "Official Toyota Egypt agency price (+100k: 6 airbags, 12.3 cluster, push-start)",
+          "price_note_ar": "السعر الرسمي (+100,000 ج: 6 وسائد، شاشة عدادات 12.3، بصمة)",
+          "specs": {
+            "engine": "1.6L 4-Cylinder Dual VVT-i (1598 cc)",
+            "engine_ar": "4 سلندر 1.6 لتر",
+            "power_hp": 120,
+            "torque_nm": 154,
+            "transmission": "CVT",
+            "drive": "FWD",
+            "fuel_type": "Petrol",
+            "airbags": 6,
+            "features": "12.3-inch Digital Meter Cluster + Keyless Smart Entry & Push Start"
+          }
+        },
+        {
+          "id": "biz_trim_corolla_smart_sunroof",
+          "slug": "corolla-smart-sunroof-2026",
+          "name": "Smart with Sunroof",
+          "name_ar": "سمارت مع فتحة سقف",
+          "price_egp": 1580000,
+          "price_note": "Official Toyota Egypt agency price (+100k: Sunroof)",
+          "price_note_ar": "السعر الرسمي (+100,000 ج لفتحة السقف)",
+          "specs": {
+            "engine": "1.6L 4-Cylinder Dual VVT-i (1598 cc)",
+            "engine_ar": "4 سلندر 1.6 لتر",
+            "power_hp": 120,
+            "torque_nm": 154,
+            "transmission": "CVT",
+            "drive": "FWD",
+            "fuel_type": "Petrol",
+            "features": "Electric Sunroof + 6 Airbags"
+          }
+        },
+        {
+          "id": "biz_trim_corolla_elegance",
+          "slug": "corolla-elegance-2026",
+          "name": "Elegance AT",
+          "name_ar": "إليجانس أوتوماتيك",
+          "price_egp": 1630000,
+          "price_note": "Official Toyota Egypt agency price (Top Spec: 17 alloys, leather, Bi-LED, wireless charger)",
+          "price_note_ar": "السعر الرسمي للفئة الأعلى (جنوط 17، جلد، مصابيح Bi-LED، شاحن لاسلكي)",
+          "specs": {
+            "engine": "1.6L 4-Cylinder Dual VVT-i (1598 cc)",
+            "engine_ar": "4 سلندر 1.6 لتر",
+            "power_hp": 120,
+            "torque_nm": 154,
+            "transmission": "CVT",
+            "drive": "FWD",
+            "fuel_type": "Petrol",
+            "wheels": "17-inch Alloy Wheels 225/45 R17",
+            "features": "Full Leather Upholstery + Bi-LED Headlights + Wireless Smartphone Charger + 6 Airbags"
+          }
+        }
+      ],
+      "relations": [
+        { "type": "sold_by", "target_slug": "toyota-egypt" }
+      ]
+    },
+    {
+      "slug": "urban-cruiser",
+      "name": "Toyota Urban Cruiser",
+      "name_ar": "تويوتا أوربان كروزر",
+      "year": 2026,
+      "body_type": "Compact Crossover SUV",
+      "brochure_url": "https://www.toyota.com.eg/vehicles/urban-cruiser",
+      "images": [
+        { "url": "https://www.toyota.com.eg/media/urban_cruiser_ext.png", "section_id": "sec_1_identity", "caption": "Toyota Urban Cruiser — High Ground Clearance SUV", "caption_ar": "تويوتا أوربان كروزر — كروس أوفر بخلوص أرضي 210 مم" }
+      ],
+      "trims": [
+        {
+          "slug": "urban-cruiser-active",
+          "name": "Active AT",
+          "name_ar": "أكتيف أوتوماتيك",
+          "price_egp": 1430000,
+          "price_note": "Official Toyota Egypt agency price",
+          "price_note_ar": "السعر الرسمي من تويوتا إيجيبت",
+          "specs": {
+            "engine": "1.5L 4-Cylinder Dual Jet",
+            "engine_ar": "4 سلندر 1.5 لتر Dual Jet",
+            "power_hp": 103,
+            "torque_nm": 138,
+            "transmission": "6-Speed Automatic",
+            "drive": "FWD",
+            "fuel_type": "Petrol",
+            "dimensions_mm": "4365L x 1795W x 1645H | Ground Clearance: 210mm",
+            "airbags": 2
+          }
+        },
+        {
+          "slug": "urban-cruiser-comfort",
+          "name": "Comfort AT",
+          "name_ar": "كومفورت أوتوماتيك",
+          "price_egp": 1530000,
+          "price_note": "Official Toyota Egypt agency price (+100k: Panoramic roof, 360 cam, HUD, 6 airbags)",
+          "price_note_ar": "السعر الرسمي (+100,000 ج: سقف بانوراما، كاميرا 360، شاشة HUD)",
+          "specs": {
+            "engine": "1.5L 4-Cylinder Dual Jet",
+            "engine_ar": "4 سلندر 1.5 لتر",
+            "power_hp": 103,
+            "torque_nm": 138,
+            "transmission": "6-Speed Automatic",
+            "drive": "FWD",
+            "fuel_type": "Petrol",
+            "airbags": 6,
+            "features": "Panoramic Sunroof + 360 Camera + Head-Up Display HUD + 17-inch Alloys"
+          }
+        }
+      ],
+      "relations": [
+        { "type": "sold_by", "target_slug": "toyota-egypt" }
+      ]
+    },
+    {
+      "id": "biz_model_toyota_fortuner",
+      "slug": "fortuner",
+      "name": "Toyota Fortuner",
+      "name_ar": "تويوتا فورتشنر (تجميع محلي الهيئة العربية للتصنيع)",
+      "year": 2026,
+      "body_type": "7-Seat Body-on-Frame SUV",
+      "brochure_url": "https://www.toyota.com.eg/vehicles/fortuner",
+      "images": [
+        { "url": "https://www.toyota.com.eg/media/fortuner_ext_front.png", "section_id": "sec_1_identity", "caption": "Toyota Fortuner — Locally Assembled in Egypt", "caption_ar": "تويوتا فورتشنر — تجميع محلي بمصانع الهيئة العربية للتصنيع AAV" }
+      ],
+      "trims": [
+        {
+          "id": "biz_trim_fort_smart_27",
+          "slug": "fortuner-smart-2026",
+          "name": "Smart 2.7L 2WD",
+          "name_ar": "سمارت 2.7 لتر دفع خلفي",
+          "price_egp": 3250000,
+          "price_note": "Official Toyota Egypt price — Locally assembled (AAV)",
+          "price_note_ar": "السعر الرسمي من تويوتا إيجيبت — تجميع محلي",
+          "specs": {
+            "engine": "2.7L 4-Cylinder DOHC (2TR-FE)",
+            "engine_ar": "4 سلندر 2.7 لتر (2TR-FE)",
+            "power_hp": 163,
+            "torque_nm": 245,
+            "transmission": "6-Speed Automatic",
+            "drive": "RWD",
+            "fuel_type": "Petrol",
+            "seats": 7,
+            "dimensions_mm": "4795L x 1855W x 1835H",
+            "airbags": 3,
+            "assembly": "Local Assembly — Arab American Vehicles (AAV)",
+            "assembly_ar": "تجميع محلي — الشركة العربية الأمريكية للسيارات AAV"
+          }
+        },
+        {
+          "id": "biz_trim_fort_elegance_40",
+          "slug": "fortuner-elegance-2026",
+          "name": "Elegance 4.0L 4WD",
+          "name_ar": "إليجانس 4.0 لتر V6 دفع رباعي",
+          "price_egp": 3550000,
+          "price_note": "Official Toyota Egypt price — Locally assembled (AAV)",
+          "price_note_ar": "السعر الرسمي من تويوتا إيجيبت — تجميع محلي",
+          "specs": {
+            "engine": "4.0L V6 DOHC (1GR-FE)",
+            "engine_ar": "V6 سعة 4.0 لتر (1GR-FE)",
+            "power_hp": 234,
+            "torque_nm": 376,
+            "transmission": "6-Speed Automatic",
+            "drive": "Part-Time 4WD with Diff-Lock",
+            "fuel_type": "Petrol",
+            "seats": 7,
+            "airbags": 3,
+            "features": "Electric Tailgate + Power Leather Seats",
+            "assembly": "Local Assembly — Arab American Vehicles (AAV)",
+            "assembly_ar": "تجميع محلي — الشركة العربية الأمريكية للسيارات AAV"
+          }
+        },
+        {
+          "id": "biz_trim_fort_sport_40",
+          "slug": "fortuner-sport-2026",
+          "name": "Sport 4.0L 4WD",
+          "name_ar": "سبورت 4.0 لتر V6 دفع رباعي كامل",
+          "price_egp": 3700000,
+          "price_note": "Official Toyota Egypt price — Top spec (7 airbags, JBL audio, R-Sport styling)",
+          "price_note_ar": "السعر الرسمي للفئة الأعلى (7 وسائد، صوت JBL، حزمة R-Sport)",
+          "specs": {
+            "engine": "4.0L V6 DOHC (1GR-FE)",
+            "engine_ar": "V6 سعة 4.0 لتر (1GR-FE)",
+            "power_hp": 234,
+            "torque_nm": 376,
+            "transmission": "6-Speed Automatic",
+            "drive": "4WD with Diff-Lock",
+            "fuel_type": "Petrol",
+            "seats": 7,
+            "airbags": 7,
+            "features": "JBL Premium Sound System + R-Sport Aero Kit + 7 Airbags",
+            "assembly": "Local Assembly — Arab American Vehicles (AAV)",
+            "assembly_ar": "تجميع محلي — الشركة العربية الأمريكية للسيارات AAV"
+          }
+        }
+      ],
+      "relations": [
+        { "type": "sold_by", "target_slug": "toyota-egypt" }
+      ]
+    },
+    {
+      "id": "biz_model_toyota_prado",
+      "slug": "prado",
+      "name": "Toyota Land Cruiser Prado (J250)",
+      "name_ar": "تويوتا لاند كروزر برادو (الجيل الجديد J250)",
+      "year": 2026,
+      "body_type": "Luxury Off-Road SUV (7-Seats)",
+      "brochure_url": "https://www.toyota.com.eg/vehicles/prado",
+      "images": [
+        { "url": "https://www.toyota.com.eg/media/prado_j250_ext.png", "section_id": "sec_1_identity", "caption": "Land Cruiser Prado J250 — All-New Retro Design", "caption_ar": "لاند كروزر برادو J250 — التصميم الريترو الجديد كلياً" }
+      ],
+      "trims": [
+        {
+          "id": "biz_trim_prado_highline",
+          "slug": "prado-highline-2026",
+          "name": "Highline 2.4L Turbo",
+          "name_ar": "هاي لاين 2.4 لتر تيربو",
+          "price_egp": 9000000,
+          "price_note": "Official Toyota Egypt agency price — All-New J250 generation",
+          "price_note_ar": "السعر الرسمي من تويوتا إيجيبت — الجيل الجديد J250",
+          "specs": {
+            "engine": "2.4L Turbocharged Petrol (T24A-FTS)",
+            "engine_ar": "4 سلندر توربو 2.4 لتر (T24A-FTS)",
+            "power_hp": 267,
+            "torque_nm": 430,
+            "transmission": "Direct Shift 8-Speed Automatic",
+            "drive": "Full-Time 4WD with Multi-Terrain Select & Crawl Control",
+            "fuel_type": "Petrol",
+            "seats": 7,
+            "dimensions_mm": "4925L x 1980W x 1935H | WB: 2850mm",
+            "airbags": 8,
+            "safety": "Toyota Safety Sense (TSS) 3.0 Full Suite",
+            "features": "12.3-inch Center Display + Heated & Ventilated Seats + Crawl Control"
+          }
+        }
+      ],
+      "relations": [
+        { "type": "sold_by", "target_slug": "toyota-egypt" }
+      ]
+    },
+    {
+      "slug": "bz4x",
+      "name": "Toyota bZ4X Electric",
+      "name_ar": "تويوتا bZ4X (كهربائي بالكامل)",
+      "year": 2026,
+      "body_type": "Electric SUV",
+      "brochure_url": "https://www.toyota.com.eg/vehicles/bz4x",
+      "images": [
+        { "url": "https://www.toyota.com.eg/media/bz4x_ext.png", "section_id": "sec_1_identity", "caption": "Toyota bZ4X — Beyond Zero Electric SUV", "caption_ar": "تويوتا bZ4X — سيارة الدفع الرباعي الكهربائية بالكامل" }
+      ],
+      "trims": [
+        {
+          "slug": "bz4x-premier-electric",
+          "name": "Premier Electric",
+          "name_ar": "بريمير إلكتريك",
+          "price_egp": 2380000,
+          "price_note": "Official Toyota Egypt agency price — Up to 500km range",
+          "price_note_ar": "السعر الرسمي من تويوتا إيجيبت — مدى حتى 500 كم",
+          "specs": {
+            "engine": "Electric Motor (e-Axle)",
+            "engine_ar": "محرك كهربائي (e-Axle)",
+            "power_hp": 204,
+            "torque_nm": 266,
+            "acceleration_0_100": 7.5,
+            "top_speed_kmh": 160,
+            "battery_kwh": 71.4,
+            "range_km": "Up to 500 km (WLTP)",
+            "transmission": "Single-Speed Automatic",
+            "drive": "FWD",
+            "fuel_type": "Electric (BEV)",
+            "features": "Toyota Safety Sense 3.0 + Panoramic Sunroof + 360 Camera"
+          }
+        }
+      ],
+      "relations": [
+        { "type": "sold_by", "target_slug": "toyota-egypt" }
+      ]
+    }
+  ]
+}

@@ -361,7 +361,7 @@ function readApprovedMarketComparisons(raw: unknown): VehicleMarketComparison[] 
       gccSourceId,
       gccSourceUrl,
       comparability: comparisonText(row.comparability),
-      differenceSummary: comparisonText(row.difference_summary),
+      differenceSummary: comparisonText(row.difference_summary ?? row.explanation_ar ?? row.difference_ar ?? row.explanation_en),
       confidence: comparisonText(row.confidence),
     }];
   });
@@ -934,6 +934,7 @@ function buildSlides(
   const emitted = new Set<string>();
 
   for (const f of eligible) {
+    if (f.name === 'market_comparisons' || STORED_KEY_SKIP.has(f.name)) continue;
     if (visibility[f.name] === 'hide_field' || visibility[f.name] === 'hide_value') continue;
     const target = `${sectionId}::${f.name}`;
     const shots = bound.filter((r) => targetOf(sectionId, r) === target);

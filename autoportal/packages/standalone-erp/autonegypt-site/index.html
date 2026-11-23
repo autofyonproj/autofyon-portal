@@ -9656,6 +9656,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Open WhatsApp deeplink in new tab
       const cleanPhone = (phone || currentSettings.whatsappNumber || '201222597304').replace(/\D/g, '').replace(/^0/, '20');
+      if (typeof window.trackAutoOneCentralEvent === 'function') {
+        window.trackAutoOneCentralEvent('whatsapp_click', cleanPhone);
+      }
       window.open(`https://wa.me/${cleanPhone}?text=${waText}`, '_blank');
     }
 
@@ -10920,5 +10923,65 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   </div>
 
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a589b8fb8cd7038e',t:'MTc5NDM2MjYyOA=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a589b8fb8cd7038e',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a589b8fb8cd7038e',t:'MTc5NDM2MjYyOA=='};var l=window.parent.location,o;try{o=new URL(l.origin).origin}catch(e){try{o=new URL(new URL(l.href).origin).origin}catch(e){o=''}}var u='/cdn-cgi/challenge-platform/scripts/jsd/main.js?ray=a589b8fb8cd7038e',a=document.createElement('script');a.src=o?new URL(u,o).href:u;document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>  <!-- ══════════════════════════════════════════════════════════════
+       CENTRAL AUTOFYON ANALYTICS & CLICK TRACKING BRIDGE
+  ══════════════════════════════════════════════════════════════ -->
+  <script>
+    (function() {
+      var ENDPOINT = 'https://autofyon.com/api/analytics/events';
+      var BIZ_ID = 'biz_auto_one_egypt';
+
+      function sendCentralAnalytics(eventType, contactTarget, unitId) {
+        try {
+          var sourceHost = '';
+          if (document.referrer) {
+            try { sourceHost = new URL(document.referrer).hostname.toLowerCase(); } catch (e) {}
+          }
+          var payload = {
+            businessId: BIZ_ID,
+            eventType: eventType,
+            contactTarget: contactTarget || null,
+            path: window.location.pathname || '/',
+            sourceHost: sourceHost || 'autonegypt.com'
+          };
+          if (unitId) payload.unitId = unitId;
+
+          fetch(ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+            keepalive: true
+          }).catch(function() {});
+        } catch (err) {}
+      }
+
+      // 1. Record Page View on Load
+      sendCentralAnalytics('page_view');
+
+      // 2. Global Click Delegation for WhatsApp & Phone Calls
+      document.addEventListener('click', function(e) {
+        var anchor = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+        if (!anchor) return;
+        var href = (anchor.getAttribute('href') || '').trim();
+
+        // WhatsApp links
+        if (href.indexOf('wa.me') !== -1 || href.indexOf('whatsapp.com') !== -1) {
+          var cleanPhone = href.replace(/.*(?:wa\.me\/|phone=)/i, '').split(/[?&#]/)[0].replace(/[^\d+]/g, '');
+          sendCentralAnalytics('whatsapp_click', cleanPhone || '201222597304');
+          return;
+        }
+
+        // Telephone links
+        if (href.indexOf('tel:') === 0) {
+          var cleanTel = href.replace(/^tel:/i, '').replace(/[^\d+]/g, '');
+          sendCentralAnalytics('phone_click', cleanTel || '01222597304');
+          return;
+        }
+      }, true);
+
+      // 3. Expose to global scope for car-level actions
+      window.trackAutoOneCentralEvent = sendCentralAnalytics;
+    })();
+  </script>
+</body>
 </html>

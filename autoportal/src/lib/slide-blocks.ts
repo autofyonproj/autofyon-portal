@@ -160,7 +160,7 @@ export function sanitizeSlideBlocks(input: unknown, opts: { trusted: boolean }):
 }
 
 /** `custom_data` keys are storage, not prose: housekeeping never reaches a slide. */
-export const STORED_KEY_SKIP = new Set(['field_visibility', 'field_destinations', 'media', 'gallery', 'sections', 'options']);
+export const STORED_KEY_SKIP = new Set(['field_visibility', 'field_destinations', 'media', 'gallery', 'sections', 'options', 'market_comparisons']);
 
 export function isPrintable(value: unknown): boolean {
   if (value === null || value === undefined || value === '') return false;

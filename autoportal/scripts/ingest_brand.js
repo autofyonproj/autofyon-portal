@@ -368,7 +368,7 @@ function generateSql(payload) {
   let agencyId = null;
   if (payload.agency) {
     const agency = payload.agency;
-    agencyId = `biz_dist_${agency.slug.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
+    agencyId = agency.id || `biz_dist_${agency.slug.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
     const agencyType = agency.type_id || 'distributor';
     const agencyCustomData = JSON.stringify({
       sec_vendor_identity: {
@@ -407,10 +407,54 @@ function generateSql(payload) {
 `);
   }
 
+  // 2b. Agency Showrooms / Centers / Branches (if provided)
+  if (Array.isArray(payload.showrooms) && payload.showrooms.length > 0) {
+    payload.showrooms.forEach((sh) => {
+      const shSlug = sh.slug.toLowerCase();
+      const shId = sh.id || `biz_showroom_${brandSlug}_${shSlug.replace(/[^a-z0-9]/g, '_')}`;
+      const shType = sh.type_id || 'showroom';
+      const shCustomData = JSON.stringify({
+        sec_vendor_identity: {
+          company_name: sh.name,
+          company_name_ar: sh.name_ar || sh.name,
+          phone: sh.phone || null,
+          address: sh.address || null,
+          city: sh.city || null,
+          governorate: sh.governorate || null,
+        },
+      });
+
+      sql.push(`INSERT INTO businesses (
+  id, name, name_ar, slug, type_id, market_id, parent_business_id, path,
+  minisite_mode, url_style, subscription_tier, status, published, custom_data
+) VALUES (
+  ${escapeSql(shId)},
+  ${escapeSql(sh.name)},
+  ${escapeSql(sh.name_ar || sh.name)},
+  ${escapeSql(shSlug)},
+  ${escapeSql(shType)},
+  'automotive',
+  ${escapeSql(agencyId)},
+  ${escapeSql('/' + shSlug)},
+  'embedded',
+  'root',
+  'enterprise',
+  'active',
+  1,
+  ${escapeSql(shCustomData)}
+) ON CONFLICT(id) DO UPDATE SET
+  name = excluded.name,
+  name_ar = excluded.name_ar,
+  published = 1,
+  custom_data = json_patch(businesses.custom_data, excluded.custom_data);
+`);
+    });
+  }
+
   // 3. Models, Trims, Gallery, and Relationships
   payload.models.forEach((m) => {
     const modelSlug = m.slug.toLowerCase();
-    const modelId = `biz_model_${brandSlug}_${modelSlug.replace(/[^a-z0-9]/g, '_')}`;
+    const modelId = m.id || `biz_model_${brandSlug}_${modelSlug.replace(/[^a-z0-9]/g, '_')}`;
     const modelPath = `/${brandSlug}/${modelSlug}`;
     const sectionSpecs = {
       ...(m.specs ? { sec_auto_specs: m.specs } : {}),
@@ -543,7 +587,7 @@ function generateSql(payload) {
     if (m.trims && m.trims.length > 0) {
       m.trims.forEach((t) => {
         const trimSlug = t.slug.toLowerCase();
-        const trimId = `biz_trim_${modelSlug}_${trimSlug.replace(/[^a-z0-9]/g, '_')}`;
+        const trimId = t.id || `biz_trim_${modelSlug}_${trimSlug.replace(/[^a-z0-9]/g, '_')}`;
         const trimSectionData = {
           ...(t.specs ? { sec_auto_specs: t.specs } : {}),
           ...(t.spec_sections || {}),

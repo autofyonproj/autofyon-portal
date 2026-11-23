@@ -10,8 +10,22 @@ const EVENT_TYPES = [
 ] as const;
 type EventType = typeof EVENT_TYPES[number];
 
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  'Access-Control-Max-Age': '86400',
+};
+
+export async function OPTIONS(): Promise<Response> {
+  return new Response(null, {
+    status: 204,
+    headers: CORS_HEADERS,
+  });
+}
+
 function badRequest(message: string, status = 400): Response {
-  return Response.json({ error: message }, { status });
+  return Response.json({ error: message }, { status, headers: CORS_HEADERS });
 }
 
 async function actorForBusiness(request: Request, businessId: string): Promise<string | null> {
@@ -106,10 +120,13 @@ export async function POST(request: Request): Promise<Response> {
   const host = new URL(request.url).hostname.toLowerCase();
   if (host.length > 253 || !/^[a-z0-9.-]+$/.test(host)) return badRequest('Invalid request host.');
 
+  const country = request.headers.get('cf-ipcountry') || (typeof data.country === 'string' ? data.country.slice(0, 8) : null);
+  const city = request.headers.get('cf-ipcity') || (typeof data.city === 'string' ? data.city.slice(0, 64) : null);
+
   await execute(
     `INSERT INTO business_analytics_events
-      (id, business_id, unit_id, actor_admin_user_id, event_type, host, path, source_host, contact_target)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      (id, business_id, unit_id, actor_admin_user_id, event_type, host, path, source_host, contact_target, country, city)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       crypto.randomUUID(),
       businessId,
@@ -120,8 +137,10 @@ export async function POST(request: Request): Promise<Response> {
       path,
       sourceHost,
       contactTarget,
+      country,
+      city,
     ],
   );
 
-  return new Response(null, { status: 204 });
+  return new Response(null, { status: 204, headers: CORS_HEADERS });
 }

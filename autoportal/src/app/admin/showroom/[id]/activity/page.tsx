@@ -28,7 +28,7 @@ export default async function BusinessActivityPage({ params }: Params) {
   );
   if (!business) notFound();
 
-  const [counts, byHost, contactTargets, topVehicles] = await Promise.all([
+  const [counts, byHost, byLocation, contactTargets, topVehicles] = await Promise.all([
     query<EventCount>(
       `SELECT event_type, COUNT(*) AS event_count
        FROM business_analytics_events
@@ -41,6 +41,14 @@ export default async function BusinessActivityPage({ params }: Params) {
        FROM business_analytics_events
        WHERE business_id = ? AND created_at >= datetime('now', '-30 days')
        GROUP BY host ORDER BY event_count DESC, host`,
+      [id],
+    ),
+    query<{ country: string | null; city: string | null; event_count: number }>(
+      `SELECT country, city, COUNT(*) AS event_count
+       FROM business_analytics_events
+       WHERE business_id = ? AND (country IS NOT NULL OR city IS NOT NULL)
+         AND created_at >= datetime('now', '-30 days')
+       GROUP BY country, city ORDER BY event_count DESC, country LIMIT 15`,
       [id],
     ),
     query<{ event_type: string; contact_target: string; event_count: number }>(
@@ -83,7 +91,7 @@ export default async function BusinessActivityPage({ params }: Params) {
         ))}
       </section>
 
-      <section className="grid gap-6 lg:grid-cols-2">
+      <section className="grid gap-6 lg:grid-cols-3">
         <div className="rounded-xl border border-black/10 p-4">
           <h2 className="mb-3 font-bold">Traffic by website host</h2>
           {byHost.length ? (
@@ -93,6 +101,20 @@ export default async function BusinessActivityPage({ params }: Params) {
               </li>)}
             </ul>
           ) : <p className="text-sm text-slate-500">No activity recorded yet.</p>}
+        </div>
+
+        <div className="rounded-xl border border-black/10 p-4">
+          <h2 className="mb-3 font-bold">Visitor locations (Country & City)</h2>
+          {byLocation.length ? (
+            <ul className="space-y-2">
+              {byLocation.map((row, idx) => (
+                <li key={idx} className="flex justify-between gap-4 text-sm">
+                  <span>📍 {[row.city, row.country].filter(Boolean).join(', ') || 'Unknown'}</span>
+                  <strong>{row.event_count}</strong>
+                </li>
+              ))}
+            </ul>
+          ) : <p className="text-sm text-slate-500">No geo data recorded yet.</p>}
         </div>
 
         <div className="rounded-xl border border-black/10 p-4">

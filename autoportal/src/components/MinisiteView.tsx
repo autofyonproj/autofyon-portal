@@ -18,7 +18,7 @@
  */
 import type {
   ActiveSectionView, ClaimedKeys, GalleryItem, GraphShelf, MinisiteView as MinisiteData,
-  SlideFieldsIndex, CarouselDefaults,
+  SlideFieldsIndex, CarouselDefaults, VehicleMarketComparison,
 } from '@/lib/minisite';
 import {
   DEFAULT_CUSTOM_SITE_PROFILE, loadCustomSiteVehicleOverrides,
@@ -358,6 +358,127 @@ function ContactPlate({
   );
 }
 
+// ── regional market comparison: Egypt vs. GCC specs ────────────────────────
+function MarketComparisonCard({
+  comparisons,
+  locale,
+}: {
+  comparisons: VehicleMarketComparison[];
+  locale: SiteLocale;
+}) {
+  if (!comparisons.length) return null;
+  const isAr = locale === 'ar';
+
+  return (
+    <section className="panel" id="market-comparisons">
+      <div className="panel-head">
+        <div className="flex items-center gap-2">
+          <span className="inline-flex h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
+          <h2 className="panel-title">
+            {isAr ? 'مقارنة المواصفات الإقليمية (مصر مقابل الخليج)' : 'Regional Market Comparison (Egypt vs. GCC)'}
+          </h2>
+        </div>
+        <span className="panel-rule" />
+      </div>
+
+      <div className="space-y-4">
+        {comparisons.map((c) => {
+          const title = (isAr && c.attributeAr) ? c.attributeAr : c.attribute;
+          return (
+            <div
+              key={c.id}
+              className="rounded-xl border border-[var(--line)] bg-[var(--surface-sunken)] p-4 sm:p-5 transition-shadow hover:shadow-sm"
+            >
+              <div className="mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-[var(--line)] pb-2.5">
+                <span className="text-sm font-bold tracking-wide text-[var(--ink)]">
+                  {title}
+                </span>
+                <span className="inline-flex items-center rounded-full bg-amber-500/10 px-2.5 py-0.5 text-xs font-semibold text-amber-700 dark:text-amber-400">
+                  {isAr ? 'مواصفات إقليمية معتمدة' : 'Verified Regional Variance'}
+                </span>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-2">
+                {/* Egypt Spec */}
+                <div className="rounded-lg border border-[var(--line)] bg-white/70 dark:bg-neutral-900/70 p-3.5 space-y-1.5">
+                  <div className="flex items-center justify-between text-xs font-semibold text-[var(--ink-soft)]">
+                    <span className="flex items-center gap-1.5">
+                      <span className="text-sm">🇪🇬</span>
+                      {isAr ? 'مواصفات الوكيل الرسمي (مصر)' : 'Official Egypt Agency Spec'}
+                    </span>
+                    {c.egyptTrim ? (
+                      <span className="rounded bg-black/5 dark:bg-white/10 px-1.5 py-0.5 font-mono text-[11px]">
+                        {c.egyptTrim}
+                      </span>
+                    ) : null}
+                  </div>
+                  <div className="text-sm sm:text-base font-bold text-[var(--ink)]">
+                    {c.egyptValue} {c.egyptUnit ? <span className="text-xs font-normal text-[var(--ink-soft)]">{c.egyptUnit}</span> : null}
+                  </div>
+                  {c.egyptSourceUrl ? (
+                    <a
+                      href={c.egyptSourceUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-[11px] text-[var(--signal)] hover:underline pt-1"
+                    >
+                      <span>{isAr ? 'مصدر الوكيل الرسمي' : 'Official Agency Source'}</span>
+                      <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </a>
+                  ) : null}
+                </div>
+
+                {/* GCC Spec */}
+                <div className="rounded-lg border border-[var(--line)] bg-white/70 dark:bg-neutral-900/70 p-3.5 space-y-1.5">
+                  <div className="flex items-center justify-between text-xs font-semibold text-[var(--ink-soft)]">
+                    <span className="flex items-center gap-1.5">
+                      <span className="text-sm">🌐</span>
+                      {c.gccCountry ? `${c.gccCountry}` : (isAr ? 'المواصفات الخليجية' : 'GCC Spec')}
+                    </span>
+                    {c.gccTrim || c.gccModelYear ? (
+                      <span className="rounded bg-black/5 dark:bg-white/10 px-1.5 py-0.5 font-mono text-[11px]">
+                        {[c.gccTrim, c.gccModelYear].filter(Boolean).join(' · ')}
+                      </span>
+                    ) : null}
+                  </div>
+                  <div className="text-sm sm:text-base font-bold text-[var(--ink)]">
+                    {c.gccValue} {c.gccUnit ? <span className="text-xs font-normal text-[var(--ink-soft)]">{c.gccUnit}</span> : null}
+                  </div>
+                  {c.gccSourceUrl ? (
+                    <a
+                      href={c.gccSourceUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-[11px] text-[var(--signal)] hover:underline pt-1"
+                    >
+                      <span>{isAr ? 'مصدر التوكيل الإقليمي' : 'Regional Agency Source'}</span>
+                      <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </a>
+                  ) : null}
+                </div>
+              </div>
+
+              {/* Difference Explanation / Justification (e.g. customs bracket over 1600cc) */}
+              {c.differenceSummary ? (
+                <div className="mt-3 flex items-start gap-2 rounded-lg bg-amber-500/5 border border-amber-500/20 px-3 py-2 text-xs leading-relaxed text-[var(--ink-soft)]">
+                  <span className="font-semibold text-amber-700 dark:text-amber-400 shrink-0">
+                    {isAr ? 'ملاحظة الفروق الجمركية والتسويقية:' : 'Market Note:'}
+                  </span>
+                  <span>{c.differenceSummary}</span>
+                </div>
+              ) : null}
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
 // ── active shelf body ────────────────────────────────────────────────────────
 interface BodyProps {
   active: ActiveSectionView;
@@ -379,7 +500,7 @@ interface BodyProps {
 }
 
 function SectionBody({ active, locale, identity, fieldsIndex, claimed, carousel, brand, slug, isCustomDomain, heroHoisted }: BodyProps) {
-  const { section, groups, gallery, slides, shelves, blogs } = active;
+  const { section, groups, gallery, slides, shelves, blogs, marketComparisons = [] } = active;
   const isOverview = section.id === 'sec_1_identity';
   const sectionName = displayName(section, locale);
 
@@ -434,7 +555,7 @@ function SectionBody({ active, locale, identity, fieldsIndex, claimed, carousel,
       ) : null}
 
       {groups.map((g) => {
-        const fields = g.fields.filter((f) => !claimedHere.has(f.name));
+        const fields = g.fields.filter((f) => !claimedHere.has(f.name) && f.name !== 'market_comparisons');
         if (!fields.length) return null;
         return (
           <section className="panel" id={`${section.id}:${g.key}`} key={g.key}>
@@ -453,6 +574,10 @@ function SectionBody({ active, locale, identity, fieldsIndex, claimed, carousel,
           </section>
         );
       })}
+
+      {marketComparisons.length ? (
+        <MarketComparisonCard comparisons={marketComparisons} locale={locale} />
+      ) : null}
 
       {shelves.map((shelf, i) => {
         const heading = shelfHeading(section.id, shelf.label, locale);

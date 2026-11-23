@@ -1,0 +1,640 @@
+{
+  "brand": {
+    "slug": "mg",
+    "name": "MG",
+    "name_ar": "إم جي",
+    "origin_country": "United Kingdom",
+    "logo_url": "https://cdn.jsdelivr.net/gh/filippofilip95/car-logos-dataset@master/logos/optimized/mg.svg",
+    "established_year": 1924,
+    "description": "Morris Garages — Historic British brand offering sporty performance, modern tech, and exceptional value.",
+    "description_ar": "موريس جراجز — علامة بريطانية عريقة تجمع بين الأداء الرياضي والتكنولوجيا الحديثة والقيمة التنافسية."
+  },
+  "agency": {
+    "slug": "mansour-automotive-mg",
+    "name": "Mansour Automotive — MG Egypt (Exclusive Importer)",
+    "name_ar": "المنصور للسيارات — إم جي مصر (الوكيل الحصري)",
+    "type_id": "main_agency",
+    "phone": "16424",
+    "website": "https://www.mgmotor.com.eg",
+    "address": "Ring Road, Exhibition Area, New Cairo, Egypt",
+    "address_ar": "الطريق الدائري، منطقة المعارض، القاهرة الجديدة، مصر"
+  },
+  "sources": [
+    {
+      "id": "src_mg_egypt",
+      "name": "MG Motor Egypt (Al Mansour)",
+      "url": "https://www.mgmotor.com.eg"
+    },
+    {
+      "id": "src_mg_gcc",
+      "name": "MG Motor Middle East (GCC)",
+      "url": "https://www.mg-me.com"
+    }
+  ],
+  "showrooms": [
+    {
+      "slug": "mg-new-cairo-ring-road",
+      "name": "MG New Cairo (Ring Road)",
+      "name_ar": "إم جي القاهرة الجديدة (الطريق الدائري)",
+      "type_id": "showroom",
+      "phone": "16424",
+      "address": "الطريق الدائري، منطقة المعارض، القاهرة الجديدة",
+      "city": "القاهرة الجديدة",
+      "governorate": "القاهرة"
+    },
+    {
+      "slug": "mg-dokki-giza",
+      "name": "MG Dokki Showroom",
+      "name_ar": "معرض إم جي الدقي",
+      "type_id": "showroom",
+      "phone": "16424",
+      "address": "شارع التحرير، الدقي، الجيزة",
+      "city": "الدقي",
+      "governorate": "الجيزة"
+    },
+    {
+      "slug": "mg-smouha-alexandria",
+      "name": "MG Smouha (Showroom & Service)",
+      "name_ar": "إم جي سموحة (معرض وخدمة)",
+      "type_id": "showroom",
+      "phone": "16424",
+      "address": "90 شارع فوزي معاذ، سموحة، الإسكندرية",
+      "city": "سموحة",
+      "governorate": "الإسكندرية"
+    },
+    {
+      "slug": "mg-mansoura",
+      "name": "MG Mansoura Showroom",
+      "name_ar": "معرض إم جي المنصورة",
+      "type_id": "showroom",
+      "phone": "16424",
+      "address": "44 شارع عبد السلام عارف، طريق المجزر، المنصورة",
+      "city": "المنصورة",
+      "governorate": "الدقهلية"
+    },
+    {
+      "slug": "mg-asyut",
+      "name": "MG Asyut (Showroom & Service)",
+      "name_ar": "إم جي أسيوط (معرض وخدمة)",
+      "type_id": "showroom",
+      "phone": "16424",
+      "address": "طريق أسيوط المطار، بني غالب، منطقة الخدمات",
+      "city": "أسيوط",
+      "governorate": "أسيوط"
+    },
+    {
+      "slug": "mg-sohag",
+      "name": "MG Sohag Showroom",
+      "name_ar": "معرض إم جي سوهاج",
+      "type_id": "showroom",
+      "phone": "16424",
+      "address": "3 شارع الجمهورية، بجوار فندق الصفا، سوهاج",
+      "city": "سوهاج",
+      "governorate": "سوهاج"
+    }
+  ],
+  "models": [
+    {
+      "id": "biz_model_mg_mg_5",
+      "slug": "mg-5",
+      "name": "MG 5",
+      "name_ar": "إم جي 5",
+      "year": 2027,
+      "body_type": "Sedan",
+      "brochure_url": "https://www.mgmotor.com.eg/model/mg5/",
+      "market_comparisons": [
+        {
+          "attribute_en": "Engine & Displacement",
+          "egypt_value": "1.5L 4-Cylinder (120 hp / 150 Nm) CVT",
+          "egypt_source_id": "src_mg_egypt",
+          "egypt_source_url": "https://www.mgmotor.com.eg/model/mg5/",
+          "gcc_country": "Saudi Arabia / UAE",
+          "gcc_trim_name": "Standard / Luxury",
+          "gcc_value": "1.5L 4-Cylinder (118-120 hp / 150 Nm) CVT",
+          "gcc_source_id": "src_mg_gcc",
+          "gcc_source_url": "https://www.mg-me.com/new-cars/mg5/",
+          "gcc_model_year": 2027,
+          "review_status": "approved",
+          "attribute_ar": "سعة المحرك والقوة",
+          "explanation_ar": "تطابق تام في المحرك والهيكل مع أسواق الخليج"
+        }
+      ],
+      "images": [
+        { "url": "https://www.mgmotor.com.eg/media/1879/mg5_ext_front.jpg", "section_id": "sec_1_identity", "caption": "MG 5 — Exterior Front View", "caption_ar": "إم جي 5 — الواجهة الخارجية والشبكة الأمامية" },
+        { "url": "https://www.mgmotor.com.eg/media/1880/mg5_int_360.jpg", "section_id": "sec_auto_interior", "caption": "10-inch HD Screen & 360 Camera", "caption_ar": "كاميرا 360 درجة وشاشة 10 بوصة HD" }
+      ],
+      "trims": [
+        {
+          "id": "biz_trim_mg_5_std",
+          "slug": "mg-5-standard",
+          "name": "Standard AT",
+          "name_ar": "ستاندرد أوتوماتيك",
+          "price_egp": 889990,
+          "price_note": "Official Mansour Automotive price",
+          "price_note_ar": "السعر الرسمي من المنصور للسيارات",
+          "specs": {
+            "engine": "1.5L 4-Cylinder DOHC",
+            "engine_ar": "4 سلندر 1.5 لتر DOHC",
+            "power_hp": 120,
+            "torque_nm": 150,
+            "transmission": "Automatic CVT",
+            "drive": "FWD",
+            "fuel_type": "Petrol",
+            "dimensions_mm": "4601L x 1818W x 1489H",
+            "trunk_liters": 512,
+            "fuel_tank_liters": 45,
+            "airbags": 2,
+            "screen": "8-inch Touchscreen with Apple CarPlay & Android Auto"
+          }
+        },
+        {
+          "id": "biz_trim_mg_5_lux",
+          "slug": "mg-5-luxury",
+          "name": "Luxury AT",
+          "name_ar": "لاكشري أوتوماتيك",
+          "price_egp": 989990,
+          "price_note": "Official Mansour Automotive price (+100k: 6 airbags, 360 cam, sunroof)",
+          "price_note_ar": "السعر الرسمي (+100,000 ج: 6 وسائد، كاميرا 360، فتحة سقف)",
+          "specs": {
+            "engine": "1.5L 4-Cylinder DOHC",
+            "engine_ar": "4 سلندر 1.5 لتر DOHC",
+            "power_hp": 120,
+            "torque_nm": 150,
+            "transmission": "Automatic CVT",
+            "drive": "FWD",
+            "fuel_type": "Petrol",
+            "dimensions_mm": "4601L x 1818W x 1489H",
+            "trunk_liters": 512,
+            "airbags": 6,
+            "screen": "10-inch HD Screen with 360-degree camera & Sunroof"
+          }
+        }
+      ],
+      "relations": [
+        { "type": "sold_by", "target_slug": "mansour-automotive-mg" }
+      ]
+    },
+    {
+      "id": "biz_model_mg_mg_zs",
+      "slug": "mg-zs",
+      "name": "MG ZS",
+      "name_ar": "إم جي ZS",
+      "year": 2027,
+      "body_type": "Compact SUV",
+      "brochure_url": "https://www.mgmotor.com.eg/model/zs/",
+      "market_comparisons": [
+        {
+          "attribute_en": "Generation & Transmission",
+          "egypt_value": "Proven Generation: 1.5L (119 hp) + 4-Speed Auto",
+          "egypt_source_id": "src_mg_egypt",
+          "egypt_source_url": "https://www.mgmotor.com.eg/model/zs/",
+          "gcc_country": "UAE / Saudi Arabia",
+          "gcc_trim_name": "New Gen ZS",
+          "gcc_value": "All-New Generation: 1.5L (110 hp) + CVT + 12.3-inch screen",
+          "gcc_source_id": "src_mg_gcc",
+          "gcc_source_url": "https://www.mg-me.com/new-cars/mg-zs/",
+          "gcc_model_year": 2027,
+          "review_status": "approved",
+          "attribute_ar": "الجيل وناقل الحركة",
+          "explanation_ar": "طرح الجيل الجديد في أسواق الخليج مبكراً بينما يستمر الجيل المجرّب بمصر"
+        }
+      ],
+      "images": [
+        { "url": "https://www.mgmotor.com.eg/media/1881/mgzs_ext_front.jpg", "section_id": "sec_1_identity", "caption": "MG ZS — Compact SUV Exterior", "caption_ar": "إم جي ZS — التصميم الخارجي والمصابيح النهارية LED" }
+      ],
+      "trims": [
+        {
+          "id": "biz_trim_mg_zs_comf",
+          "slug": "mg-zs-comfort",
+          "name": "Comfort AT",
+          "name_ar": "كومفورت أوتوماتيك",
+          "price_egp": 1075000,
+          "price_note": "Official Mansour Automotive price (MY 2026)",
+          "price_note_ar": "السعر الرسمي من المنصور للسيارات (موديل 2026)",
+          "specs": {
+            "engine": "1.5L 4-Cylinder DOHC",
+            "engine_ar": "4 سلندر 1.5 لتر",
+            "power_hp": 119,
+            "torque_nm": 150,
+            "transmission": "4-Speed Automatic",
+            "drive": "FWD",
+            "fuel_type": "Petrol",
+            "fuel_economy_combined": 5.8,
+            "dimensions_mm": "4314L x 1809W x 1624H",
+            "airbags": 4,
+            "wheels": "17-inch Alloy Wheels"
+          }
+        },
+        {
+          "id": "biz_trim_mg_zs_lux",
+          "slug": "mg-zs-luxury",
+          "name": "Luxury Facelift",
+          "name_ar": "لاكشري فيس ليفت",
+          "price_egp": 1165000,
+          "price_note": "Official Mansour Automotive price (+90k: 6 airbags, auto AC)",
+          "price_note_ar": "السعر الرسمي (+90,000 ج: 6 وسائد، تكييف أوتوماتيك)",
+          "specs": {
+            "engine": "1.5L 4-Cylinder DOHC",
+            "engine_ar": "4 سلندر 1.5 لتر",
+            "power_hp": 119,
+            "torque_nm": 150,
+            "transmission": "4-Speed Automatic",
+            "drive": "FWD",
+            "fuel_type": "Petrol",
+            "fuel_economy_combined": 5.8,
+            "airbags": 6,
+            "screen": "8-inch Screen with Rear Camera"
+          }
+        }
+      ],
+      "relations": [
+        { "type": "sold_by", "target_slug": "mansour-automotive-mg" }
+      ]
+    },
+    {
+      "id": "biz_model_mg_gt",
+      "slug": "mg-gt",
+      "name": "MG GT",
+      "name_ar": "إم جي GT",
+      "year": 2027,
+      "body_type": "Sport Fastback Sedan",
+      "brochure_url": "https://www.mgmotor.com.eg/model/mg-gt/",
+      "market_comparisons": [
+        {
+          "attribute_en": "Engine Performance",
+          "egypt_value": "1.5L Turbo (170 hp / 275 Nm) 7-Speed Wet DCT",
+          "egypt_source_id": "src_mg_egypt",
+          "egypt_source_url": "https://www.mgmotor.com.eg/model/mg-gt/",
+          "gcc_country": "Saudi Arabia / UAE",
+          "gcc_trim_name": "DEL / LUX 1.5T",
+          "gcc_value": "1.5L Turbo (173 hp / 275 Nm) 7-Speed DCT",
+          "gcc_source_id": "src_mg_gcc",
+          "gcc_source_url": "https://www.mg-me.com/new-cars/mg-gt/",
+          "gcc_model_year": 2027,
+          "review_status": "approved",
+          "attribute_ar": "المحرك والأداء",
+          "explanation_ar": "الأداء الرياضي متطابق والتسارع 8.5 ثانية إلى 100 كم/س"
+        }
+      ],
+      "images": [
+        { "url": "https://www.mgmotor.com.eg/media/1882/mggt_int_cockpit.jpg", "section_id": "sec_1_identity", "caption": "MG GT — 12.3-inch Digital Cockpit", "caption_ar": "شاشة العدادات الرقمية 12.3 بوصة" }
+      ],
+      "trims": [
+        {
+          "id": "biz_trim_mg_gt_comf",
+          "slug": "mg-gt-comfort",
+          "name": "Comfort AT",
+          "name_ar": "كومفورت أوتوماتيك",
+          "price_egp": 1110000,
+          "price_note": "Official Mansour Automotive price",
+          "price_note_ar": "السعر الرسمي من المنصور للسيارات",
+          "specs": {
+            "engine": "1.5L 4-Cyl Turbo (170 hp)",
+            "engine_ar": "4 سلندر توربو 1.5 لتر",
+            "power_hp": 170,
+            "torque_nm": 275,
+            "acceleration_0_100": 8.5,
+            "top_speed_kmh": 215,
+            "transmission": "7-Speed Wet DCT Automatic",
+            "drive": "FWD",
+            "fuel_type": "Petrol",
+            "screen": "12.3-inch Digital Cockpit + 10.25-inch Touchscreen + Sunroof"
+          }
+        },
+        {
+          "id": "biz_trim_mg_gt_lux",
+          "slug": "mg-gt-luxury",
+          "name": "Luxury AT",
+          "name_ar": "لاكشري أوتوماتيك",
+          "price_egp": 1175000,
+          "price_note": "Official Mansour Automotive price (+65k: 360 cam, sport leather seats)",
+          "price_note_ar": "السعر الرسمي (+65,000 ج: كاميرا 360، مقاعد رياضية جلد)",
+          "specs": {
+            "engine": "1.5L 4-Cyl Turbo (170 hp)",
+            "engine_ar": "4 سلندر توربو 1.5 لتر",
+            "power_hp": 170,
+            "torque_nm": 275,
+            "acceleration_0_100": 8.5,
+            "top_speed_kmh": 215,
+            "transmission": "7-Speed Wet DCT Automatic",
+            "drive": "FWD",
+            "fuel_type": "Petrol",
+            "safety": "360-degree camera + Lane Departure Warning"
+          }
+        }
+      ],
+      "relations": [
+        { "type": "sold_by", "target_slug": "mansour-automotive-mg" }
+      ]
+    },
+    {
+      "id": "biz_model_mg_g50_plus",
+      "slug": "mg-g50-plus",
+      "name": "MG G50 Plus",
+      "name_ar": "إم جي G50 بلس",
+      "year": 2027,
+      "body_type": "Family MPV (7-Seats)",
+      "brochure_url": "https://www.mgmotor.com.eg/model/g50-plus/",
+      "market_comparisons": [
+        {
+          "attribute_en": "Engine & Seating",
+          "egypt_value": "1.5L Turbo (170 hp / 285 Nm) 7-DCT, 7-Seats",
+          "egypt_source_id": "src_mg_egypt",
+          "egypt_source_url": "https://www.mgmotor.com.eg/model/g50-plus/",
+          "gcc_country": "UAE / Saudi Arabia",
+          "gcc_trim_name": "Maxus / MG G50",
+          "gcc_value": "1.5L Turbo (169-170 hp) 7-DCT, 7-Seats",
+          "gcc_source_id": "src_mg_gcc",
+          "gcc_source_url": "https://www.mg-me.com",
+          "gcc_model_year": 2027,
+          "review_status": "approved",
+          "attribute_ar": "التسمية والمحرك",
+          "explanation_ar": "مطابقة كاملة في الهيكل العائلي 7 مقاعد ومنظومة التكييف الثلاثي"
+        }
+      ],
+      "images": [
+        { "url": "https://www.mgmotor.com.eg/media/1883/mgg50_int_cabin.jpg", "section_id": "sec_1_identity", "caption": "MG G50 Plus — 7-Seat Family Cabin", "caption_ar": "المقصورة العائلية 7 مقاعد وتكييف خلفي مستقل" }
+      ],
+      "trims": [
+        {
+          "id": "biz_trim_mg_g50_lux",
+          "slug": "mg-g50-luxury",
+          "name": "Luxury 7-Seats",
+          "name_ar": "لاكشري 7 مقاعد",
+          "price_egp": 1325000,
+          "price_note": "Official Mansour Automotive price",
+          "price_note_ar": "السعر الرسمي من المنصور للسيارات",
+          "specs": {
+            "engine": "1.5L 4-Cyl Turbo (170 hp)",
+            "engine_ar": "4 سلندر توربو 1.5 لتر",
+            "power_hp": 170,
+            "torque_nm": 285,
+            "transmission": "7-Speed DCT Automatic",
+            "drive": "FWD",
+            "fuel_type": "Petrol",
+            "seats": 7,
+            "airbags": 4,
+            "ac": "Independent Rear Air Conditioning for all 3 rows",
+            "screen": "12.3-inch HD Display"
+          }
+        }
+      ],
+      "relations": [
+        { "type": "sold_by", "target_slug": "mansour-automotive-mg" }
+      ]
+    },
+    {
+      "id": "biz_model_mg_mg_one",
+      "slug": "mg-one",
+      "name": "MG ONE",
+      "name_ar": "إم جي وان",
+      "year": 2027,
+      "body_type": "Sport Crossover",
+      "brochure_url": "https://www.mgmotor.com.eg/model/mg-one/",
+      "market_comparisons": [
+        {
+          "attribute_en": "Drivetrain & Cabin Tech",
+          "egypt_value": "1.5L Turbo (181 hp / 285 Nm) CVT, 30-inch Triple Screen",
+          "egypt_source_id": "src_mg_egypt",
+          "egypt_source_url": "https://www.mgmotor.com.eg/model/mg-one/",
+          "gcc_country": "UAE / Saudi Arabia",
+          "gcc_trim_name": "LUX",
+          "gcc_value": "1.5L Turbo (181 hp / 285 Nm) CVT, 30-inch Triple Screen",
+          "gcc_source_id": "src_mg_gcc",
+          "gcc_source_url": "https://www.mg-me.com/new-cars/mg-one/",
+          "gcc_model_year": 2027,
+          "review_status": "approved",
+          "attribute_ar": "الفئات والتجهيزات",
+          "explanation_ar": "تطابق تام في المحرك والشاشة البانورامية الثلاثية 30 بوصة"
+        }
+      ],
+      "images": [
+        { "url": "https://www.mgmotor.com.eg/media/1884/mgone_int_screen.jpg", "section_id": "sec_1_identity", "caption": "MG ONE — 30-inch Triple Panoramic Screen", "caption_ar": "الشاشة البانورامية المزدوجة 30 بوصة" }
+      ],
+      "trims": [
+        {
+          "id": "biz_trim_mg_one_lux",
+          "slug": "mg-one-luxury",
+          "name": "Luxury AT",
+          "name_ar": "لاكشري أوتوماتيك",
+          "price_egp": 1425000,
+          "price_note": "Official Mansour Automotive price",
+          "price_note_ar": "السعر الرسمي من المنصور للسيارات",
+          "specs": {
+            "engine": "1.5L 4-Cyl Turbo (181 hp)",
+            "engine_ar": "4 سلندر توربو 1.5 لتر",
+            "power_hp": 181,
+            "torque_nm": 285,
+            "transmission": "Advanced CVT",
+            "drive": "FWD",
+            "fuel_type": "Petrol",
+            "screen": "30-inch Integrated Triple Panoramic Screen",
+            "features": "Panoramic Sunroof + 360-degree camera + 6 airbags"
+          }
+        }
+      ],
+      "relations": [
+        { "type": "sold_by", "target_slug": "mansour-automotive-mg" }
+      ]
+    },
+    {
+      "id": "biz_model_mg_mg_rx5",
+      "slug": "mg-rx5",
+      "name": "MG RX5 Plus",
+      "name_ar": "إم جي RX5 بلس",
+      "year": 2027,
+      "body_type": "SUV",
+      "brochure_url": "https://www.mgmotor.com.eg/model/rx5-plus/",
+      "market_comparisons": [
+        {
+          "attribute_en": "Drivetrain & Body",
+          "egypt_value": "1.5L Turbo (171 hp / 275 Nm) 7-Speed Wet DCT",
+          "egypt_source_id": "src_mg_egypt",
+          "egypt_source_url": "https://www.mgmotor.com.eg/model/rx5-plus/",
+          "gcc_country": "UAE / Saudi Arabia",
+          "gcc_trim_name": "LUX",
+          "gcc_value": "1.5L Turbo (171 hp / 275 Nm) 7-Speed DCT",
+          "gcc_source_id": "src_mg_gcc",
+          "gcc_source_url": "https://www.mg-me.com/new-cars/mg-rx5-plus/",
+          "gcc_model_year": 2027,
+          "review_status": "approved",
+          "attribute_ar": "المحرك والهيكل",
+          "explanation_ar": "تطابق تام في المحرك والهيكل مع أسواق الخليج"
+        }
+      ],
+      "images": [
+        { "url": "https://www.mgmotor.com.eg/media/1885/mgrx5_int_disp.jpg", "section_id": "sec_1_identity", "caption": "MG RX5 Plus — 14.1-inch Vertical Screen", "caption_ar": "الشاشة الوسطية العمودية 14.1 بوصة" }
+      ],
+      "trims": [
+        {
+          "id": "biz_trim_mg_rx5_lux",
+          "slug": "mg-rx5-luxury",
+          "name": "Luxury AT",
+          "name_ar": "لاكشري أوتوماتيك",
+          "price_egp": 1475000,
+          "price_note": "Official Mansour Automotive price",
+          "price_note_ar": "السعر الرسمي من المنصور للسيارات",
+          "specs": {
+            "engine": "1.5L 4-Cyl Turbo (171 hp)",
+            "engine_ar": "4 سلندر توربو 1.5 لتر",
+            "power_hp": 171,
+            "torque_nm": 275,
+            "transmission": "7-Speed Wet DCT Automatic",
+            "drive": "FWD",
+            "fuel_type": "Petrol",
+            "screen": "14.1-inch Vertical Infotainment + 12.3-inch Digital Cockpit",
+            "features": "Electric Tailgate + Panoramic Sunroof + 360 Camera + 6 Airbags"
+          }
+        }
+      ],
+      "relations": [
+        { "type": "sold_by", "target_slug": "mansour-automotive-mg" }
+      ]
+    },
+    {
+      "id": "biz_model_mg_mg_hs",
+      "slug": "mg-hs",
+      "name": "MG HS",
+      "name_ar": "إم جي HS والنسخة الهايبرد",
+      "year": 2027,
+      "body_type": "Mid-size SUV",
+      "brochure_url": "https://www.mgmotor.com.eg/model/hs/",
+      "market_comparisons": [
+        {
+          "attribute_en": "Drivetrain Options",
+          "egypt_value": "1.5T (170 hp) FWD + HEV Hybrid (221 hp)",
+          "egypt_source_id": "src_mg_egypt",
+          "egypt_source_url": "https://www.mgmotor.com.eg/model/hs/",
+          "gcc_country": "UAE / Saudi Arabia",
+          "gcc_trim_name": "Trophy AWD / Hybrid+",
+          "gcc_value": "2.0T (231 hp) AWD + Hybrid+ (221 hp)",
+          "gcc_source_id": "src_mg_gcc",
+          "gcc_source_url": "https://www.mg-me.com/new-cars/mg-hs/",
+          "gcc_model_year": 2027,
+          "review_status": "approved",
+          "attribute_ar": "خيارات المحرك والدفع",
+          "explanation_ar": "تفضيل محركات 2.0L والدفع الكلي AWD في الخليج بينما يوفر وكيل مصر 1.5T وHEV لتوفير استهلاك الوقود والجمارك"
+        }
+      ],
+      "images": [
+        { "url": "https://www.mgmotor.com.eg/media/1886/mghs_int_sport.jpg", "section_id": "sec_1_identity", "caption": "MG HS — Sport Cabin & Super Sport Button", "caption_ar": "المقصورة الرياضية وزر Super Sport" }
+      ],
+      "trims": [
+        {
+          "id": "biz_trim_mg_hs_lux",
+          "slug": "mg-hs-luxury",
+          "name": "Luxury 1.5T",
+          "name_ar": "لاكشري 1.5 تيربو",
+          "price_egp": 1550000,
+          "price_note": "Official Mansour Automotive price",
+          "price_note_ar": "السعر الرسمي من المنصور للسيارات",
+          "specs": {
+            "engine": "1.5L 4-Cyl Turbo (170 hp)",
+            "engine_ar": "4 سلندر توربو 1.5 لتر",
+            "power_hp": 170,
+            "torque_nm": 275,
+            "transmission": "7-Speed DCT Automatic",
+            "drive": "FWD",
+            "fuel_type": "Petrol",
+            "safety": "6 Airbags + ADAS Safety Package (Blind Spot, Forward Collision Warning)",
+            "features": "Panoramic Sunroof + Sport Leather Seats + Super Sport Mode"
+          }
+        },
+        {
+          "id": "biz_trim_mg_hs_hev",
+          "slug": "mg-hs-hev",
+          "name": "HEV Hybrid",
+          "name_ar": "هايبرد HEV",
+          "price_egp": 1650000,
+          "price_note": "Official Mansour Automotive price (+100k for 221 hp Hybrid system)",
+          "price_note_ar": "السعر الرسمي (+100,000 ج لمنظومة هجينة 221 حصان)",
+          "specs": {
+            "engine": "1.5L Turbo + Electric Hybrid Motor",
+            "engine_ar": "1.5 لتر تيربو + محرك كهربائي هجين",
+            "power_hp": 221,
+            "torque_nm": 340,
+            "transmission": "Dedicated Hybrid Transmission (DHT)",
+            "drive": "FWD",
+            "fuel_type": "Petrol Hybrid (HEV)",
+            "safety": "Extended ADAS Package"
+          }
+        }
+      ],
+      "relations": [
+        { "type": "sold_by", "target_slug": "mansour-automotive-mg" }
+      ]
+    },
+    {
+      "id": "biz_model_mg_7",
+      "slug": "mg-7",
+      "name": "MG 7",
+      "name_ar": "إم جي 7",
+      "year": 2027,
+      "body_type": "Luxury Fastback Sedan",
+      "brochure_url": "https://www.mgmotor.com.eg/model/mg7/",
+      "market_comparisons": [
+        {
+          "attribute_en": "Engine, Power & Transmission",
+          "egypt_value": "1.5L Turbo (185 hp / 300 Nm) 7-Speed DCT",
+          "egypt_source_id": "src_mg_egypt",
+          "egypt_source_url": "https://www.mgmotor.com.eg/model/mg7/",
+          "gcc_country": "UAE / Saudi Arabia",
+          "gcc_trim_name": "Trophy 2.0T",
+          "gcc_value": "2.0L Turbo (261 hp / 405 Nm) ZF 9-Speed Automatic",
+          "gcc_source_id": "src_mg_gcc",
+          "gcc_source_url": "https://www.mg-me.com/new-cars/mg7/",
+          "gcc_model_year": 2027,
+          "review_status": "approved",
+          "attribute_ar": "المحرك والقوة وناقل الحركة",
+          "explanation_ar": "مصر تعتمد محرك 1.5T لتجنب الشريحة الجمركية المرتفعة لما فوق 1600 سي سي، بينما تتوفر نسخة 2.0T الأقوى في الخليج"
+        }
+      ],
+      "images": [
+        { "url": "https://www.mgmotor.com.eg/media/1887/mg7_ext_spoiler.jpg", "section_id": "sec_1_identity", "caption": "MG 7 — Active Aero Spoiler & Frameless Doors", "caption_ar": "الجناح الخلفي النشط والأبواب بدون إطار" }
+      ],
+      "trims": [
+        {
+          "id": "biz_trim_mg_7_lux",
+          "slug": "mg-7-luxury",
+          "name": "Luxury 1.5T",
+          "name_ar": "لاكشري 1.5 تيربو",
+          "price_egp": 1625000,
+          "price_note": "Official Mansour Automotive price",
+          "price_note_ar": "السعر الرسمي من المنصور للسيارات",
+          "specs": {
+            "engine": "1.5L 4-Cyl Turbo (185 hp)",
+            "engine_ar": "4 سلندر توربو 1.5 لتر",
+            "power_hp": 185,
+            "torque_nm": 300,
+            "transmission": "7-Speed DCT Automatic",
+            "drive": "FWD",
+            "fuel_type": "Petrol",
+            "features": "33-inch Dual Screen + Frameless Doors"
+          }
+        },
+        {
+          "id": "biz_trim_mg_7_trophy",
+          "slug": "mg-7-trophy",
+          "name": "Trophy 1.5T",
+          "name_ar": "تروفي 1.5 تيربو",
+          "price_egp": 1750000,
+          "price_note": "Official Mansour Automotive price (+125k: Active Spoiler, Bose 14-spk, E-LSD, ADAS)",
+          "price_note_ar": "السعر الرسمي (+125,000 ج: جناح نشط، صوت Bose، ترس تفاضلي E-LSD)",
+          "specs": {
+            "engine": "1.5L 4-Cyl Turbo (185 hp)",
+            "engine_ar": "4 سلندر توربو 1.5 لتر",
+            "power_hp": 185,
+            "torque_nm": 300,
+            "transmission": "7-Speed DCT Automatic",
+            "drive": "FWD with E-LSD",
+            "fuel_type": "Petrol",
+            "features": "Active Aero Spoiler + 14-Speaker Bose Premium Audio + E-LSD Electronic Limited Slip Differential + Full ADAS"
+          }
+        }
+      ],
+      "relations": [
+        { "type": "sold_by", "target_slug": "mansour-automotive-mg" }
+      ]
+    }
+  ]
+}
